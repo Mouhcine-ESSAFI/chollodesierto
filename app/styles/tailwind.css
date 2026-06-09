@@ -1,0 +1,104 @@
+@import 'tailwindcss';
+
+@theme {
+  /* Brand colors (from design system) */
+  --color-primary: #C45A2C;   /* terracotta */
+  --color-sand:    #F5EDE0;   /* background */
+  --color-dark:    #1A1F2E;   /* navy */
+  --color-forest:  #3D5A40;   /* green accent */
+
+  /* Fonts */
+  --font-display: 'Patua One', serif;
+  --font-body:    'Nunito', sans-serif;
+
+  /* Type scale — all in rem */
+  --text-hero:    clamp(2rem, 4vw, 3.375rem); /* responsive */
+  --text-h1:      2.625rem;  /* 42px */
+  --text-h2:      2.375rem;  /* 38px — Nunito Bold */
+  --text-h3:      1.25rem;   /* 20px — Nunito Bold */
+  --text-base:    1rem;      /* 16px — Nunito Regular */
+  --text-label:   0.875rem;  /* 14px — orange caps */
+  --text-price:   1.5rem;    /* 24px — Patua One forest */
+  --text-btn:     1.125rem;  /* 18px — Patua One */
+  --text-review:  1rem;      /* 16px — Nunito Bold */
+  --text-author:  0.875rem;  /* 14px — Nunito Regular */
+
+  /* Layout */
+  --max-width-content: 76rem; /* 1216px */
+  --max-width-doc:     90rem; /* 1440px */
+
+  /* Spacing */
+  --spacing-section:   7.5rem;   /* 120px section padding */
+  --spacing-subtitle:  5rem;     /* 80px subtitle bottom margin */
+
+  /* Radii */
+  --radius-card: 1.5rem;  /* 24px */
+
+  /* Shadows */
+  --shadow-card:       0 0.125rem 1.5rem rgba(26,31,46,0.07);
+  --shadow-card-hover: 0 0.75rem 2.5rem rgba(26,31,46,0.13);
+}
+
+/* ─── Font utilities (explicit — bypasses CSS variable indirection) ─── */
+.font-display { font-family: 'Patua One', serif; }
+.font-body    { font-family: 'Nunito', sans-serif; }
+
+/* ─── Base ─── */
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  font-family: 'Nunito', sans-serif;
+  background-color: var(--color-sand);
+  color: var(--color-dark);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+a { text-decoration: none; }
+
+/* ─── Price underline accent ─── */
+.price-underline {
+  position: relative;
+  display: inline-block;
+}
+.price-underline::after {
+  content: '';
+  position: absolute;
+  bottom: -0.25rem;
+  left: 0;
+  right: 0;
+  height: 0.1875rem;
+  background: var(--color-primary);
+  border-radius: 0.125rem;
+}
+
+/* ─── FAQ accordion ─── */
+.faq-answer {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s ease, padding 0.3s;
+}
+.faq-item.open .faq-answer {
+  max-height: 18.75rem;
+  padding-bottom: 1.25rem;
+}
+.faq-icon {
+  transition: transform 0.3s, background 0.2s, border-color 0.2s;
+}
+.faq-item.open .faq-icon {
+  transform: rotate(45deg);
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: #fff;
+}
+
+/* ─── Hero sun glow ─── */
+.hero-glow {
+  background:
+    radial-gradient(ellipse 62% 52% at 50% 80%, rgba(196,90,44,0.45) 0%, rgba(150,60,10,0.20) 45%, transparent 75%),
+    radial-gradient(ellipse 28% 22% at 50% 77%, rgba(255,165,50,0.28) 0%, transparent 58%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+}
