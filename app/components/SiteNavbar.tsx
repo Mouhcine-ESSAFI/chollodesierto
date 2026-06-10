@@ -15,7 +15,8 @@ export function SiteNavbar() {
       <nav className="absolute top-0 left-0 right-0 z-50">
 
         {/* ── Top bar ── */}
-        <div className="flex items-center justify-between px-6 md:px-16 lg:px-28 h-20 md:h-24">
+        <div className="max-w-doc mx-auto w-full">
+        <div className="container flex items-center justify-between h-20 md:h-24">
 
           {/* Logo */}
           <Link to="/" className="flex items-center gap-3 md:gap-4">
@@ -59,24 +60,29 @@ export function SiteNavbar() {
             <HamburgerButton open={open} onClick={() => setOpen(v => !v)} />
           </div>
         </div>
+        </div>
 
         {/* ── Mobile / tablet dropdown ── */}
         {open && (
-          <div className="mx-4 mb-4 p-6 rounded-[1.5rem] bg-dark/90 border border-sand/10 backdrop-blur-md flex flex-col gap-1">
-            <ul className="flex flex-col gap-1 mb-4">
-              {NAV_LINKS.map(({ label, href }) => (
-                <li key={href}>
-                  <Link
-                    to={href}
-                    onClick={() => setOpen(false)}
-                    className="block font-body font-bold text-base text-sand/80 hover:text-sand hover:bg-white/5 px-4 py-3 rounded-xl transition-colors"
-                  >
-                    {label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-            <BookButton fullWidth />
+          <div className="max-w-doc mx-auto w-full">
+            <div className="container pb-4">
+              <div className="p-6 rounded-[1.5rem] bg-dark/90 border border-sand/10 backdrop-blur-md flex flex-col gap-1">
+                <ul className="flex flex-col gap-1 mb-4">
+                  {NAV_LINKS.map(({ label, href }) => (
+                    <li key={href}>
+                      <Link
+                        to={href}
+                        onClick={() => setOpen(false)}
+                        className="block font-body font-bold text-base text-sand/80 hover:text-sand hover:bg-white/5 px-4 py-3 rounded-xl transition-colors"
+                      >
+                        {label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+                <BookButton fullWidth />
+              </div>
+            </div>
           </div>
         )}
 
@@ -104,7 +110,7 @@ function HamburgerButton({ open, onClick }: { open: boolean; onClick: () => void
       onClick={onClick}
       type="button"
       aria-label={open ? 'Close menu' : 'Open menu'}
-      aria-expanded={open ? 'true' : 'false'}
+      aria-expanded={open}
       className="flex flex-col justify-center items-center gap-1.5 w-10 h-10 rounded-full border border-sand/20 bg-white/10 backdrop-blur-md"
     >
       <span className={`block w-5 h-px bg-sand/80 transition-transform duration-200 ${open ? 'translate-y-2 rotate-45' : ''}`} />

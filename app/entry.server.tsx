@@ -27,6 +27,12 @@ export default async function handleRequest(
       "'self'",
       'https://fonts.gstatic.com',
     ],
+    imgSrc: [
+      "'self'",
+      'data:',
+      'https://cdn.shopify.com',
+      'https://images.unsplash.com',
+    ],
   });
 
   const body = await renderToReadableStream(

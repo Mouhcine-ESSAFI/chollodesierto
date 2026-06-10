@@ -26,6 +26,7 @@ export const shouldRevalidate: ShouldRevalidateFunction = ({
 
 export function links() {
   return [
+    {rel: 'stylesheet', href: tailwindCss},
     {rel: 'preconnect', href: 'https://cdn.shopify.com'},
     {rel: 'preconnect', href: 'https://fonts.googleapis.com'},
     {rel: 'preconnect', href: 'https://fonts.gstatic.com', crossOrigin: 'anonymous' as const},
@@ -62,7 +63,6 @@ export function Layout({children}: {children?: React.ReactNode}) {
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1" />
-        <link rel="stylesheet" href={tailwindCss} />
         <Meta />
         <Links />
       </head>
