@@ -46,7 +46,7 @@
 /* ─── Base ─── */
 @layer base {
   html {
-    font-size: clamp(0.875rem, 0.5rem + 1.1vw, 1.125rem);
+    font-size: clamp(0.875rem, 0.5rem + 1.1vw, 1rem);
   }
 }
 
