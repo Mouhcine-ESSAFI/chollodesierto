@@ -33,7 +33,7 @@ export function SiteNavbar() {
           </Link>
 
           {/* Desktop nav pill */}
-          <div className="hidden lg:flex items-center gap-8 bg-dark/70 border border-white/10 rounded-full pl-7 pr-2 py-2 backdrop-blur-md">
+          <div className="hidden lg:flex items-center gap-8 bg-white/15 rounded-full pl-7 pr-2 py-1 backdrop-blur-md">
             <ul className="flex items-center gap-8">
               {NAV_LINKS.map(({ label, href }) => (
                 <li key={href}>
@@ -97,7 +97,7 @@ function BookButton({ fullWidth = false }: { fullWidth?: boolean }) {
   return (
     <Link
       to="/book"
-      className={`font-display text-btn text-sand text-center bg-primary rounded-full px-7 py-3 hover:opacity-90 transition-opacity whitespace-nowrap ${fullWidth ? 'w-full' : ''}`}
+      className={`font-display text-btn text-sand text-center bg-primary rounded-full px-7 py-2 hover:opacity-90 transition-opacity whitespace-nowrap ${fullWidth ? 'w-full' : ''}`}
     >
       Book Now
     </Link>
