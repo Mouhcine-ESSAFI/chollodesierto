@@ -33,7 +33,7 @@ export function SiteNavbar() {
           </Link>
 
           {/* Desktop nav pill */}
-          <div className="hidden lg:flex items-center gap-8 bg-white/15 rounded-full pl-7 pr-2 py-1 backdrop-blur-md">
+          <div className="hidden lg:flex items-center gap-8 bg-white/15 rounded-full pl-7 pr-1 py-1 backdrop-blur-md">
             <ul className="flex items-center gap-8">
               {NAV_LINKS.map(({ label, href }) => (
                 <li key={href}>

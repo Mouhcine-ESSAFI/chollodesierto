@@ -24,14 +24,14 @@ export default function Homepage() {
         <Hero />
         <TrustBar />
         <WhyUs />
-        <TourRoutes />
-        <Journey />
-        <CampTiers />
-        <Reviews />
-        <FAQ />
-        <BookingCTA />
+        {/* <TourRoutes /> */}
+        {/* <Journey /> */}
+        {/* <CampTiers /> */}
+        {/* <Reviews /> */}
+        {/* <FAQ /> */}
+        {/* <BookingCTA /> */}
       </main>
-      <SiteFooter />
+      {/* <SiteFooter /> */}
     </>
   );
 }

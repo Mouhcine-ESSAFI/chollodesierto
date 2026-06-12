@@ -1,37 +1,33 @@
+import dunesSvg from '~/assets/dunes.svg?url';
+import sunSvg from '~/assets/sun.svg?url';
+import sunlightSvg from '~/assets/sunlight.svg?url';
+
 export function Hero() {
   return (
     <section
       aria-labelledby="hero-heading"
-      className="relative w-full min-h-screen overflow-hidden bg-dark"
+      className="hero-bg relative w-full min-h-[80vh] overflow-hidden flex items-center"
     >
-      {/* Warm sun / dusk glow */}
-      <div aria-hidden="true" className="hero-glow absolute inset-0 z-1 pointer-events-none" />
-
-      {/* Layered dune silhouettes */}
-      <div aria-hidden="true" className="absolute inset-x-0 bottom-0 z-2 pointer-events-none">
-        <svg
-          viewBox="0 0 1440 320"
-          preserveAspectRatio="xMidYMax slice"
-          xmlns="http://www.w3.org/2000/svg"
-          className="w-full block"
-        >
-          <path
-            d="M0,160 C120,128 300,182 500,148 C700,114 880,168 1080,132 C1240,104 1360,138 1440,122 L1440,320 L0,320 Z"
-            fill="rgba(35,24,14,0.72)"
-          />
-          <path
-            d="M0,212 C100,188 270,228 480,204 C690,180 900,218 1110,198 C1270,182 1390,208 1440,200 L1440,320 L0,320 Z"
-            fill="rgba(22,16,10,0.88)"
-          />
-          <path
-            d="M0,268 C150,248 360,278 620,260 C880,242 1120,272 1320,258 C1390,252 1425,260 1440,258 L1440,320 L0,320 Z"
-            fill="#0d0a06"
-          />
-        </svg>
+      {/* Layer 4 — Sunlight */}
+      <div aria-hidden="true" className="absolute inset-x-0 bottom-0 z-4 pointer-events-none h-full flex items-end">
+        <img src={sunlightSvg} alt="" className="w-full h-auto max-h-212" />
       </div>
 
-      {/* Content */}
-      <div className="relative z-10 flex flex-col items-center justify-start text-center pt-40 px-5 pb-52">
+      {/* Layer 3 — Warm bottom gradient */}
+      <div aria-hidden="true" className="hero-gradient absolute inset-x-0 bottom-0 z-6 pointer-events-none h-full" />
+
+      {/* Layer 2 — Sun */}
+      <div aria-hidden="true" className="absolute inset-x-0 bottom-0 z-8 pointer-events-none h-full flex items-end">
+        <img src={sunSvg} alt="" className="w-full h-auto max-h-212" />
+      </div>
+
+      {/* Layer 1 — Dunes (frontmost) */}
+      <div aria-hidden="true" className="absolute inset-x-0 bottom-0 z-10 pointer-events-none">
+        <img src={dunesSvg} alt="" className="w-full h-72.5 object-cover object-bottom" />
+      </div>
+
+      {/* Content — above all layers */}
+      <div className="relative z-20 w-full flex flex-col items-center text-center py-28 px-4">
         <h1
           id="hero-heading"
           className="font-display text-h1 text-sand leading-[1.12] mb-6 max-w-185"

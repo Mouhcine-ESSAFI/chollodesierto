@@ -108,11 +108,12 @@ a { text-decoration: none; }
   color: #fff;
 }
 
-/* ─── Hero sun glow ─── */
-.hero-glow {
-  background:
-    radial-gradient(ellipse 62% 52% at 50% 80%, rgba(196,90,44,0.45) 0%, rgba(150,60,10,0.20) 45%, transparent 75%),
-    radial-gradient(ellipse 28% 22% at 50% 77%, rgba(255,165,50,0.28) 0%, transparent 58%);
+/* ─── Hero layers ─── */
+.hero-bg {
+  background: radial-gradient(circle, rgba(68,42,52,1) 0%, rgba(29,33,48,1) 100%);
+}
+.hero-gradient {
+  background: linear-gradient(0deg, rgba(110,55,41,1) 0%, rgba(110,55,41,0) 60%);
 }
 
 @media (prefers-reduced-motion: reduce) {
