@@ -29,7 +29,7 @@ export default function Homepage() {
         {/* <CampTiers /> */}
         {/* <Reviews /> */}
         {/* <FAQ /> */}
-        {/* <BookingCTA /> */}
+        <BookingCTA />
       </main>
       {/* <SiteFooter /> */}
     </>

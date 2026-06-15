@@ -4,7 +4,7 @@
   /* Brand colors (from design system) */
   --color-primary: #C45A2C;   /* terracotta */
   --color-sand:    #F5EDE0;   /* background */
-  --color-dark:    #1A1F2E;   /* navy */
+  --color-dark:    #1A161D;   /* navy */
   --color-forest:  #3D5A40;   /* green accent */
 
   /* Fonts */
@@ -68,7 +68,7 @@ a { text-decoration: none; }
     width: 100%;
     max-width: var(--max-width-content);
     margin-inline: auto;
-    padding-inline: 1.5rem;
+    padding-inline: 1.5rem; 
   }
 }
 
@@ -107,6 +107,16 @@ a { text-decoration: none; }
   border-color: var(--color-primary);
   color: #fff;
 }
+
+/* ─── Booking CTA — dark band covers section-pt + half the 16:9 card ─── */
+.booking-cta-band {
+  height: calc(
+    var(--spacing-section) +
+    (min(var(--max-width-content), 100vw) - 3rem) * 0.28125
+  );
+}
+.video-card-shadow  { box-shadow: 0 2.5rem 5.625rem -1.875rem rgba(0,0,0,0.55); }
+.play-btn-shadow    { box-shadow: 0 0.5rem 1.5rem rgba(196,90,44,0.45); }
 
 /* ─── Hero layers ─── */
 .hero-bg {
