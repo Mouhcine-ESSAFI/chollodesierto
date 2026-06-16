@@ -2,7 +2,7 @@ import {type MetaFunction} from 'react-router';
 import {SiteNavbar} from '~/components/SiteNavbar';
 import {Hero} from '~/components/Hero';
 import {TrustBar} from '~/components/TrustBar';
-import {WhyUs} from '~/components/WhyUs';
+import {WhyChooseUs} from '~/components/WhyChooseUs';
 import {TourRoutes} from '~/components/TourRoutes';
 import {Journey} from '~/components/Journey';
 import {CampTiers} from '~/components/CampTiers';
@@ -22,9 +22,12 @@ export default function Homepage() {
       <SiteNavbar />
       <main id="main-content">
         <Hero />
-        <TrustBar />
-        <WhyUs />
-        {/* <TourRoutes /> */}
+        <TrustBar
+          poster="https://images.unsplash.com/photo-1542401886-65d6c61db217?w=1600&q=80"
+          videoUrl="https://cdn.shopify.com/videos/c/o/v/5a631955aab14bd6afeeef75fa2f515f.mp4"
+        />
+        <WhyChooseUs />
+        <TourRoutes />
         {/* <Journey /> */}
         {/* <CampTiers /> */}
         {/* <Reviews /> */}

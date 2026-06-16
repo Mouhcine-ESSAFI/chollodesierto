@@ -15,7 +15,7 @@ export function SiteNavbar() {
       <nav className="absolute top-0 left-0 right-0 z-50">
 
         {/* ── Top bar ── */}
-        <div className="max-w-doc mx-auto w-full">
+        <div className="mx-auto w-full">
         <div className="container flex items-center justify-between h-20 md:h-24">
 
           {/* Logo */}
@@ -64,7 +64,7 @@ export function SiteNavbar() {
 
         {/* ── Mobile / tablet dropdown ── */}
         {open && (
-          <div className="max-w-doc mx-auto w-full">
+          <div className="mx-auto w-full">
             <div className="container pb-4">
               <div className="p-6 rounded-[1.5rem] bg-dark/90 border border-sand/10 backdrop-blur-md flex flex-col gap-1">
                 <ul className="flex flex-col gap-1 mb-4">

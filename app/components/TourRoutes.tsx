@@ -1,112 +1,235 @@
-import {TOUR_ROUTES, type TourRoute} from '~/lib/mock-tours';
+import {Fragment} from 'react';
 
-function RouteCard({route}: {route: TourRoute}) {
-  const isFeatured = route.featured;
-
-  return (
-    <article
-      aria-label={`${route.title} tour route`}
-      className={[
-        'bg-white rounded-[1.5rem] overflow-hidden flex flex-col',
-        isFeatured
-          ? 'shadow-[0_0.5rem_2.5rem_rgba(196,90,44,0.18)] -translate-y-2'
-          : 'shadow-[0_0.125rem_1.5rem_rgba(26,31,46,0.07)] hover:shadow-[0_0.75rem_2.5rem_rgba(26,31,46,0.13)] hover:-translate-y-1 transition-all duration-200',
-      ].join(' ')}
-    >
-      {/* Image */}
-      <div className="relative">
-        <img
-          src={route.imageUrl}
-          alt={route.imageAlt}
-          className="w-full h-56 object-cover block"
-          loading="lazy"
-          width="389"
-          height="224"
-        />
-        <span
-          className={[
-            'absolute top-4 left-1/2 -translate-x-1/2 text-sand text-[0.6875rem] font-bold px-4 py-1.5 rounded-full whitespace-nowrap',
-            isFeatured
-              ? 'bg-primary/90 backdrop-blur-sm'
-              : 'bg-dark/70 backdrop-blur-sm',
-          ].join(' ')}
-        >
-          {route.badge}
-        </span>
-        <div className="bg-dark/75 px-5 py-2.5 flex gap-5 items-center">
-          <span className="text-[0.75rem] text-sand/80 flex items-center gap-1.5">
-            ⏱ {route.days} Days
-          </span>
-          <span className="text-[0.75rem] text-sand/80 flex items-center gap-1.5">
-            ✓ Free Cancellation
-          </span>
-        </div>
-      </div>
-
-      {/* Body */}
-      <div className="p-7 flex flex-col flex-1">
-        {/* Route stops */}
-        <div
-          className="flex items-center justify-center gap-1 mb-4"
-          aria-label={`Route: ${route.stops.join(' to ')}`}
-        >
-          <span className="text-[0.75rem] font-bold text-primary">{route.stops[0]}</span>
-          <span aria-hidden="true" className="w-2 h-2 rounded-full bg-primary shrink-0" />
-          <span aria-hidden="true" className="flex-1 border-t-2 border-dashed border-primary/30" />
-          <span className="text-[0.75rem] font-bold text-primary">{route.stops[1]}</span>
-          <span aria-hidden="true" className="flex-1 border-t-2 border-dashed border-primary/30" />
-          <span aria-hidden="true" className="w-2 h-2 rounded-full bg-primary shrink-0" />
-          <span className="text-[0.75rem] font-bold text-primary">{route.stops[2]}</span>
-        </div>
-
-        <h3 className="font-display text-[1.375rem] text-dark mb-2 text-center">
-          {route.title}
-        </h3>
-        <p className="text-[1rem] text-dark/55 text-center mb-6 flex-1">{route.description}</p>
-
-        {/* Price + CTA */}
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-[0.625rem] font-bold uppercase tracking-wider text-forest">
-              Per Person
-            </p>
-            <p className="font-display text-[1.5rem] text-forest">€{route.price}</p>
-          </div>
-          <a
-            href="#book"
-            className="font-display text-[1rem] bg-primary text-sand px-5 py-3 rounded-full
-                       hover:opacity-90 transition-opacity"
-          >
-            Choose this route →
-          </a>
-        </div>
-      </div>
-    </article>
-  );
+interface RouteStop {
+  label: string;
 }
 
-export function TourRoutes() {
+interface Route {
+  id: string;
+  label: string;          // small heading above the image (side cards) — empty for the featured card
+  featured?: boolean;
+  badge?: string;         // dark ribbon text on the featured card ("Most Popular")
+  image: string;
+  imageAlt: string;
+  days: string;
+  title: string;
+  stops: [RouteStop, RouteStop, RouteStop];  // start · mid · end
+  description: string[];  // each entry is its own line
+  price: string;          // e.g. "€155"
+  href: string;
+}
+
+const ROUTES: Route[] = [
+  {
+    id: 'reverse',
+    label: 'Coming From the North?',
+    image: 'https://cdn.shopify.com/.../fez-gates.jpg',
+    imageAlt: 'Ornate golden gates of Fez',
+    days: '3 Days',
+    title: 'The Reverse Crossing',
+    stops: [{label: 'Fez'}, {label: 'Merzouga'}, {label: 'Marrakech'}],
+    description: ['Start in the imperial city,', 'end in the red one.'],
+    price: '€155',
+    href: '/tours/reverse-crossing',
+  },
+  {
+    id: 'classic',
+    label: '',
+    featured: true,
+    badge: 'Most Popular',
+    image: 'https://cdn.shopify.com/.../marrakech-night.jpg',
+    imageAlt: 'Marrakech night market',
+    days: '3 Days',
+    title: 'The Classic Loop',
+    stops: [{label: 'Marrakech'}, {label: 'Merzouga'}, {label: 'Marrakech'}],
+    description: ['The complete circle.', 'Perfect if Marrakech is your home base.'],
+    price: '€85',
+    href: '/tours/classic-loop',
+  },
+  {
+    id: 'grand',
+    label: 'Best for Travelers Heading North',
+    image: 'https://cdn.shopify.com/.../sahara-camels.jpg',
+    imageAlt: 'Traveler with camels in the Sahara',
+    days: '3 Days',
+    title: 'The Grand Crossing',
+    stops: [{label: 'Marrakech'}, {label: 'Merzouga'}, {label: 'Fez'}],
+    description: ['One way.', 'Two imperial cities.', 'An endless desert in between.'],
+    price: '€115',
+    href: '/tours/grand-crossing',
+  },
+];
+
+export interface TourRoutesProps {
+  eyebrow?: string;
+  heading?: string;
+  subheading?: string[];
+  routes?: Route[];
+}
+
+export function TourRoutes({
+  eyebrow = 'Choose your route',
+  heading = 'Pick your path through Morocco',
+  subheading = ['Three routes, one unforgettable desert.', 'Choose the one that fits your trip.'],
+  routes = ROUTES,
+}: TourRoutesProps) {
   return (
-    <section aria-labelledby="routes-heading" id="routes" className="bg-sand py-[7.5rem]">
-      <div className="max-w-[76rem] mx-auto px-10 text-center">
-
-        <p className="font-bold text-[0.875rem] uppercase tracking-widest text-primary mb-3">
-          Choose Your Route
-        </p>
-        <h2 className="font-body font-bold text-[2.375rem] text-dark mb-3" id="routes-heading">
-          Pick your path through Morocco
+    <section aria-label="Choose your route" className="bg-white pt-route-top">
+      {/* ── Heading block ── */}
+      <div className="container max-w-content text-center">
+        <p className="text-label font-bold uppercase tracking-eyebrow text-primary">{eyebrow}</p>
+        <div className="my-6 flex justify-center" aria-hidden="true">
+          <svg width="64" height="16" viewBox="0 0 64 16" fill="none">
+            <path d="M4 11 C 18 3, 26 3, 34 8 S 52 13, 60 6" stroke="currentColor" strokeWidth="3" strokeLinecap="round" className="text-primary" />
+          </svg>
+        </div>
+        <h2 className="font-display font-bold tracking-tight text-dark text-route-heading leading-tight">
+          {heading}
         </h2>
-        <p className="text-[1rem] text-dark/55 mb-[5rem]">
-          Three routes, one unforgettable desert. Choose the one that fits your trip.
+        <p className="mt-5 text-dark/75 text-route-subheading leading-normal">
+          {subheading.map((line, i) => (
+            <Fragment key={i}>
+              {line}
+              {i < subheading.length - 1 && <br />}
+            </Fragment>
+          ))}
         </p>
+      </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {TOUR_ROUTES.map((route) => (
+      {/* ── Cards (each side card carries its own sand panel; bg is white) ── */}
+      <div className="container mt-route-cards max-w-320 pb-route-bottom">
+        <ul
+          role="list"
+          className="mx-auto grid max-w-110 grid-cols-1 items-start gap-15
+                     lg:max-w-none lg:grid-cols-3 lg:gap-10.5
+                     [&>li.is-featured]:lg:-translate-y-14"
+        >
+          {routes.map((route) => (
             <RouteCard key={route.id} route={route} />
           ))}
-        </div>
-
+        </ul>
       </div>
     </section>
   );
 }
+
+// ── Sub-components ──────────────────────────────────────────────
+
+function RouteCard({route}: {route: Route}) {
+  return (
+    <li className={`relative flex flex-col ${route.featured ? 'is-featured' : ''}`}>
+      {route.featured ? (
+        <div className="overflow-hidden rounded-route bg-dark shadow-route-featured">
+          <p className="py-3.5 text-center text-base font-bold text-white">{route.badge}</p>
+          <CardImage route={route} featured />
+          <div className="min-h-62 bg-white px-7 pb-16 pt-7">
+            <CardBody route={route} />
+          </div>
+        </div>
+      ) : (
+        <div className="rounded-route bg-sand p-3.5 pb-3">
+          <p className="pb-3 pt-1.5 text-center text-base font-bold text-dark">{route.label}</p>
+          <CardImage route={route} />
+          <div className="relative -mt-4 min-h-62 rounded-route-sm bg-white px-6 pb-14 pt-7 shadow-route-card">
+            <CardBody route={route} />
+          </div>
+        </div>
+      )}
+      <PriceBar route={route} />
+    </li>
+  );
+}
+
+function CardImage({route, featured}: {route: Route; featured?: boolean}) {
+  return (
+    <div className={`relative h-80 ${featured ? 'h-83' : 'overflow-hidden rounded-route-sm'}`}>
+      <img src={route.image} alt={route.imageAlt} className="h-full w-full object-cover" loading="lazy" />
+      {featured && (
+        <span role="img" aria-label="Medal" className="absolute -top-5 left-1/2 -translate-x-1/2 text-5xl leading-none">
+          🏅
+        </span>
+      )}
+      <div className="absolute inset-x-4 bottom-3.5 flex gap-4 text-base font-bold text-white route-text-shadow">
+        <span className="flex items-center gap-1.5 whitespace-nowrap">
+          <ClockIcon /> {route.days}
+        </span>
+        <span className="flex items-center gap-1.5 whitespace-nowrap">
+          <CheckIcon /> Free Cancelation
+        </span>
+      </div>
+    </div>
+  );
+}
+
+function CardBody({route}: {route: Route}) {
+  return (
+    <>
+      <h3 className="mb-6 text-center text-h3 font-bold text-dark">{route.title}</h3>
+      <RouteMap stops={route.stops} />
+      <p className="text-center text-base leading-normal text-dark/70">
+        {route.description.map((line, i) => (
+          <Fragment key={i}>
+            {line}
+            {i < route.description.length - 1 && <br />}
+          </Fragment>
+        ))}
+      </p>
+    </>
+  );
+}
+
+function RouteMap({stops}: {stops: Route['stops']}) {
+  return (
+    <div className="relative mb-6">
+      <div className="absolute left-1/6 right-1/6 top-2 border-t-2 border-dashed border-primary" />
+      <div className="relative flex justify-between">
+        {stops.map((stop, i) => (
+          <div key={i} className="flex w-1/3 flex-col items-center gap-2.75">
+            <span
+              className={`h-4.25 w-4.25 rounded-full ${
+                i === 1 ? 'border-2 border-primary bg-white' : 'bg-primary'
+              }`}
+            />
+            <span className="text-base font-medium text-primary">{stop.label}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function PriceBar({route}: {route: Route}) {
+  return (
+    <div className="absolute inset-x-6 -bottom-6.5 flex h-15 items-center rounded-full bg-white pl-6 pr-2 shadow-route-price">
+      <div className="flex flex-col leading-none">
+        <span className="mb-1 text-xs font-semibold uppercase tracking-widest text-forest">Per person</span>
+        <span className="text-price font-bold text-forest">{route.price}</span>
+      </div>
+      <a
+        href={route.href}
+        className="ml-auto flex h-18 items-center gap-2 whitespace-nowrap rounded-full bg-primary px-6 text-base font-bold text-white"
+      >
+        Choose this route <span aria-hidden="true">→</span>
+      </a>
+    </div>
+  );
+}
+
+function ClockIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+      <circle cx="12" cy="12" r="9" />
+      <path d="M12 7v5l3 2" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function CheckIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M20 6 9 17l-5-5" />
+    </svg>
+  );
+}
+
+export default TourRoutes;

@@ -28,15 +28,30 @@
   --max-width-doc:     90rem; /* 1440px */
 
   /* Spacing */
-  --spacing-section:   7.5rem;   /* 120px section padding */
-  --spacing-subtitle:  5rem;     /* 80px subtitle bottom margin */
+  --spacing-section:    7.5rem;   /* 120px section padding */
+  --spacing-subtitle:   5rem;     /* 80px subtitle bottom margin */
+  --spacing-route-top:    clamp(3rem, 6vw, 5.5rem);     /* 48–88px — TourRoutes section pt */
+  --spacing-route-cards:  clamp(2.75rem, 5vw, 4.75rem); /* 44–76px — TourRoutes cards wrapper mt */
+  --spacing-route-bottom: clamp(4.5rem, 7vw, 7.5rem);   /* 72–120px — TourRoutes cards wrapper pb */
 
   /* Radii */
-  --radius-card: 1.5rem;  /* 24px */
+  --radius-card:     1.5rem;   /* 24px */
+  --radius-route:    1.625rem; /* 26px — TourRoutes outer card */
+  --radius-route-sm: 1.125rem; /* 18px — TourRoutes image / inner panel */
 
   /* Shadows */
-  --shadow-card:       0 0.125rem 1.5rem rgba(26,31,46,0.07);
-  --shadow-card-hover: 0 0.75rem 2.5rem rgba(26,31,46,0.13);
+  --shadow-card:           0 0.125rem 1.5rem rgba(26,31,46,0.07);
+  --shadow-card-hover:     0 0.75rem 2.5rem rgba(26,31,46,0.13);
+  --shadow-route-featured: 0 1.875rem 4.375rem -1.75rem rgba(31,37,50,0.6);
+  --shadow-route-card:     0 1rem 2.375rem -1.375rem rgba(60,45,25,0.18);
+  --shadow-route-price:    0 1.125rem 2.5rem -1rem rgba(60,45,25,0.4);
+
+  /* Type scale (fluid) */
+  --text-route-heading:    clamp(2rem, 4.4vw, 3.1rem);
+  --text-route-subheading: clamp(1.0625rem, 1.6vw, 1.25rem);
+
+  /* Tracking */
+  --tracking-eyebrow: 0.18em;
 }
 
 /* ─── Font utilities (explicit — bypasses CSS variable indirection) ─── */
@@ -108,15 +123,17 @@ a { text-decoration: none; }
   color: #fff;
 }
 
-/* ─── Booking CTA — dark band covers section-pt + half the 16:9 card ─── */
+/* ─── Booking CTA — dark band is always exactly half the 16:9 card's height ─── */
 .booking-cta-band {
-  height: calc(
-    var(--spacing-section) +
-    (min(var(--max-width-content), 100vw) - 3rem) * 0.28125
-  );
+  height: calc((min(var(--max-width-content), 100vw) - 3rem) * 0.28125);
 }
 .video-card-shadow  { box-shadow: 0 2.5rem 5.625rem -1.875rem rgba(0,0,0,0.55); }
 .play-btn-shadow    { box-shadow: 0 0.5rem 1.5rem rgba(196,90,44,0.45); }
+
+/* ─── Tour route cards ─── */
+.route-text-shadow {
+  text-shadow: 0 0.0625rem 0.25rem rgba(0,0,0,0.55);
+}
 
 /* ─── Hero layers ─── */
 .hero-bg {

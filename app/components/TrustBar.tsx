@@ -1,4 +1,4 @@
-import {useState, useCallback} from 'react';
+import {useState, useCallback, useRef} from 'react';
 
 type IconName = 'check' | 'star' | 'heart';
 
@@ -9,8 +9,8 @@ interface Feature {
 }
 
 const FEATURES: Feature[] = [
-  {icon: 'check', title: 'Free Cancellation',    body: 'Cancel up to 48 h before — no questions asked'},
-  {icon: 'star',  title: 'Book with 20% deposit', body: 'Pay the rest on the day of the excursion'},
+  {icon: 'check', title: 'Free Cancellation',    body: 'Enjoy 48h advance cancellation flexibility'},
+  {icon: 'star',  title: 'Book your spot with 20%', body: 'Pay the rest on the day of the excursion'},
   {icon: 'heart', title: 'No hidden fees',         body: 'Clear pricing, no surprise surcharges'},
 ];
 
@@ -25,54 +25,80 @@ export interface TrustBarProps {
 
 export function TrustBar({poster, videoUrl, posterAlt = 'Excursion preview'}: TrustBarProps) {
   const [open, setOpen] = useState(false);
+  const [playingInline, setPlayingInline] = useState(false);
   const close = useCallback(() => setOpen(false), []);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  const handlePlayClick = useCallback(() => {
+    const isMobile = window.matchMedia('(max-width: 767px)').matches;
+    if (isMobile) {
+      setOpen(true);
+      return;
+    }
+    // Calling play() synchronously inside the click handler (rather than
+    // relying on a declarative `autoPlay` after the element mounts) keeps
+    // playback tied to the user gesture so Safari/iOS won't block it.
+    setPlayingInline(true);
+    videoRef.current?.play().catch(() => {});
+  }, []);
 
   return (
     <section
       aria-label="Book your desert adventure"
       id="book"
-      className="relative overflow-hidden bg-sand py-section"
+      className="relative overflow-hidden bg-white"
     >
       {/* Dark band — seam sits at the card's vertical midpoint */}
       <div aria-hidden="true" className="booking-cta-band absolute inset-x-0 top-0 bg-dark" />
 
-      <div className="container relative z-10">
+      <div className="container relative z-10 pb-14">
 
         {/* ── Video card ── */}
-        <button
-          type="button"
-          aria-label="Play excursion video"
-          onClick={() => setOpen(true)}
-          className="group relative block w-full aspect-video cursor-pointer overflow-hidden
-                     rounded-card bg-dark video-card-shadow"
-        >
-          <img
-            src={poster}
-            alt={posterAlt}
-            className="absolute inset-0 h-full w-full object-cover"
-            loading="lazy"
+        <div className="relative w-full aspect-video overflow-hidden rounded-card bg-black">
+          <video
+            ref={videoRef}
+            src={videoUrl}
+            poster={poster}
+            controls={playingInline}
+            playsInline
+            className={`absolute inset-0 h-full w-full object-cover ${playingInline ? '' : 'invisible'}`}
           />
-          {/* subtle vignette */}
-          <span
-            aria-hidden="true"
-            className="absolute inset-0 bg-gradient-to-b from-black/5 via-transparent to-black/15"
-          />
-          {/* play button */}
-          <span
-            className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2
-                       flex h-23 w-23 items-center justify-center rounded-full
-                       bg-white/20 backdrop-blur-sm transition-colors group-hover:bg-white/30"
-          >
-            <span className="play-btn-shadow flex h-16 w-16 items-center justify-center rounded-full bg-primary">
-              <svg width="22" height="24" viewBox="0 0 22 24" fill="none" aria-hidden="true">
-                <path
-                  d="M3 2.6c0-1.2 1.3-1.95 2.34-1.34l13.2 8.9c.97.65.97 2.07 0 2.72l-13.2 8.9C4.3 23.4 3 22.6 3 21.4V2.6Z"
-                  fill="#fff"
-                />
-              </svg>
-            </span>
-          </span>
-        </button>
+          {!playingInline && (
+            <button
+              type="button"
+              aria-label="Play excursion video"
+              onClick={handlePlayClick}
+              className="group absolute inset-0 block h-full w-full cursor-pointer"
+            >
+              <img
+                src={poster}
+                alt={posterAlt}
+                className="absolute inset-0 h-full w-full object-cover"
+                loading="lazy"
+              />
+              {/* subtle vignette */}
+              <span
+                aria-hidden="true"
+                className="absolute inset-0 bg-gradient-to-b from-black/5 via-transparent to-black/15"
+              />
+              {/* play button */}
+              <span
+                className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2
+                           flex h-20 w-20 items-center justify-center rounded-full
+                           bg-white/15 backdrop-blur-sm transition-colors group-hover:bg-white/30"
+              >
+                <span className="play-btn-shadow flex h-12 w-12 items-center justify-center rounded-full bg-primary">
+                  <svg width="22" height="24" viewBox="0 0 22 24" fill="none" aria-hidden="true">
+                    <path
+                      d="M3 2.6c0-1.2 1.3-1.95 2.34-1.34l13.2 8.9c.97.65.97 2.07 0 2.72l-13.2 8.9C4.3 23.4 3 22.6 3 21.4V2.6Z"
+                      fill="#fff"
+                    />
+                  </svg>
+                </span>
+              </span>
+            </button>
+          )}
+        </div>
 
         {/* ── Trust features ── */}
         <ul
@@ -81,13 +107,13 @@ export function TrustBar({poster, videoUrl, posterAlt = 'Excursion preview'}: Tr
         >
           {FEATURES.map((f) => (
             <li key={f.title} className="flex flex-col items-center px-3">
-              <span className="mb-4.5 flex text-primary">
+              <span className="mb-3 flex text-primary">
                 <FeatureIcon name={f.icon} />
               </span>
               <h3 className="font-body font-bold text-h3 text-dark">
                 {f.title}
               </h3>
-              <p className="mt-2 font-body text-base text-dark/55 leading-relaxed max-w-76">
+              <p className="font-body text-base text-dark leading-relaxed max-w-76">
                 {f.body}
               </p>
             </li>
@@ -110,6 +136,13 @@ interface VideoModalProps {
 }
 
 function VideoModal({poster, videoUrl, onClose}: VideoModalProps) {
+  // A ref callback fires during the commit right after the click that set
+  // `open`, so calling play() here (rather than a declarative `autoPlay`)
+  // keeps it tied to the user gesture for browsers that block autoplay otherwise.
+  const setVideoRef = useCallback((el: HTMLVideoElement | null) => {
+    el?.play().catch(() => {});
+  }, []);
+
   return (
     <div
       role="dialog"
@@ -123,7 +156,7 @@ function VideoModal({poster, videoUrl, onClose}: VideoModalProps) {
         className="relative aspect-video w-full max-w-content overflow-hidden rounded-card bg-dark shadow-card-hover"
       >
         {videoUrl ? (
-          <video src={videoUrl} poster={poster} controls autoPlay className="h-full w-full" />
+          <video ref={setVideoRef} src={videoUrl} poster={poster} controls playsInline className="h-full w-full" />
         ) : (
           <>
             <img src={poster} alt="" className="absolute inset-0 h-full w-full object-cover" />
@@ -148,24 +181,24 @@ function VideoModal({poster, videoUrl, onClose}: VideoModalProps) {
 }
 
 function FeatureIcon({name}: {name: IconName}) {
-  const attrs = {width: 34, height: 34, 'aria-hidden': true} as const;
+  const attrs = {width: 32, height: 32, viewBox: '0 0 24 24', 'aria-hidden': true} as const;
   if (name === 'check') {
     return (
-      <svg {...attrs} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+      <svg {...attrs} fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round">
         <path d="M20 6 9 17l-5-5" />
       </svg>
     );
   }
   if (name === 'star') {
     return (
-      <svg {...attrs} viewBox="0 0 24 24" fill="currentColor">
-        <path d="M12 2.5l2.9 5.9 6.5.95-4.7 4.58 1.1 6.47L12 17.9l-5.8 3.07 1.1-6.47-4.7-4.58 6.5-.95L12 2.5z" />
+      <svg {...attrs} fill="currentColor" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z" />
       </svg>
     );
   }
   return (
-    <svg {...attrs} viewBox="0 0 24 24" fill="currentColor">
-      <path d="M12 21s-7.5-4.9-10-9.6C.3 8.2 1.7 4.5 5.2 4.5c2 0 3.4 1.1 4.3 2.5h.9c.9-1.4 2.3-2.5 4.3-2.5 3.5 0 4.9 3.7 3.2 6.9C19.5 16.1 12 21 12 21z" />
+    <svg {...attrs} fill="currentColor" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5" />
     </svg>
   );
 }
