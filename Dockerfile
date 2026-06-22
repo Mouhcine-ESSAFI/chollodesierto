@@ -24,4 +24,4 @@ COPY package*.json ./
 
 EXPOSE 4050
 
-CMD ["npx", "shopify", "hydrogen", "preview", "--port", "4050", "--host", "0.0.0.0"]
+CMD ["npx", "shopify", "hydrogen", "preview", "--port", "4050"]

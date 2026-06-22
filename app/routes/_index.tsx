@@ -28,7 +28,7 @@ export default function Homepage() {
         />
         <WhyChooseUs />
         <TourRoutes />
-        {/* <Journey /> */}
+        <Journey />
         {/* <CampTiers /> */}
         {/* <Reviews /> */}
         {/* <FAQ /> */}
