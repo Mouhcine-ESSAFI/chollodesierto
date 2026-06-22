@@ -51,7 +51,7 @@ export function TrustBar({poster, videoUrl, posterAlt = 'Excursion preview'}: Tr
       {/* Dark band — seam sits at the card's vertical midpoint */}
       <div aria-hidden="true" className="booking-cta-band absolute inset-x-0 top-0 bg-dark" />
 
-      <div className="container relative z-10 pb-14">
+      <div className="container max-w-content relative z-10 pb-14">
 
         {/* ── Video card ── */}
         <div className="relative w-full aspect-video overflow-hidden rounded-card bg-black">

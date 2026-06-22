@@ -16,7 +16,7 @@ export function SiteNavbar() {
 
         {/* ── Top bar ── */}
         <div className="mx-auto w-full">
-        <div className="container flex items-center justify-between h-20 md:h-24">
+        <div className="container flex items-center justify-between h-20 md:h-24 max-w-content">
 
           {/* Logo */}
           <Link to="/" className="flex items-center gap-3 md:gap-4">

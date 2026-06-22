@@ -1,0 +1,23 @@
+node_modules/
+dist/
+.react-router/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Shopify
+.shopify/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# Editor
+.vscode/
+.idea/

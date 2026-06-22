@@ -43,7 +43,7 @@
   /* Shadows */
   --shadow-card:           0 0.125rem 1.5rem rgba(26,31,46,0.07);
   --shadow-card-hover:     0 0.75rem 2.5rem rgba(26,31,46,0.13);
-  --shadow-route-featured: 0 1.875rem 4.375rem -1.75rem rgba(31,37,50,0.6);
+  --shadow-route-featured:  rgba(0, 0, 0, 0.24) 0px 1px 8px;
   --shadow-route-card:     0 1rem 2.375rem -1.375rem rgba(60,45,25,0.18);
   --shadow-route-price:    rgba(0, 0, 0, 0.24) 0px 1px 8px;
 
@@ -85,7 +85,7 @@ a { text-decoration: none; }
     max-width: var(--max-width-content);
     margin-inline: auto;
     padding-inline: 1.5rem; 
-  }
+  } 
 }
 
 /* ─── Price underline accent ─── */

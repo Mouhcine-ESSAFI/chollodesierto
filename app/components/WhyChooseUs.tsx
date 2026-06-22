@@ -49,7 +49,7 @@ export function WhyChooseUs({
 }: WhyChooseUsProps) {
   return (
     <section aria-label="Why travelers keep choosing us" className="bg-sand py-section">
-      <div className="container">
+      <div className="container max-w-content">
         <h2 className="text-center font-display text-dark tracking-tight text-h2 leading-tight">
           {heading}
         </h2>
@@ -58,14 +58,14 @@ export function WhyChooseUs({
         <ul
           role="list"
           className="mt-subtitle grid grid-cols-1 items-start gap-5
-                     sm:grid-cols-2 sm:gap-6
-                     lg:grid-cols-4 lg:gap-7
-                     [&>li:nth-child(1)]:lg:translate-y-12 [&>li:nth-child(4)]:lg:translate-y-12"
+                     sm:grid-cols-2 sm:gap-5
+                     lg:grid-cols-4 lg:gap-6
+                     [&>li:nth-child(1)]:lg:translate-y-8 [&>li:nth-child(4)]:lg:translate-y-8"
         >
           {reasons.map((r) => (
             <li
               key={r.title}
-              className="flex min-h-95 flex-col items-center justify-center rounded-card bg-white px-7.5 pb-11 pt-10 text-center shadow-card-hover">
+              className="flex min-h-70 flex-col items-center justify-center rounded-card bg-white px-6 pb-10 pt-10 text-center shadow-card-hover">
               <span role="img" aria-label={r.emojiLabel} className="mb-7 text-5xl leading-none">
                 {r.emoji}
               </span>

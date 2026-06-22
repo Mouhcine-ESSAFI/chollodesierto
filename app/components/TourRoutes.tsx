@@ -99,11 +99,11 @@ export function TourRoutes({
       </div>
 
       {/* ── Cards (each side card carries its own sand panel; section bg fades white→sand so the panels blend into the lower region) ── */}
-      <div className="container mt-route-cards max-w-7xl pb-route-bottom">
+      <div className="container mt-route-cards max-w-content pb-route-bottom">
         <ul
           role="list"
           className="mx-auto grid max-w-110 grid-cols-1 items-start gap-15
-                     lg:max-w-none lg:grid-cols-3 lg:gap-10.5
+                     lg:max-w-none lg:grid-cols-3 lg:gap-6
                      [&>li.is-featured]:lg:-translate-y-14"
         >
           {routes.map((route) => (
@@ -119,12 +119,12 @@ export function TourRoutes({
 
 function RouteCard({route}: {route: Route}) {
   return (
-    <li className={`relative flex flex-col ${route.featured ? 'is-featured' : ''}`}>
+    <li className={`relative flex flex-col items-center ${route.featured ? 'is-featured' : ''}`}>
       {route.featured ? (
         <div className="rounded-route bg-dark shadow-route-featured">
           <p className="py-1.5 text-center text-label font-bold text-white">{route.badge}</p>
           <CardImage route={route} featured />
-          <div className="relative -mt-4 min-h-62 rounded-route-sm bg-white px-6 pb-14 pt-7">
+          <div className="relative -mt-4 min-h-62 rounded-route-sm bg-white px-6 pb-20 pt-7">
             <CardBody route={route} />
           </div>
         </div>
@@ -132,7 +132,7 @@ function RouteCard({route}: {route: Route}) {
         <div className="rounded-route bg-sand shadow-route-featured">
           <p className="py-1.5 text-center text-label font-bold text-dark">{route.label}</p>
           <CardImage route={route} />
-          <div className="relative -mt-4 min-h-62 rounded-route-sm bg-white px-6 pb-20 pt-7">
+          <div className="relative -mt-4 min-h-62 rounded-route-sm bg-white px-6 pb-16 pt-7">
             <CardBody route={route} />
           </div>
         </div>
@@ -144,7 +144,7 @@ function RouteCard({route}: {route: Route}) {
 
 function CardImage({route, featured}: {route: Route; featured?: boolean}) {
   return (
-    <div className="relative h-80 overflow-hidden rounded-t-route-sm">
+    <div className="relative h-65 overflow-hidden rounded-t-route-sm">
       <img src={route.image} alt={route.imageAlt} className="h-full w-full object-cover" loading="lazy" />
       {featured && (
         <span role="img" aria-label="Medal" className="absolute top-0 left-1/2 -translate-x-1/2 text-4xl leading-none">
@@ -202,14 +202,14 @@ function RouteMap({stops}: {stops: Route['stops']}) {
 
 function PriceBar({route}: {route: Route}) {
   return (
-    <div className="absolute inset-x-6 -bottom-7.5 flex h-18 items-center rounded-full bg-white pl-6 pr-2 shadow-route-price">
-      <div className="flex flex-col leading-none">
-        <span className="mb-1 text-label-2xs font-semibold uppercase tracking-widest text-forest">Per person</span>
-        <span className="text-price font-bold text-forest">{route.price}</span>
+    <div className="absolute inset-x- -bottom-7.5 flex h-18 items-center rounded-full bg-white pr-2 shadow-route-price w-76 justify-end">
+      <div className="flex flex-col leading-none text-center pr-4">
+        <span className="text-label-2xs font-semibold uppercase text-forest">Per person</span>
+        <span className="text-price font-display text-forest">{route.price}</span>
       </div>
       <a
         href={route.href}
-        className="ml-auto flex h-15 items-center gap-2 whitespace-nowrap rounded-full bg-primary px-6 text-btn font-display text-white"
+        className="ml-aut flex h-15 items-center gap-2 whitespace-nowrap rounded-full bg-primary px-6 text-btn font-display text-white"
       >
         Choose this route <span aria-hidden="true">→</span>
       </a>
