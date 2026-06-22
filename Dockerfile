@@ -22,6 +22,6 @@ COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/public ./public
 COPY package*.json ./
 
-EXPOSE 3000
+EXPOSE 4050
 
-CMD ["npx", "shopify", "hydrogen", "preview", "--port", "3000"]
+CMD ["npx", "shopify", "hydrogen", "preview", "--port", "4050"]
