@@ -9,7 +9,9 @@ import * as fs from 'node:fs';
 import * as path from 'node:path';
 
 const envFile = path.resolve(process.cwd(), '.env');
-const env = fs.existsSync(envFile) ? dotenv.parse(fs.readFileSync(envFile)) : {};
+const env = fs.existsSync(envFile)
+  ? dotenv.parse(fs.readFileSync(envFile))
+  : (process.env as Record<string, string>);
 
 export default defineConfig({
   plugins: [
