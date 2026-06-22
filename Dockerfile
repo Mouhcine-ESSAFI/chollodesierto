@@ -14,4 +14,4 @@ COPY . .
 
 EXPOSE 4050
 
-CMD ["npm", "run", "dev"]
+CMD ["npx", "vite"]
