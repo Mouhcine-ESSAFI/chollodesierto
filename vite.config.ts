@@ -19,6 +19,10 @@ export default defineConfig({
     reactRouter(),
     tsconfigPaths(),
   ],
+  server: {
+    host: '0.0.0.0',
+    port: 4050,
+  },
   build: {
     assetsInlineLimit: 0,
   },
