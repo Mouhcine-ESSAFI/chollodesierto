@@ -22,6 +22,7 @@ export default defineConfig({
   server: {
     host: '0.0.0.0',
     port: 4050,
+    allowedHosts: ['chollodesierto.com', 'www.chollodesierto.com'],
   },
   build: {
     assetsInlineLimit: 0,
