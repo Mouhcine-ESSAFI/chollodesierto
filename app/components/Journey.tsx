@@ -49,9 +49,9 @@ const DAYS: JourneyDay[] = [
       'Overnight in Dades Valley',
     ],
     images: [
-      {src: 'https://cdn.shopify.com/.../ait-ben-haddou-sunset.jpg', alt: 'Ait Ben Haddou kasbah at golden hour'},
-      {src: 'https://cdn.shopify.com/.../tizi-n-tichka-pass.jpg', alt: 'High Atlas switchbacks at the Tizi n\u2019Tichka pass'},
-      {src: 'https://cdn.shopify.com/.../dades-valley.jpg', alt: 'Red cliffs of the Dades Valley'},
+      {src: 'https://images.unsplash.com/photo-1539020140153-e479b8c22e70?w=800&q=80', alt: 'Ait Ben Haddou kasbah at golden hour'},
+      {src: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=80', alt: 'High Atlas switchbacks at the Tizi n\u2019Tichka pass'},
+      {src: 'https://images.unsplash.com/photo-1597212618440-806262de4f6b?w=800&q=80', alt: 'Red cliffs of the Dades Valley'},
     ],
     review: {
       rating: 4.5,
@@ -63,74 +63,74 @@ const DAYS: JourneyDay[] = [
       date: 'May 2026',
     },
   },
-  {
-    number: 2,
-    title: 'Into the Great Sahara',
-    route: [
-      {label: 'Dades Valley', active: true},
-      {label: 'Todra Gorge'},
-      {label: 'Merzouga'},
-    ],
-    paragraphs: [
-      'Morning light fills the Dades, then the road coils into Todra Gorge — 300-metre rust-red walls closing in until the sky is just a ribbon overhead.',
-      'At the edge of Erg Chebbi we trade the van for camels. An hour into the dunes the last rooftop vanishes — there is only sand, wind, and the slow sway of the caravan.',
-      'Camp is a ring of black Berber tents in a hollow between dunes. Tagine under the stars, drums after dark, and a 2am silence you will never forget.',
-    ],
-    highlights: [
-      'Todra Gorge canyon walk',
-      'Camel trek into Erg Chebbi',
-      'Night in a Saharan desert camp',
-      'Sunrise over the dunes',
-    ],
-    images: [
-      {src: 'https://cdn.shopify.com/.../todra-gorge.jpg', alt: 'Rust-red walls of the Todra Gorge'},
-      {src: 'https://cdn.shopify.com/.../erg-chebbi-camels.jpg', alt: 'Camel caravan crossing the Erg Chebbi dunes'},
-      {src: 'https://cdn.shopify.com/.../desert-camp.jpg', alt: 'Berber desert camp under the stars'},
-    ],
-    review: {
-      rating: 4.5,
-      quote:
-        '\u201CWe climbed a dune at dawn and just sat there. No one spoke. It\u2019s the quietest place I\u2019ve ever been.\u201D',
-      name: 'Lukas',
-      flag: '\u{1F1E9}\u{1F1EA}',
-      country: 'Germany',
-      date: 'April 2026',
-    },
-  },
-  {
-    number: 3,
-    title: 'Where the Past Still Lives',
-    route: [
-      {label: 'Merzouga', active: true},
-      {label: 'Ifrane'},
-      {label: 'Fes'},
-    ],
-    paragraphs: [
-      'We leave the desert and climb into the Middle Atlas — cedar forests, Barbary macaques at the roadside, and Ifrane, a town that looks airlifted from the Alps.',
-      'By afternoon we reach Fes. We step into the medina — 9,000 lanes, no cars, donkeys hauling everything — and twelve centuries close over our heads.',
-      'We watch the tanneries from a rooftop, eat where the locals eat, and lose ourselves on purpose. Most travelers wish they\u2019d booked another day here.',
-    ],
-    highlights: [
-      'Cedar forests of the Middle Atlas',
-      'Ifrane, the \u201CSwitzerland of Morocco\u201D',
-      'Fes el-Bali medina (UNESCO)',
-      'The historic Chouara tanneries',
-    ],
-    images: [
-      {src: 'https://cdn.shopify.com/.../middle-atlas-cedars.jpg', alt: 'Cedar forest of the Middle Atlas'},
-      {src: 'https://cdn.shopify.com/.../fes-medina.jpg', alt: 'Rooftop view over the medina of Fes'},
-      {src: 'https://cdn.shopify.com/.../chouara-tannery.jpg', alt: 'The Chouara tanneries of Fes'},
-    ],
-    review: {
-      rating: 4.5,
-      quote:
-        '\u201CFes doesn\u2019t perform for tourists. It just lets you in, and you spend the rest of the trip thinking about it.\u201D',
-      name: 'Sofia',
-      flag: '\u{1F1EA}\u{1F1F8}',
-      country: 'Spain',
-      date: 'March 2026',
-    },
-  },
+  // {
+  //   number: 2,
+  //   title: 'Into the Great Sahara',
+  //   route: [
+  //     {label: 'Dades Valley', active: true},
+  //     {label: 'Todra Gorge'},
+  //     {label: 'Merzouga'},
+  //   ],
+  //   paragraphs: [
+  //     'Morning light fills the Dades, then the road coils into Todra Gorge — 300-metre rust-red walls closing in until the sky is just a ribbon overhead.',
+  //     'At the edge of Erg Chebbi we trade the van for camels. An hour into the dunes the last rooftop vanishes — there is only sand, wind, and the slow sway of the caravan.',
+  //     'Camp is a ring of black Berber tents in a hollow between dunes. Tagine under the stars, drums after dark, and a 2am silence you will never forget.',
+  //   ],
+  //   highlights: [
+  //     'Todra Gorge canyon walk',
+  //     'Camel trek into Erg Chebbi',
+  //     'Night in a Saharan desert camp',
+  //     'Sunrise over the dunes',
+  //   ],
+  //   images: [
+  //     {src: 'https://images.unsplash.com/photo-1509316785289-025f5b846b35?w=800&q=80', alt: 'Rust-red walls of the Todra Gorge'},
+  //     {src: 'https://images.unsplash.com/photo-1530939027401-cca9fd4a8c56?w=800&q=80', alt: 'Camel caravan crossing the Erg Chebbi dunes'},
+  //     {src: 'https://images.unsplash.com/photo-1687789568716-6862f3e8b18a?w=800&q=80', alt: 'Berber desert camp under the stars'},
+  //   ],
+  //   review: {
+  //     rating: 4.5,
+  //     quote:
+  //       '\u201CWe climbed a dune at dawn and just sat there. No one spoke. It\u2019s the quietest place I\u2019ve ever been.\u201D',
+  //     name: 'Lukas',
+  //     flag: '\u{1F1E9}\u{1F1EA}',
+  //     country: 'Germany',
+  //     date: 'April 2026',
+  //   },
+  // },
+  // {
+  //   number: 3,
+  //   title: 'Where the Past Still Lives',
+  //   route: [
+  //     {label: 'Merzouga', active: true},
+  //     {label: 'Ifrane'},
+  //     {label: 'Fes'},
+  //   ],
+  //   paragraphs: [
+  //     'We leave the desert and climb into the Middle Atlas — cedar forests, Barbary macaques at the roadside, and Ifrane, a town that looks airlifted from the Alps.',
+  //     'By afternoon we reach Fes. We step into the medina — 9,000 lanes, no cars, donkeys hauling everything — and twelve centuries close over our heads.',
+  //     'We watch the tanneries from a rooftop, eat where the locals eat, and lose ourselves on purpose. Most travelers wish they\u2019d booked another day here.',
+  //   ],
+  //   highlights: [
+  //     'Cedar forests of the Middle Atlas',
+  //     'Ifrane, the \u201CSwitzerland of Morocco\u201D',
+  //     'Fes el-Bali medina (UNESCO)',
+  //     'The historic Chouara tanneries',
+  //   ],
+  //   images: [
+  //     {src: 'https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?w=800&q=80', alt: 'Cedar forest of the Middle Atlas'},
+  //     {src: 'https://images.unsplash.com/photo-1539650116574-75c0c6d73f6e?w=800&q=80', alt: 'Rooftop view over the medina of Fes'},
+  //     {src: 'https://images.unsplash.com/photo-1539020140153-e479b8c22e70?w=800&q=80', alt: 'The Chouara tanneries of Fes'},
+  //   ],
+  //   review: {
+  //     rating: 4.5,
+  //     quote:
+  //       '\u201CFes doesn\u2019t perform for tourists. It just lets you in, and you spend the rest of the trip thinking about it.\u201D',
+  //     name: 'Sofia',
+  //     flag: '\u{1F1EA}\u{1F1F8}',
+  //     country: 'Spain',
+  //     date: 'March 2026',
+  //   },
+  // },
 ];
 
 export interface JourneyProps {
@@ -148,12 +148,12 @@ export function Journey({
   heading = 'The Journey',
   intro = 'Every traveler comes back saying the same thing:',
   quote = '\u201CI didn\u2019t expect the journey itself to matter so much.\u201D',
-  days = DAYS.slice(0, 1),
+  days = DAYS,
 }: JourneyProps) {
   return (
     <section
       aria-label="The journey, day by day"
-      className="relative bg-gradient-to-b from-white from-[22%] to-sand px-5 pt-[clamp(48px,6vw,88px)] pb-[clamp(56px,7vw,104px)] sm:px-10"
+      className="relative bg-gradient-to-b from-white from-[40%] to-sand px-5 py-section sm:px-10"
     >
       {/* ── Header ── */}
       <header className="mx-auto max-w-content text-center">
