@@ -16,7 +16,7 @@
   "prettier": "@shopify/prettier-config",
   "dependencies": {
     "@shopify/hydrogen": "2025.5.0",
-    "@shopify/remix-oxygen": "^3.0.0",
+    "@shopify/remix-oxygen": "3.0.0",
     "dotenv": "^17.4.2",
     "graphql": "^16.10.0",
     "graphql-tag": "^2.12.6",
