@@ -129,7 +129,7 @@ function RouteCard({route}: {route: Route}) {
           </div>
         </div>
       ) : (
-        <div className="rounded-route-sm bg-sand shadow-route-featured">
+        <div className="rounded-route-sm bg-sand shadow-route-hover">
           <p className="py-1.5 text-center text-label font-bold text-dark">{route.label}</p>
           <CardImage route={route} />
           <div className="relative -mt-4 min-h-62 rounded-route-sm bg-white px-6 pb-16 pt-7">

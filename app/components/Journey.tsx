@@ -239,7 +239,7 @@ function DayRow({day, flip, isFirst, isLast}: {day: JourneyDay; flip: boolean; i
 
           <span
             aria-hidden="true"
-            className={`pointer-events-none absolute -top-22 z-0 text-[18.5rem] font-display leading-none text-dark/10 max-lg:hidden ${flip ? '' : ''}`}
+            className={`pointer-events-none absolute -top-22 z-0 text-[18.5rem] font-display leading-none text-dark/5 max-lg:hidden ${flip ? '' : ''}`}
           >
             {day.number}
           </span>

@@ -54,7 +54,7 @@ export function TrustBar({poster, videoUrl, posterAlt = 'Excursion preview'}: Tr
       <div className="container max-w-content relative z-10 pb-14">
 
         {/* ── Video card ── */}
-        <div className="relative w-full aspect-video overflow-hidden rounded-card bg-black">
+        <div className="relative w-full aspect-video overflow-hidden rounded-card bg-black shadow-card">
           <video
             ref={videoRef}
             src={videoUrl}
