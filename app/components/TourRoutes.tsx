@@ -121,7 +121,7 @@ function RouteCard({route}: {route: Route}) {
   return (
     <li className={`relative flex flex-col items-center ${route.featured ? 'is-featured' : ''}`}>
       {route.featured ? (
-        <div className="rounded-route bg-dark shadow-route-featured">
+        <div className="rounded-route-sm bg-dark shadow-route-featured">
           <p className="py-1.5 text-center text-label font-bold text-white">{route.badge}</p>
           <CardImage route={route} featured />
           <div className="relative -mt-4 min-h-62 rounded-route-sm bg-white px-6 pb-20 pt-7">
@@ -129,7 +129,7 @@ function RouteCard({route}: {route: Route}) {
           </div>
         </div>
       ) : (
-        <div className="rounded-route bg-sand shadow-route-featured">
+        <div className="rounded-route-sm bg-sand shadow-route-featured">
           <p className="py-1.5 text-center text-label font-bold text-dark">{route.label}</p>
           <CardImage route={route} />
           <div className="relative -mt-4 min-h-62 rounded-route-sm bg-white px-6 pb-16 pt-7">

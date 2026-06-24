@@ -144,6 +144,11 @@ a { text-decoration: none; }
   background: linear-gradient(0deg, rgba(110,55,41,1) 0%, rgba(110,55,41,0) 60%);
 }
 
+/* ─── Journey spine line — extends through the inter-row gap to connect day circles ─── */
+.journey-spine-line {
+  bottom: calc(-1 * clamp(3.5rem, 8vw, 6.875rem));
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition: none !important; animation: none !important; }
 }
