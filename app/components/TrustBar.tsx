@@ -113,7 +113,7 @@ export function TrustBar({poster, videoUrl, posterAlt = 'Excursion preview'}: Tr
               <h3 className="font-body font-bold text-h3 text-dark">
                 {f.title}
               </h3>
-              <p className="font-body text-base text-dark leading-relaxed max-w-76">
+              <p className="font-body text-base text-dark max-w-76">
                 {f.body}
               </p>
             </li>
@@ -170,9 +170,7 @@ function VideoModal({poster, videoUrl, onClose}: VideoModalProps) {
           aria-label="Close video"
           onClick={onClose}
           className="absolute right-3.5 top-3.5 flex h-10 w-10 items-center justify-center
-                     rounded-full bg-sand/15 text-sand text-xl leading-none
-                     hover:bg-sand/25 transition-colors"
-        >
+                     rounded-full bg-sand/15 text-sand text-xl hover:bg-sand/25 transition-colors">
           ×
         </button>
       </div>

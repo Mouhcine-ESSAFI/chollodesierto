@@ -23,7 +23,7 @@ export function SiteNavbar() {
             <div className="w-8 h-8 md:w-9 md:h-9 rounded-full border border-sand/40 flex items-center justify-center shrink-0">
               <CompassIcon />
             </div>
-            <span className="font-display text-lg md:text-xl leading-tight text-sand tracking-wide">
+            <span className="font-display text-lg md:text-xl text-sand tracking-wide">
               Budget<br />Desert<br />Tour
             </span>
             <div className="hidden md:block w-px h-11 bg-sand/25" />

@@ -85,10 +85,10 @@ export function TourRoutes({
             </svg>
           </svg>
         </div>
-        <h2 className="py-3 text-h3 md:text-h2 font-display text-dark leading-tight">
+        <h2 className="py-3 text-h3 md:text-h2 font-display text-dark">
           {heading}
         </h2>
-        <p className="pb-16 text-dark text-base leading-normal">
+        <p className="pb-16 text-dark text-base">
           {subheading.map((line, i) => (
             <Fragment key={i}>
               {line}
@@ -147,7 +147,7 @@ function CardImage({route, featured}: {route: Route; featured?: boolean}) {
     <div className="relative h-65 overflow-hidden rounded-t-route-sm">
       <img src={route.image} alt={route.imageAlt} className="h-full w-full object-cover" loading="lazy" />
       {featured && (
-        <span role="img" aria-label="Medal" className="absolute top-0 left-1/2 -translate-x-1/2 text-4xl leading-none">
+        <span role="img" aria-label="Medal" className="absolute top-0 left-1/2 -translate-x-1/2 text-4xl">
           🏅
         </span>
       )}
@@ -168,7 +168,7 @@ function CardBody({route}: {route: Route}) {
     <>
       <h3 className="mb-6 text-center text-h3 font-bold text-dark">{route.title}</h3>
       <RouteMap stops={route.stops} />
-      <p className="text-center text-base leading-normal text-dark">
+      <p className="text-center text-base text-dark">
         {route.description.map((line, i) => (
           <Fragment key={i}>
             {line}
@@ -203,7 +203,7 @@ function RouteMap({stops}: {stops: Route['stops']}) {
 function PriceBar({route}: {route: Route}) {
   return (
     <div className="absolute inset-x- -bottom-7.5 flex h-18 items-center rounded-full bg-white pr-2 shadow-route-price w-76 justify-end">
-      <div className="flex flex-col leading-none text-center pr-4">
+      <div className="flex flex-col text-center pr-4">
         <span className="text-label-2xs font-semibold uppercase text-forest">Per person</span>
         <span className="text-price font-display text-forest">{route.price}</span>
       </div>

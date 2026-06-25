@@ -160,7 +160,7 @@ export function Journey({
             <span
               role="img"
               aria-label="Cool face"
-              className="z-10 text-[2.25rem] leading-none drop-shadow-[0_0.375rem_0.375rem_rgba(31,37,50,0.12)]"
+              className="z-10 text-[2.25rem] drop-shadow-[0_0.375rem_0.375rem_rgba(31,37,50,0.12)]"
             >
               {'\u{1F60E}'}
             </span>
@@ -213,8 +213,8 @@ function DayRow({day, flip, isFirst, isLast}: {day: JourneyDay; flip: boolean; i
             aria-hidden="true"
             className="flex h-[3.375rem] w-[3.375rem] flex-none flex-col items-center justify-center rounded-full bg-primary text-white shadow-[0_0_0_0.4375rem_rgba(193,90,43,0.12),0_0.5rem_1.125rem_rgba(193,90,43,0.3)]"
           >
-            <span className="text-[0.5rem] font-semibold uppercase leading-none tracking-[0.12em] opacity-90">Day</span>
-            <span className="text-[1.45rem] font-bold leading-[1.05]">{day.number}</span>
+            <span className="text-[0.5rem] font-semibold uppercase tracking-[0.12em] opacity-90">Day</span>
+            <span className="text-[1.45rem] font-bold">{day.number}</span>
           </span>
           <span className="flex-1 text-left text-[0.8125rem] font-semibold text-dark/60">
             {open ? 'Tap to collapse' : 'Tap to read this day'}
@@ -239,7 +239,7 @@ function DayRow({day, flip, isFirst, isLast}: {day: JourneyDay; flip: boolean; i
 
           <span
             aria-hidden="true"
-            className={`pointer-events-none absolute -top-22 z-0 text-[18.5rem] font-display leading-none text-dark/5 max-lg:hidden ${flip ? '' : ''}`}
+            className={`pointer-events-none absolute -top-22 z-0 text-[18.5rem] font-display text-dark/5 max-lg:hidden ${flip ? '' : ''}`}
           >
             {day.number}
           </span>
@@ -258,10 +258,10 @@ function DayRow({day, flip, isFirst, isLast}: {day: JourneyDay; flip: boolean; i
           {/* What you'll see today */}
           <div className="mt-[1.875rem] flex flex-col items-start gap-3 sm:flex-row sm:gap-4">
             <div className="flex w-full lg:w-32 flex-none items-start gap-2">
-              <span role="img" aria-label="Cool face" className="text-[1.375rem] leading-[1.1]">
+              <span role="img" aria-label="Cool face" className="text-[1.375rem]">
                 {'\u{1F60E}'}
               </span>
-              <span className="text-base font-display leading-[1.3] text-dark">What you&rsquo;ll see today</span>
+              <span className="text-base font-display text-dark">What you&rsquo;ll see today</span>
             </div>
             <ul role="list" className="flex w-full flex-col items-start gap-3.5">
               {day.highlights.map((h) => (
@@ -288,8 +288,8 @@ function DayRow({day, flip, isFirst, isLast}: {day: JourneyDay; flip: boolean; i
           <div className="journey-spine-line absolute left-1/2 top-44.5 border-l-2 border-dashed border-primary/45" />
         )}
         <div className="absolute left-1/2 top-[9.375rem] flex h-14 w-14 -translate-x-1/2 flex-col items-center justify-center rounded-full bg-primary text-white shadow-[0_0_0_0.5rem_rgba(193,90,43,0.12),0_0.5rem_1.125rem_rgba(193,90,43,0.3)]">
-          <span className="text-[0.5rem] font-semibold uppercase leading-none tracking-[0.12em] opacity-90">Day</span>
-          <span className="text-2xl font-bold leading-[1.05]">{day.number}</span>
+          <span className="text-[0.5rem] font-semibold uppercase tracking-[0.12em] opacity-90">Day</span>
+          <span className="text-2xl font-bold">{day.number}</span>
         </div>
       </div>
 
@@ -300,13 +300,13 @@ function DayRow({day, flip, isFirst, isLast}: {day: JourneyDay; flip: boolean; i
         <StarRating rating={day.review.rating} dayNumber={day.number} />
 
         <figure className="relative mx-auto mt-[1.125rem] max-w-[27.5rem] px-[1.875rem] text-center">
-          <span aria-hidden="true" className="absolute -bottom-[1.625rem] left-0 font-display text-[5.625rem] leading-none text-dark/[0.08] max-lg:hidden">
+          <span aria-hidden="true" className="absolute -bottom-[1.625rem] left-0 font-display text-[5.625rem] text-dark/[0.08] max-lg:hidden">
             &ldquo;
           </span>
-          <span aria-hidden="true" className="absolute -bottom-[1.625rem] right-0 font-display text-[5.625rem] leading-none text-dark/[0.08] max-lg:hidden">
+          <span aria-hidden="true" className="absolute -bottom-[1.625rem] right-0 font-display text-[5.625rem] text-dark/[0.08] max-lg:hidden">
             &rdquo;
           </span>
-          <blockquote className="relative z-10 text-[1.0625rem] font-bold leading-normal text-dark text-balance">
+          <blockquote className="relative z-10 text-[1.0625rem] font-bold text-dark text-balance">
             {day.review.quote}
           </blockquote>
           <figcaption className="relative z-10 mt-4 flex items-center justify-center gap-2 text-sm text-dark/70">

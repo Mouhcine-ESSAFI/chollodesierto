@@ -68,7 +68,7 @@ export function CampTiers() {
 
         <figure className="bg-white rounded-[1.5rem] px-10 py-8 max-w-xl mx-auto shadow-[0_0.125rem_1.5rem_rgba(26,31,46,0.07)] mb-10">
           <p aria-hidden="true" className="text-primary text-xl mb-3">★★★★★</p>
-          <blockquote className="font-bold text-[1rem] text-dark italic leading-relaxed mb-3">
+          <blockquote className="font-bold text-[1rem] text-dark italic mb-3">
             "Upgraded to Superior for our anniversary. Worth every euro. The hot shower in the
             desert felt illegal."
           </blockquote>

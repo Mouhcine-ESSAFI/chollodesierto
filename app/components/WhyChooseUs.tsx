@@ -50,7 +50,7 @@ export function WhyChooseUs({
   return (
     <section aria-label="Why travelers keep choosing us" className="bg-sand py-section">
       <div className="container max-w-content">
-        <h2 className="text-center font-display text-dark tracking-tight text-h2 leading-tight">
+        <h2 className="text-center font-display text-dark tracking-tight text-h2">
           {heading}
         </h2>
 
@@ -66,11 +66,11 @@ export function WhyChooseUs({
             <li
               key={r.title}
               className="flex min-h-70 flex-col items-center justify-center rounded-card bg-white px-6 pb-10 pt-10 text-center shadow-card-hover">
-              <span role="img" aria-label={r.emojiLabel} className="mb-7 text-5xl leading-none">
+              <span role="img" aria-label={r.emojiLabel} className="mb-7 text-5xl">
                 {r.emoji}
               </span>
               <h3 className="font-body font-bold text-h3 text-dark tracking-tight">{r.title}</h3>
-              <p className="mt-3.5 max-w-68 font-body text-base leading-relaxed text-dark text-pretty">
+              <p className="mt-3.5 max-w-68 font-body text-base text-dark text-pretty">
                 {r.body}
               </p>
             </li>
@@ -79,16 +79,16 @@ export function WhyChooseUs({
 
         {/* ── Featured review ── */}
         <figure className="relative mx-auto mt-section max-w-190 px-6 text-center">
-          <span aria-hidden="true" className="pointer-events-none absolute -bottom-20 left-0 md:left-45 select-none font-serif text-9xl leading-none text-dark/5">
+          <span aria-hidden="true" className="pointer-events-none absolute -bottom-20 left-0 md:left-45 select-none font-serif text-9xl text-dark/5">
             &ldquo;
           </span>
-          <span aria-hidden="true" className="pointer-events-none absolute -bottom-20 right-0 md:right-45 select-none font-serif text-9xl leading-none text-dark/5">
+          <span aria-hidden="true" className="pointer-events-none absolute -bottom-20 right-0 md:right-45 select-none font-serif text-9xl text-dark/5">
             &rdquo;
           </span>
 
           <StarRating rating={review.rating} />
 
-          <blockquote className="relative z-10 mt-5.5 font-body font-bold text-dark text-base leading-relaxed text-balance">
+          <blockquote className="relative z-10 mt-5.5 font-body font-bold text-dark text-base text-balance">
             {review.quote}
           </blockquote>
 

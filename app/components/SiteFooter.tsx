@@ -22,10 +22,10 @@ export function SiteFooter() {
 
           {/* Brand */}
           <div>
-            <p className="font-display text-[1.25rem] text-sand leading-tight mb-3">
+            <p className="font-display text-[1.25rem] text-sand mb-3">
               Budget<br />Desert<br />Tour
             </p>
-            <p className="text-[0.8125rem] text-sand/35 leading-relaxed">
+            <p className="text-[0.8125rem] text-sand/35">
               Real Sahara. Fair price.<br />Stories you'll tell forever.
             </p>
           </div>

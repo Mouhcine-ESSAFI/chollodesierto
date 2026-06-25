@@ -31,7 +31,7 @@ export function Hero() {
         <h1 id="hero-heading" className="font-display text-h1 text-sand pb-6 max-w-185">
           The Epic 3-Day Desert Tour.<br />A Story That Won't Let You Go.
         </h1>
-        <p className="font-body text-lg md:text-xl text-sand leading-relaxed pb-12">
+        <p className="font-body text-lg md:text-xl text-sand pb-12">
           Marrakech to the Sahara and back.<br/>
           Small group, real Berber camp, fair price.{' '}<br/>
           <span className="price-underline font-display text-sand">€85</span>. And the Sahara becomes yours.

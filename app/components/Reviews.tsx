@@ -23,7 +23,7 @@ export function Reviews() {
               className="bg-white rounded-[1.5rem] p-8 text-left shadow-[0_0.125rem_1.5rem_rgba(26,31,46,0.07)]"
             >
               <p aria-hidden="true" className="text-primary mb-3">★★★★★</p>
-              <blockquote className="font-bold text-[1rem] text-dark italic leading-relaxed mb-5">
+              <blockquote className="font-bold text-[1rem] text-dark italic mb-5">
                 "{r.quote}"
               </blockquote>
               <footer className="flex items-end justify-between">

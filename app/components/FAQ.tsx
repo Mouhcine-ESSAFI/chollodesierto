@@ -56,7 +56,7 @@ export function FAQ() {
                 itemType="https://schema.org/Answer"
               >
                 <p
-                  className="text-[0.9375rem] text-dark/60 leading-relaxed"
+                  className="text-[0.9375rem] text-dark/60"
                   itemProp="text"
                 >
                   {faq.a}
