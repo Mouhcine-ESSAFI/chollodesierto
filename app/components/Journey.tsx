@@ -160,7 +160,7 @@ export function Journey({
             <span
               role="img"
               aria-label="Cool face"
-              className="z-10 text-[2.25rem] drop-shadow-md"
+              className="z-10 text-[2.25rem] shadow-card-m"
             >
               {'\u{1F60E}'}
             </span>
@@ -295,7 +295,7 @@ function DayRow({day, flip, isFirst, isLast}: {day: JourneyDay; flip: boolean; i
 
       {/* Media */}
       <div className={`mx-auto mt-9 max-w-[35rem] pt-0 lg:row-start-1 lg:mx-0 lg:mt-0 lg:max-w-none lg:pt-4.5 ${flip ? 'lg:col-start-1' : 'lg:col-start-3'} ${open ? '' : 'max-lg:hidden'}`}>
-        <ImageCarousel images={day.images} />
+        <ImageCarousel images={day.images} dayNumber={day.number} />
 
         <StarRating rating={day.review.rating} dayNumber={day.number} />
 
@@ -341,72 +341,40 @@ function RouteTimeline({stops}: {stops: RouteStop[]}) {
   );
 }
 
-function ImageCarousel({images}: {images: {src: string; alt: string}[]}) {
+function ImageCarousel({images, dayNumber}: {images: {src: string; alt: string}[]; dayNumber: number}) {
+  const [i, setI] = useState(0);
   const n = images.length;
-  const [idx, setIdx] = useState(0);
-
-  const prev = useCallback(() => setIdx((i) => (i - 1 + n) % n), [n]);
-  const next = useCallback(() => setIdx((i) => (i + 1) % n), [n]);
+  const cur = images[((i % n) + n) % n];
+  const next = images[(((i % n) + n) % n + 1) % n];
+  const prev = useCallback(() => setI((v) => v - 1), []);
+  const advance = useCallback(() => setI((v) => v + 1), []);
 
   return (
-    <div className="relative select-none pt-3.5">
-
-      {/* Back card — peeks above the front card */}
+    <div className="relative">
+      {/* Peeking card behind */}
       <div
         aria-hidden="true"
-        className="absolute left-[3%] right-[3%] top-0 h-75 overflow-hidden rounded-[1.25rem] bg-dark"
+        className="absolute left-1/2 top-[-0.875rem] h-[18.75rem] w-full origin-top -translate-x-1/2 scale-[0.94] overflow-hidden rounded-[1.25rem] bg-sand shadow-card-m"
       >
-        <img
-          src={images[(idx + 1) % n].src}
-          alt=""
-          draggable={false}
-          className="h-full w-full object-cover opacity-60"
-          loading="lazy"
-        />
+        <img src={next.src} alt="" className="h-full w-full object-cover" loading="lazy" />
       </div>
-
       {/* Front card */}
-      <div className="relative z-10 h-75 overflow-hidden rounded-[1.25rem] bg-dark shadow-card-m">
-        {images.map((img, i) => (
-          <img
-            key={i}
-            src={img.src}
-            alt={i === idx ? img.alt : ''}
-            draggable={false}
-            className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-500 ${i === idx ? 'opacity-100' : 'opacity-0'}`}
-            loading="lazy"
-          />
-        ))}
-
-        {/* Controls */}
-        <div className="absolute inset-x-0 bottom-4.5 z-10 flex items-center justify-center gap-3">
+      <div className="relative z-10 h-[18.75rem] overflow-hidden rounded-[1.25rem] bg-dark shadow-card-m">
+        <img src={cur.src} alt={cur.alt} className="h-full w-full object-cover" loading="lazy" />
+        <div className="absolute bottom-[1.125rem] left-1/2 flex -translate-x-1/2 gap-3">
           <button
             type="button"
             aria-label="Previous photo"
             onClick={prev}
-            className="flex h-8.5 w-8.5 items-center justify-center rounded-full bg-white/90 text-dark shadow-card-m transition-transform hover:scale-105"
+            className="flex h-[2.125rem] w-[2.125rem] items-center justify-center rounded-full bg-white text-dark shadow-card-m transition-transform hover:scale-105"
           >
             <ChevronIcon dir="left" />
           </button>
-
-          <div className="flex gap-1.5" aria-label="Carousel slides">
-            {images.map((_, i) => (
-              <button
-                key={i}
-                type="button"
-                aria-label={`Slide ${i + 1}`}
-                aria-current={i === idx ? 'true' : undefined}
-                onClick={() => setIdx(i)}
-                className={`h-1.5 rounded-full transition-all duration-300 ${i === idx ? 'w-5 bg-white' : 'w-1.5 bg-white/50'}`}
-              />
-            ))}
-          </div>
-
           <button
             type="button"
             aria-label="Next photo"
-            onClick={next}
-            className="flex h-8.5 w-8.5 items-center justify-center rounded-full bg-white/90 text-dark shadow-card-m transition-transform hover:scale-105"
+            onClick={advance}
+            className="flex h-[2.125rem] w-[2.125rem] items-center justify-center rounded-full bg-white text-dark shadow-card-m transition-transform hover:scale-105"
           >
             <ChevronIcon dir="right" />
           </button>
