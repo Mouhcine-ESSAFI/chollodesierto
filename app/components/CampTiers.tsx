@@ -4,8 +4,8 @@ function TierCard({tier}: {tier: CampTier}) {
   return (
     <article
       aria-label={`${tier.name} — ${tier.badge}`}
-      className="bg-white rounded-[1.5rem] overflow-hidden shadow-[0_0.125rem_1.5rem_rgba(26,31,46,0.07)]
-                 hover:shadow-[0_0.75rem_2.5rem_rgba(26,31,46,0.13)] hover:-translate-y-1 transition-all duration-200 flex flex-col"
+      className="bg-white rounded-[1.5rem] overflow-hidden shadow-card-m
+                 hover:shadow-card-m hover:-translate-y-1 transition-all duration-200 flex flex-col"
     >
       <img
         src={tier.imageUrl}
@@ -66,7 +66,7 @@ export function CampTiers() {
           ))}
         </div>
 
-        <figure className="bg-white rounded-[1.5rem] px-10 py-8 max-w-xl mx-auto shadow-[0_0.125rem_1.5rem_rgba(26,31,46,0.07)] mb-10">
+        <figure className="bg-white rounded-[1.5rem] px-10 py-8 max-w-xl mx-auto shadow-card mb-10">
           <p aria-hidden="true" className="text-primary text-xl mb-3">★★★★★</p>
           <blockquote className="font-bold text-[1rem] text-dark italic mb-3">
             "Upgraded to Superior for our anniversary. Worth every euro. The hot shower in the

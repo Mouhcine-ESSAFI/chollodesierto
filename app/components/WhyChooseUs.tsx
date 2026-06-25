@@ -65,7 +65,7 @@ export function WhyChooseUs({
           {reasons.map((r) => (
             <li
               key={r.title}
-              className="flex min-h-70 flex-col items-center justify-center rounded-card bg-white px-6 pb-10 pt-10 text-center shadow-card-hover">
+              className="flex min-h-70 flex-col items-center justify-center rounded-card bg-white px-6 pb-10 pt-10 text-center shadow-card">
               <span role="img" aria-label={r.emojiLabel} className="mb-7 text-5xl">
                 {r.emoji}
               </span>

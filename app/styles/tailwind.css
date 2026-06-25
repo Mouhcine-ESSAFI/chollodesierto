@@ -4,7 +4,7 @@
   /* Brand colors (from design system) */
   --color-primary: #C45A2C;   /* terracotta */
   --color-sand:    #F5EDE0;   /* background */
-  --color-dark:    #1A161D;   /* navy */
+  --color-dark:    #1A1F2E;   /* navy */
   --color-forest:  #3D5A40;   /* green accent */
 
   /* Fonts */
@@ -41,12 +41,8 @@
   --radius-route-sm: 1.125rem; /* 18px — TourRoutes image / inner panel */
 
   /* Shadows */
-  --shadow-card:           0px 0px 10px 10px rgba(0,0,0,0.05);
-  --shadow-card-hover:     0 0 20px rgba(0, 0, 0, 0.05);
-  --shadow-route-featured:  0 0.2rem .5rem rgba(0, 0, 0, 0.1);
-  --shadow-route-hover:  0 0 2rem  rgba(0, 0, 0, 0.1);
-  --shadow-route-card:     0 1rem 2.375rem -1.375rem rgba(60,45,25,0.18);
-  --shadow-route-price:    0 0.25rem .5rem rgba(0, 0, 0, 0.15);
+  --shadow-card:      0 0.2rem .5rem rgba(0, 0, 0, 0.1);
+  --shadow-card-m:    0 0.25rem .5rem rgba(0, 0, 0, 0.15);
 
   /* Type scale (fluid) */
   --text-route-heading:    clamp(2rem, 4.4vw, 3.1rem);
@@ -149,6 +145,20 @@ a { text-decoration: none; }
 /* ─── Journey spine line — extends through the inter-row gap to connect day circles ─── */
 .journey-spine-line {
   bottom: calc(-1 * clamp(3.5rem, 8vw, 6.875rem));
+}
+
+/* ─── Journey carousel — infinite strip slider ─── */
+.carousel-track {
+  width: calc(var(--slides-count, 1) * 100%);
+  transform: translateX(var(--track-x, 0%));
+}
+.carousel-track-animated { transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1); }
+.carousel-track-snap     { transition: transform 0.3s ease-out; }
+.carousel-slide {
+  flex: none;
+  width: calc(100% / var(--slides-count, 1));
+  height: 100%;
+  position: relative;
 }
 
 @media (prefers-reduced-motion: reduce) {

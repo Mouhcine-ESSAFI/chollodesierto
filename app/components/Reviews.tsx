@@ -20,7 +20,7 @@ export function Reviews() {
             <article
               key={r.id}
               aria-label={`Review by ${r.name}`}
-              className="bg-white rounded-[1.5rem] p-8 text-left shadow-[0_0.125rem_1.5rem_rgba(26,31,46,0.07)]"
+              className="bg-white rounded-[1.5rem] p-8 text-left shadow-card"
             >
               <p aria-hidden="true" className="text-primary mb-3">★★★★★</p>
               <blockquote className="font-bold text-[1rem] text-dark italic mb-5">
