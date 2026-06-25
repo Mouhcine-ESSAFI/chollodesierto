@@ -160,11 +160,11 @@ export function Journey({
             <span
               role="img"
               aria-label="Cool face"
-              className="z-10 text-[2.25rem] drop-shadow-[0_0.375rem_0.375rem_rgba(31,37,50,0.12)]"
+              className="z-10 text-[2.25rem] drop-shadow-md"
             >
               {'\u{1F60E}'}
             </span>
-            <div className="relative mb-5 ml-0.5 whitespace-nowrap rounded-[0.875rem] bg-dark px-3.5 py-2 text-label font-medium text-white shadow-[0_0.5rem_1.25rem_rgba(31,37,50,0.18)]">
+            <div className="relative mb-5 ml-0.5 whitespace-nowrap rounded-[0.875rem] bg-dark px-3.5 py-2 text-label font-medium text-white shadow-card-m">
               Here&rsquo;s why.
               <span
                 aria-hidden="true"
@@ -211,7 +211,7 @@ function DayRow({day, flip, isFirst, isLast}: {day: JourneyDay; flip: boolean; i
         >
           <span
             aria-hidden="true"
-            className="flex h-[3.375rem] w-[3.375rem] flex-none flex-col items-center justify-center rounded-full bg-primary text-white shadow-[0_0_0_0.4375rem_rgba(193,90,43,0.12),0_0.5rem_1.125rem_rgba(193,90,43,0.3)]"
+            className="flex h-[3.375rem] w-[3.375rem] flex-none flex-col items-center justify-center rounded-full bg-primary text-white shadow-card-m"
           >
             <span className="text-[0.5rem] font-semibold uppercase tracking-[0.12em] opacity-90">Day</span>
             <span className="text-[1.45rem] font-bold">{day.number}</span>
@@ -267,7 +267,7 @@ function DayRow({day, flip, isFirst, isLast}: {day: JourneyDay; flip: boolean; i
               {day.highlights.map((h) => (
                 <li
                   key={h}
-                  className="inline-flex items-center gap-[0.6875rem] rounded-full rounded-tl-none bg-white px-[1.375rem] py-[0.8125rem] text-sm text-dark shadow-[0_0.375rem_1.125rem_rgba(31,37,50,0.07)]"
+                  className="inline-flex items-center gap-[0.6875rem] rounded-full rounded-tl-none bg-white px-[1.375rem] py-[0.8125rem] text-sm text-dark shadow-card-m"
                 >
                   <CheckIcon />
                   {h}
@@ -287,7 +287,7 @@ function DayRow({day, flip, isFirst, isLast}: {day: JourneyDay; flip: boolean; i
         {!isLast && (
           <div className="journey-spine-line absolute left-1/2 top-44.5 border-l-2 border-dashed border-primary/45" />
         )}
-        <div className="absolute left-1/2 top-[9.375rem] flex h-14 w-14 -translate-x-1/2 flex-col items-center justify-center rounded-full bg-primary text-white shadow-[0_0_0_0.5rem_rgba(193,90,43,0.12),0_0.5rem_1.125rem_rgba(193,90,43,0.3)]">
+        <div className="absolute left-1/2 top-[9.375rem] flex h-14 w-14 -translate-x-1/2 flex-col items-center justify-center rounded-full bg-primary text-white shadow-card-m">
           <span className="text-[0.5rem] font-semibold uppercase tracking-[0.12em] opacity-90">Day</span>
           <span className="text-2xl font-bold">{day.number}</span>
         </div>
@@ -295,7 +295,7 @@ function DayRow({day, flip, isFirst, isLast}: {day: JourneyDay; flip: boolean; i
 
       {/* Media */}
       <div className={`mx-auto mt-9 max-w-[35rem] pt-0 lg:row-start-1 lg:mx-0 lg:mt-0 lg:max-w-none lg:pt-4.5 ${flip ? 'lg:col-start-1' : 'lg:col-start-3'} ${open ? '' : 'max-lg:hidden'}`}>
-        <ImageCarousel images={day.images} dayNumber={day.number} />
+        <ImageCarousel images={day.images} />
 
         <StarRating rating={day.review.rating} dayNumber={day.number} />
 
@@ -341,40 +341,72 @@ function RouteTimeline({stops}: {stops: RouteStop[]}) {
   );
 }
 
-function ImageCarousel({images, dayNumber}: {images: {src: string; alt: string}[]; dayNumber: number}) {
-  const [i, setI] = useState(0);
+function ImageCarousel({images}: {images: {src: string; alt: string}[]}) {
   const n = images.length;
-  const cur = images[((i % n) + n) % n];
-  const next = images[(((i % n) + n) % n + 1) % n];
-  const prev = useCallback(() => setI((v) => v - 1), []);
-  const advance = useCallback(() => setI((v) => v + 1), []);
+  const [idx, setIdx] = useState(0);
+
+  const prev = useCallback(() => setIdx((i) => (i - 1 + n) % n), [n]);
+  const next = useCallback(() => setIdx((i) => (i + 1) % n), [n]);
 
   return (
-    <div className="relative">
-      {/* Peeking card behind */}
+    <div className="relative select-none pt-3.5">
+
+      {/* Back card — peeks above the front card */}
       <div
         aria-hidden="true"
-        className="absolute left-1/2 top-[-0.875rem] h-[18.75rem] w-full origin-top -translate-x-1/2 scale-[0.94] overflow-hidden rounded-[1.25rem] bg-sand shadow-[0_0.875rem_1.875rem_rgba(31,37,50,0.16)]"
+        className="absolute left-[3%] right-[3%] top-0 h-75 overflow-hidden rounded-[1.25rem] bg-dark"
       >
-        <img src={next.src} alt="" className="h-full w-full object-cover" loading="lazy" />
+        <img
+          src={images[(idx + 1) % n].src}
+          alt=""
+          draggable={false}
+          className="h-full w-full object-cover opacity-60"
+          loading="lazy"
+        />
       </div>
+
       {/* Front card */}
-      <div className="relative z-10 h-[18.75rem] overflow-hidden rounded-[1.25rem] bg-dark shadow-[0_1.375rem_2.75rem_rgba(31,37,50,0.24)]">
-        <img src={cur.src} alt={cur.alt} className="h-full w-full object-cover" loading="lazy" />
-        <div className="absolute bottom-[1.125rem] left-1/2 flex -translate-x-1/2 gap-3">
+      <div className="relative z-10 h-75 overflow-hidden rounded-[1.25rem] bg-dark shadow-card-m">
+        {images.map((img, i) => (
+          <img
+            key={i}
+            src={img.src}
+            alt={i === idx ? img.alt : ''}
+            draggable={false}
+            className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-500 ${i === idx ? 'opacity-100' : 'opacity-0'}`}
+            loading="lazy"
+          />
+        ))}
+
+        {/* Controls */}
+        <div className="absolute inset-x-0 bottom-4.5 z-10 flex items-center justify-center gap-3">
           <button
             type="button"
             aria-label="Previous photo"
             onClick={prev}
-            className="flex h-[2.125rem] w-[2.125rem] items-center justify-center rounded-full bg-white text-dark shadow-[0_0.25rem_0.75rem_rgba(0,0,0,0.22)] transition-transform hover:scale-105"
+            className="flex h-8.5 w-8.5 items-center justify-center rounded-full bg-white/90 text-dark shadow-card-m transition-transform hover:scale-105"
           >
             <ChevronIcon dir="left" />
           </button>
+
+          <div className="flex gap-1.5" aria-label="Carousel slides">
+            {images.map((_, i) => (
+              <button
+                key={i}
+                type="button"
+                aria-label={`Slide ${i + 1}`}
+                aria-current={i === idx ? 'true' : undefined}
+                onClick={() => setIdx(i)}
+                className={`h-1.5 rounded-full transition-all duration-300 ${i === idx ? 'w-5 bg-white' : 'w-1.5 bg-white/50'}`}
+              />
+            ))}
+          </div>
+
           <button
             type="button"
             aria-label="Next photo"
-            onClick={advance}
-            className="flex h-[2.125rem] w-[2.125rem] items-center justify-center rounded-full bg-white text-dark shadow-[0_0.25rem_0.75rem_rgba(0,0,0,0.22)] transition-transform hover:scale-105"
+            onClick={next}
+            className="flex h-8.5 w-8.5 items-center justify-center rounded-full bg-white/90 text-dark shadow-card-m transition-transform hover:scale-105"
           >
             <ChevronIcon dir="right" />
           </button>
