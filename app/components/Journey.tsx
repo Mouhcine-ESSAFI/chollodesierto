@@ -203,52 +203,40 @@ function DayRow({day, flip, isFirst, isLast}: {day: JourneyDay; flip: boolean; i
       {/* Content */}
       <div className={`relative pt-[1.875rem] max-lg:pt-0 lg:row-start-1 ${flip ? 'lg:col-start-3' : 'lg:col-start-1'}`}>
 
-        {/* Mobile day toggle */}
+        {/* Mobile toggle — circle always centered, same position open/closed */}
         <button
           type="button"
           onClick={() => setOpen((o) => !o)}
           aria-expanded={open ? 'true' : 'false'}
-          className={`mb-6 flex w-full lg:hidden ${open ? 'items-center gap-3.5' : 'justify-center'}`}
+          aria-label={open ? 'Collapse day details' : 'Expand day details'}
+          className="mb-6 flex w-full justify-center lg:hidden"
         >
           <span
             aria-hidden="true"
-            className="day-circle flex h-13.5 w-13.5 flex-none flex-col items-center justify-center rounded-full bg-primary text-white"
+            className="day-circle flex h-13.5 w-13.5 flex-col items-center justify-center rounded-full bg-primary text-white"
           >
             <span className="text-[0.5rem] font-semibold uppercase tracking-[0.12em] opacity-90">Day</span>
             <span className="text-[1.45rem] font-bold">{day.number}</span>
           </span>
-          {open && (
-            <>
-              <span className="flex-1 text-left text-[0.8125rem] font-semibold text-dark/60">
-                Tap to collapse
-              </span>
-              <span aria-hidden="true" className="flex flex-none rotate-180 text-primary">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="m6 9 6 6 6-6" />
-                </svg>
-              </span>
-            </>
-          )}
         </button>
 
-        {/* Title + route — indented toward the spine on desktop */}
-        <div className={`relative z-10 flex flex-col items-center text-left lg:text-center ${flip ? 'items-center text-center' : ''}`}>
-          <h3 className="text-h3 font-bold tracking-tight text-dark">
-            {day.title}
-          </h3>
-
-          <RouteTimeline stops={day.route} />
-
-          <span
-            aria-hidden="true"
-            className={`pointer-events-none absolute -top-22 z-0 text-[18.5rem] font-display text-dark/5 max-lg:hidden ${flip ? '' : ''}`}
-          >
-            {day.number}
-          </span>
-        </div>
-
-        {/* Collapsible body */}
+        {/* Title + route + body — all hidden on mobile when closed */}
         <div className={open ? '' : 'max-lg:hidden'}>
+          <div className={`relative z-10 flex flex-col items-center text-left lg:text-center ${flip ? 'items-center text-center' : ''}`}>
+            <h3 className="text-h3 font-bold tracking-tight text-dark">
+              {day.title}
+            </h3>
+
+            <RouteTimeline stops={day.route} />
+
+            <span
+              aria-hidden="true"
+              className="pointer-events-none absolute -top-22 z-0 text-[18.5rem] font-display text-dark/5 max-lg:hidden"
+            >
+              {day.number}
+            </span>
+          </div>
+
           <div className="flex w-full flex-col gap-3">
             {day.paragraphs.map((p, i) => (
               <p key={i} className="text-base text-dark text-pretty">
@@ -257,7 +245,6 @@ function DayRow({day, flip, isFirst, isLast}: {day: JourneyDay; flip: boolean; i
             ))}
           </div>
 
-          {/* What you'll see today */}
           <div className="mt-[1.875rem] flex flex-col items-start gap-3 sm:flex-row sm:gap-4">
             <div className="flex w-full lg:w-32 flex-none items-start gap-2">
               <span role="img" aria-label="Cool face" className="text-[1.375rem]">
@@ -344,13 +331,8 @@ function RouteTimeline({stops}: {stops: RouteStop[]}) {
 }
 
 function ImageCarousel({images}: {images: {src: string; alt: string}[]}) {
-  const [emblaRef, emblaApi] = useEmblaCarousel({
-    loop: true,
-    axis: 'y',
-    align: 'center',
-    containScroll: false,
-    duration: 32,
-  });
+  const n = images.length;
+  const [emblaRef, emblaApi] = useEmblaCarousel({loop: true, axis: 'y', duration: 32});
   const [selectedIdx, setSelectedIdx] = useState(0);
 
   useEffect(() => {
@@ -360,76 +342,84 @@ function ImageCarousel({images}: {images: {src: string; alt: string}[]}) {
     return () => { emblaApi.off('select', onSelect); };
   }, [emblaApi]);
 
+  const peek1 = (selectedIdx + 1) % n;
+  const peek2 = (selectedIdx + 2) % n;
   const prev = useCallback(() => emblaApi?.scrollPrev(), [emblaApi]);
   const next = useCallback(() => emblaApi?.scrollNext(), [emblaApi]);
 
   return (
-    <div className="relative">
-      {/* Vertical strip — 3 slides visible: center full + top/bottom peeking */}
-      <div ref={emblaRef} className="h-[28rem] overflow-hidden rounded-[1.25rem]">
-        <div className="flex flex-col gap-2.5 touch-pan-x">
-          {images.map((img, i) => {
-            const active = i === selectedIdx;
-            return (
-              <div
-                key={i}
-                className={`relative h-75 w-full flex-none overflow-hidden rounded-[1.25rem] transition-[transform,opacity,box-shadow] duration-300 ${
-                  active
-                    ? 'scale-100 opacity-100 shadow-[0_1.375rem_2.75rem_rgba(31,37,50,0.28)]'
-                    : 'scale-[0.96] opacity-50 shadow-[0_0.375rem_0.75rem_rgba(31,37,50,0.10)]'
-                }`}
-              >
+    <div className="relative pt-7">
+      {/* Card 3 — back, peeks furthest from top, narrowest (decorative only) */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute top-0 left-[6%] right-[6%] h-75 overflow-hidden rounded-[1.25rem] bg-dark shadow-[0_0.5rem_1rem_rgba(31,37,50,0.10)]"
+      >
+        <img src={images[peek2].src} alt="" draggable={false} className="h-full w-full object-cover opacity-50" loading="lazy" />
+      </div>
+
+      {/* Card 2 — middle, peeks 3.5rem from top (decorative only) */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute top-3.5 left-[3%] right-[3%] h-75 overflow-hidden rounded-[1.25rem] bg-dark shadow-[0_0.75rem_1.5rem_rgba(31,37,50,0.14)]"
+      >
+        <img src={images[peek1].src} alt="" draggable={false} className="h-full w-full object-cover opacity-75" loading="lazy" />
+      </div>
+
+      {/* Card 1 — front, full width, Embla slides vertically inside */}
+      <div className="relative z-10 h-75 rounded-[1.25rem] shadow-[0_1.375rem_2.75rem_rgba(31,37,50,0.28)]">
+        <div ref={emblaRef} className="h-full overflow-hidden rounded-[1.25rem]">
+          <div className="flex h-full flex-col">
+            {images.map((img, i) => (
+              <div key={i} className="h-75 w-full flex-none shrink-0">
                 <img
                   src={img.src}
-                  alt={active ? img.alt : ''}
+                  alt={i === selectedIdx ? img.alt : ''}
                   draggable={false}
                   className="h-full w-full object-cover"
                   loading="lazy"
                 />
               </div>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* Controls — up / dots / down */}
-      <div className="mt-4 flex items-center justify-center gap-3">
-        <button
-          type="button"
-          aria-label="Previous photo"
-          onClick={prev}
-          className="flex h-[2.125rem] w-[2.125rem] items-center justify-center rounded-full bg-dark/10 text-dark shadow-[0_0.25rem_0.75rem_rgba(0,0,0,0.12)] transition-transform hover:scale-105"
-        >
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-            <path d="m18 15-6-6-6 6" />
-          </svg>
-        </button>
-
-        <div className="flex gap-1.5">
-          {images.map((_, i) => (
-            <button
-              key={i}
-              type="button"
-              aria-label={`Slide ${i + 1}`}
-              aria-current={i === selectedIdx ? 'true' : undefined}
-              onClick={() => emblaApi?.scrollTo(i)}
-              className={`h-1.5 rounded-full transition-all duration-300 ${
-                i === selectedIdx ? 'w-5 bg-primary' : 'w-1.5 bg-primary/30'
-              }`}
-            />
-          ))}
+            ))}
+          </div>
         </div>
 
-        <button
-          type="button"
-          aria-label="Next photo"
-          onClick={next}
-          className="flex h-[2.125rem] w-[2.125rem] items-center justify-center rounded-full bg-dark/10 text-dark shadow-[0_0.25rem_0.75rem_rgba(0,0,0,0.12)] transition-transform hover:scale-105"
-        >
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-            <path d="m6 9 6 6 6-6" />
-          </svg>
-        </button>
+        {/* Controls — same style, up/down arrows for vertical movement */}
+        <div className="absolute inset-x-0 bottom-4.5 z-10 flex items-center justify-center gap-3">
+          <button
+            type="button"
+            aria-label="Previous photo"
+            onClick={prev}
+            className="flex h-8.5 w-8.5 items-center justify-center rounded-full bg-white text-dark shadow-[0_0.25rem_0.75rem_rgba(0,0,0,0.22)] transition-transform hover:scale-105"
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="m18 15-6-6-6 6" />
+            </svg>
+          </button>
+
+          <div className="flex gap-1.5">
+            {images.map((_, i) => (
+              <button
+                key={i}
+                type="button"
+                aria-label={`Slide ${i + 1}`}
+                aria-current={i === selectedIdx ? 'true' : undefined}
+                onClick={() => emblaApi?.scrollTo(i)}
+                className={`h-1.5 rounded-full transition-all duration-300 ${i === selectedIdx ? 'w-5 bg-white' : 'w-1.5 bg-white/50'}`}
+              />
+            ))}
+          </div>
+
+          <button
+            type="button"
+            aria-label="Next photo"
+            onClick={next}
+            className="flex h-8.5 w-8.5 items-center justify-center rounded-full bg-white text-dark shadow-[0_0.25rem_0.75rem_rgba(0,0,0,0.22)] transition-transform hover:scale-105"
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="m6 9 6 6 6-6" />
+            </svg>
+          </button>
+        </div>
       </div>
     </div>
   );

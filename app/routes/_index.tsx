@@ -6,7 +6,7 @@ import {WhyChooseUs} from '~/components/WhyChooseUs';
 import {TourRoutes} from '~/components/TourRoutes';
 import {Journey} from '~/components/Journey';
 import {CampTiers} from '~/components/CampTiers';
-import {Reviews} from '~/components/Reviews';
+import {CapturedByTribe} from '~/components/CapturedByTribe';
 import {FAQ} from '~/components/FAQ';
 import {BookingCTA} from '~/components/BookingCTA';
 import {SiteFooter} from '~/components/SiteFooter';
@@ -30,7 +30,7 @@ export default function Homepage() {
         <TourRoutes />
         <Journey />
         <CampTiers />
-        {/* <Reviews /> */}
+        <CapturedByTribe />
         {/* <FAQ /> */}
         <BookingCTA />
       </main>
