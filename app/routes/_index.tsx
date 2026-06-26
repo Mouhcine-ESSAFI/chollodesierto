@@ -29,7 +29,7 @@ export default function Homepage() {
         <WhyChooseUs />
         <TourRoutes />
         <Journey />
-        {/* <CampTiers /> */}
+        <CampTiers />
         {/* <Reviews /> */}
         {/* <FAQ /> */}
         <BookingCTA />

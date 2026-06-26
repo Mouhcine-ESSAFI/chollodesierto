@@ -1,4 +1,5 @@
-import {useCallback, useMemo, useState} from 'react';
+import useEmblaCarousel from 'embla-carousel-react';
+import {useCallback, useEffect, useMemo, useState} from 'react';
 
 interface RouteStop {
   label: string;
@@ -156,15 +157,15 @@ export function Journey({
 
         {/* "Here's why" bubble */}
         <div className="mt-2 flex justify-center lg:mt-0">
-          <div className="flex items-end lg:absolute lg:left-1/2 lg:top-68 lg:z-[5] lg:-translate-x-[3.75rem]">
+          <div className="flex items-end lg:absolute lg:right-107 lg:top-68 lg:z-[5] lg:-translate-x-[3.75rem]">
             <span
               role="img"
               aria-label="Cool face"
-              className="z-10 text-[2.25rem] shadow-card-m"
+              className="z-10 text-[2.25rem] drop-shadow-[0_0.375rem_0.375rem_rgba(31,37,50,0.12)]"
             >
               {'\u{1F60E}'}
             </span>
-            <div className="relative mb-5 ml-0.5 whitespace-nowrap rounded-[0.875rem] bg-dark px-3.5 py-2 text-label font-medium text-white shadow-card-m">
+            <div className="relative mb-5 ml-0.5 whitespace-nowrap rounded-[0.875rem] bg-dark px-3.5 py-2 text-label font-medium text-white shadow-[0_0.5rem_1.25rem_rgba(31,37,50,0.18)]">
               Here&rsquo;s why.
               <span
                 aria-hidden="true"
@@ -207,26 +208,27 @@ function DayRow({day, flip, isFirst, isLast}: {day: JourneyDay; flip: boolean; i
           type="button"
           onClick={() => setOpen((o) => !o)}
           aria-expanded={open ? 'true' : 'false'}
-          className="mb-6 flex w-full items-center gap-3.5 lg:hidden"
+          className={`mb-6 flex w-full lg:hidden ${open ? 'items-center gap-3.5' : 'justify-center'}`}
         >
           <span
             aria-hidden="true"
-            className="flex h-[3.375rem] w-[3.375rem] flex-none flex-col items-center justify-center rounded-full bg-primary text-white shadow-card-m"
+            className="day-circle flex h-13.5 w-13.5 flex-none flex-col items-center justify-center rounded-full bg-primary text-white"
           >
             <span className="text-[0.5rem] font-semibold uppercase tracking-[0.12em] opacity-90">Day</span>
             <span className="text-[1.45rem] font-bold">{day.number}</span>
           </span>
-          <span className="flex-1 text-left text-[0.8125rem] font-semibold text-dark/60">
-            {open ? 'Tap to collapse' : 'Tap to read this day'}
-          </span>
-          <span
-            aria-hidden="true"
-            className={`flex flex-none text-primary transition-transform duration-200 ${open ? 'rotate-180' : ''}`}
-          >
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="m6 9 6 6 6-6" />
-            </svg>
-          </span>
+          {open && (
+            <>
+              <span className="flex-1 text-left text-[0.8125rem] font-semibold text-dark/60">
+                Tap to collapse
+              </span>
+              <span aria-hidden="true" className="flex flex-none rotate-180 text-primary">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="m6 9 6 6 6-6" />
+                </svg>
+              </span>
+            </>
+          )}
         </button>
 
         {/* Title + route — indented toward the spine on desktop */}
@@ -267,7 +269,7 @@ function DayRow({day, flip, isFirst, isLast}: {day: JourneyDay; flip: boolean; i
               {day.highlights.map((h) => (
                 <li
                   key={h}
-                  className="inline-flex items-center gap-[0.6875rem] rounded-full rounded-tl-none bg-white px-[1.375rem] py-[0.8125rem] text-sm text-dark shadow-card-m"
+                  className="inline-flex items-center gap-[0.6875rem] rounded-full rounded-tl-none bg-white px-[1.375rem] py-[0.8125rem] text-sm text-dark shadow-[0_0.375rem_1.125rem_rgba(31,37,50,0.07)]"
                 >
                   <CheckIcon />
                   {h}
@@ -287,7 +289,7 @@ function DayRow({day, flip, isFirst, isLast}: {day: JourneyDay; flip: boolean; i
         {!isLast && (
           <div className="journey-spine-line absolute left-1/2 top-44.5 border-l-2 border-dashed border-primary/45" />
         )}
-        <div className="absolute left-1/2 top-[9.375rem] flex h-14 w-14 -translate-x-1/2 flex-col items-center justify-center rounded-full bg-primary text-white shadow-card-m">
+        <div className="day-circle absolute left-1/2 top-37.5 flex h-14 w-14 -translate-x-1/2 flex-col items-center justify-center rounded-full bg-primary text-white">
           <span className="text-[0.5rem] font-semibold uppercase tracking-[0.12em] opacity-90">Day</span>
           <span className="text-2xl font-bold">{day.number}</span>
         </div>
@@ -295,7 +297,7 @@ function DayRow({day, flip, isFirst, isLast}: {day: JourneyDay; flip: boolean; i
 
       {/* Media */}
       <div className={`mx-auto mt-9 max-w-[35rem] pt-0 lg:row-start-1 lg:mx-0 lg:mt-0 lg:max-w-none lg:pt-4.5 ${flip ? 'lg:col-start-1' : 'lg:col-start-3'} ${open ? '' : 'max-lg:hidden'}`}>
-        <ImageCarousel images={day.images} dayNumber={day.number} />
+        <ImageCarousel images={day.images} />
 
         <StarRating rating={day.review.rating} dayNumber={day.number} />
 
@@ -341,44 +343,93 @@ function RouteTimeline({stops}: {stops: RouteStop[]}) {
   );
 }
 
-function ImageCarousel({images, dayNumber}: {images: {src: string; alt: string}[]; dayNumber: number}) {
-  const [i, setI] = useState(0);
-  const n = images.length;
-  const cur = images[((i % n) + n) % n];
-  const next = images[(((i % n) + n) % n + 1) % n];
-  const prev = useCallback(() => setI((v) => v - 1), []);
-  const advance = useCallback(() => setI((v) => v + 1), []);
+function ImageCarousel({images}: {images: {src: string; alt: string}[]}) {
+  const [emblaRef, emblaApi] = useEmblaCarousel({
+    loop: true,
+    axis: 'y',
+    align: 'center',
+    containScroll: false,
+    duration: 32,
+  });
+  const [selectedIdx, setSelectedIdx] = useState(0);
+
+  useEffect(() => {
+    if (!emblaApi) return;
+    const onSelect = () => setSelectedIdx(emblaApi.selectedScrollSnap());
+    emblaApi.on('select', onSelect);
+    return () => { emblaApi.off('select', onSelect); };
+  }, [emblaApi]);
+
+  const prev = useCallback(() => emblaApi?.scrollPrev(), [emblaApi]);
+  const next = useCallback(() => emblaApi?.scrollNext(), [emblaApi]);
 
   return (
     <div className="relative">
-      {/* Peeking card behind */}
-      <div
-        aria-hidden="true"
-        className="absolute left-1/2 top-[-0.875rem] h-[18.75rem] w-full origin-top -translate-x-1/2 scale-[0.94] overflow-hidden rounded-[1.25rem] bg-sand shadow-card-m"
-      >
-        <img src={next.src} alt="" className="h-full w-full object-cover" loading="lazy" />
-      </div>
-      {/* Front card */}
-      <div className="relative z-10 h-[18.75rem] overflow-hidden rounded-[1.25rem] bg-dark shadow-card-m">
-        <img src={cur.src} alt={cur.alt} className="h-full w-full object-cover" loading="lazy" />
-        <div className="absolute bottom-[1.125rem] left-1/2 flex -translate-x-1/2 gap-3">
-          <button
-            type="button"
-            aria-label="Previous photo"
-            onClick={prev}
-            className="flex h-[2.125rem] w-[2.125rem] items-center justify-center rounded-full bg-white text-dark shadow-card-m transition-transform hover:scale-105"
-          >
-            <ChevronIcon dir="left" />
-          </button>
-          <button
-            type="button"
-            aria-label="Next photo"
-            onClick={advance}
-            className="flex h-[2.125rem] w-[2.125rem] items-center justify-center rounded-full bg-white text-dark shadow-card-m transition-transform hover:scale-105"
-          >
-            <ChevronIcon dir="right" />
-          </button>
+      {/* Vertical strip — 3 slides visible: center full + top/bottom peeking */}
+      <div ref={emblaRef} className="h-[28rem] overflow-hidden rounded-[1.25rem]">
+        <div className="flex flex-col gap-2.5 touch-pan-x">
+          {images.map((img, i) => {
+            const active = i === selectedIdx;
+            return (
+              <div
+                key={i}
+                className={`relative h-75 w-full flex-none overflow-hidden rounded-[1.25rem] transition-[transform,opacity,box-shadow] duration-300 ${
+                  active
+                    ? 'scale-100 opacity-100 shadow-[0_1.375rem_2.75rem_rgba(31,37,50,0.28)]'
+                    : 'scale-[0.96] opacity-50 shadow-[0_0.375rem_0.75rem_rgba(31,37,50,0.10)]'
+                }`}
+              >
+                <img
+                  src={img.src}
+                  alt={active ? img.alt : ''}
+                  draggable={false}
+                  className="h-full w-full object-cover"
+                  loading="lazy"
+                />
+              </div>
+            );
+          })}
         </div>
+      </div>
+
+      {/* Controls — up / dots / down */}
+      <div className="mt-4 flex items-center justify-center gap-3">
+        <button
+          type="button"
+          aria-label="Previous photo"
+          onClick={prev}
+          className="flex h-[2.125rem] w-[2.125rem] items-center justify-center rounded-full bg-dark/10 text-dark shadow-[0_0.25rem_0.75rem_rgba(0,0,0,0.12)] transition-transform hover:scale-105"
+        >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <path d="m18 15-6-6-6 6" />
+          </svg>
+        </button>
+
+        <div className="flex gap-1.5">
+          {images.map((_, i) => (
+            <button
+              key={i}
+              type="button"
+              aria-label={`Slide ${i + 1}`}
+              aria-current={i === selectedIdx ? 'true' : undefined}
+              onClick={() => emblaApi?.scrollTo(i)}
+              className={`h-1.5 rounded-full transition-all duration-300 ${
+                i === selectedIdx ? 'w-5 bg-primary' : 'w-1.5 bg-primary/30'
+              }`}
+            />
+          ))}
+        </div>
+
+        <button
+          type="button"
+          aria-label="Next photo"
+          onClick={next}
+          className="flex h-[2.125rem] w-[2.125rem] items-center justify-center rounded-full bg-dark/10 text-dark shadow-[0_0.25rem_0.75rem_rgba(0,0,0,0.12)] transition-transform hover:scale-105"
+        >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <path d="m6 9 6 6 6-6" />
+          </svg>
+        </button>
       </div>
     </div>
   );
@@ -447,12 +498,5 @@ function CheckIcon() {
   );
 }
 
-function ChevronIcon({dir}: {dir: 'left' | 'right'}) {
-  return (
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      {dir === 'left' ? <path d="m15 18-6-6 6-6" /> : <path d="m9 18 6-6-6-6" />}
-    </svg>
-  );
-}
 
 export default Journey;

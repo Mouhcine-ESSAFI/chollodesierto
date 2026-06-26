@@ -78,7 +78,7 @@ export function WhyChooseUs({
         </ul>
 
         {/* ── Featured review ── */}
-        <figure className="relative mx-auto mt-section max-w-190 px-6 text-center">
+        <figure className="relative mx-auto mt-section max-w-150 px-6 text-center">
           <span aria-hidden="true" className="pointer-events-none absolute -bottom-20 left-0 md:left-45 select-none font-serif text-9xl text-dark/5">
             &ldquo;
           </span>
@@ -88,11 +88,11 @@ export function WhyChooseUs({
 
           <StarRating rating={review.rating} />
 
-          <blockquote className="relative z-10 mt-5.5 font-body font-bold text-dark text-base text-balance">
+          <blockquote className="relative z-10 mt-5.5 font-body font-bold text-dark text-base">
             {review.quote}
           </blockquote>
 
-          <figcaption className="relative z-10 mt-5.5 flex items-center justify-center gap-2.5 font-body font-medium text-base text-dark/75">
+          <figcaption className="relative z-10 mt-5.5 flex items-center justify-center gap-2.5 font-body font-medium text-base text-dark">
             <span>{review.name}</span>
             <span aria-hidden="true" className="text-dark/35">·</span>
             <span role="img" aria-label={review.country} className="text-xl">{review.flag}</span>

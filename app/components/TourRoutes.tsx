@@ -130,7 +130,7 @@ function RouteCard({route}: {route: Route}) {
         </div>
       ) : (
         <div className="rounded-route-sm bg-sand shadow-card">
-          <p className="py-1.5 text-center text-label font-bold text-dark">{route.label}</p>
+          <p className="py-1.5 text-center text-label font-display text-dark">{route.label}</p>
           <CardImage route={route} />
           <div className="relative -mt-4 min-h-62 rounded-route-sm bg-white px-6 pb-16 pt-7">
             <CardBody route={route} />
@@ -151,7 +151,10 @@ function CardImage({route, featured}: {route: Route; featured?: boolean}) {
           🏅
         </span>
       )}
-      <div className="route-text-shadow absolute inset-x-4 bottom-6 flex gap-4 text-xs font-bold text-white justify-center">
+      <span aria-hidden="true"
+            className="absolute inset-0 bg-gradient-to-b from-transparent from-[80%] to-black"
+      />
+      <div className="route-text-shadow absolute inset-x-4 bottom-6 flex gap-4 text-xs font-display text-white justify-center">
         <span className="flex items-center gap-1.5 whitespace-nowrap">
           <ClockIcon /> {route.days}
         </span>
@@ -202,7 +205,7 @@ function RouteMap({stops}: {stops: Route['stops']}) {
 
 function PriceBar({route}: {route: Route}) {
   return (
-    <div className="absolute inset-x- -bottom-7.5 flex h-18 items-center rounded-full bg-white pr-2 shadow-card-m w-76 justify-end">
+    <div className="absolute -bottom-7.5 flex h-18 items-center rounded-full bg-white pr-2 shadow-card-m w-76 justify-end">
       <div className="flex flex-col text-center pr-4">
         <span className="text-label-2xs font-semibold uppercase text-forest">Per person</span>
         <span className="text-price font-display text-forest">{route.price}</span>
