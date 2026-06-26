@@ -1,4 +1,4 @@
-import {useRef} from 'react';
+import { useEffect, useRef } from 'react';
 
 interface TribePhoto {
   src: string;
@@ -8,12 +8,18 @@ interface TribePhoto {
 }
 
 const PHOTOS: TribePhoto[] = [
-  {src: 'https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=600&q=80', alt: 'Kasbah village by the river', height: 'h-115'},
-  {src: 'https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=600&q=80', alt: 'Traveler on a quad bike in the dunes', height: 'h-140'},
-  {src: 'https://images.unsplash.com/photo-1517824806704-9040b037703b?auto=format&fit=crop&w=600&q=80', alt: 'Tour group posing in the desert', height: 'h-115'},
-  {src: 'https://images.unsplash.com/photo-1489493887464-892be6d1daae?auto=format&fit=crop&w=600&q=80', alt: 'Berber guide in a blue robe', height: 'h-140'},
-  {src: 'https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=600&q=80', alt: 'Rider on a camel crossing the Sahara', height: 'h-115'},
-  {src: 'https://images.unsplash.com/photo-1473580044384-7ba9967e16a0?auto=format&fit=crop&w=600&q=80', alt: 'Campfire glowing in the desert night', height: 'h-140'},
+  {src: 'https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=600&q=80', alt: 'Kasbah village by the river', height: 'h-100'},
+  {src: 'https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=600&q=80', alt: 'Traveler on a quad bike in the dunes', height: 'h-125'},
+  {src: 'https://images.unsplash.com/photo-1517824806704-9040b037703b?auto=format&fit=crop&w=600&q=80', alt: 'Tour group posing in the desert', height: 'h-100'},
+  {src: 'https://images.unsplash.com/photo-1489493887464-892be6d1daae?auto=format&fit=crop&w=600&q=80', alt: 'Berber guide in a blue robe', height: 'h-125'},
+  {src: 'https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=600&q=80', alt: 'Rider on a camel crossing the Sahara', height: 'h-100'},
+  {src: 'https://images.unsplash.com/photo-1473580044384-7ba9967e16a0?auto=format&fit=crop&w=600&q=80', alt: 'Campfire glowing in the desert night', height: 'h-125'},
+  {src: 'https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=600&q=80', alt: 'Kasbah village by the river', height: 'h-100'},
+  {src: 'https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=600&q=80', alt: 'Traveler on a quad bike in the dunes', height: 'h-125'},
+  {src: 'https://images.unsplash.com/photo-1517824806704-9040b037703b?auto=format&fit=crop&w=600&q=80', alt: 'Tour group posing in the desert', height: 'h-100'},
+  {src: 'https://images.unsplash.com/photo-1489493887464-892be6d1daae?auto=format&fit=crop&w=600&q=80', alt: 'Berber guide in a blue robe', height: 'h-125'},
+  {src: 'https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=600&q=80', alt: 'Rider on a camel crossing the Sahara', height: 'h-100'},
+  {src: 'https://images.unsplash.com/photo-1473580044384-7ba9967e16a0?auto=format&fit=crop&w=600&q=80', alt: 'Campfire glowing in the desert night', height: 'h-125'},
 ];
 
 export interface CapturedByTribeProps {
@@ -32,6 +38,20 @@ export function CapturedByTribe({
 }: CapturedByTribeProps) {
   const scroller = useRef<HTMLUListElement>(null);
 
+  useEffect(() => {
+  const el = scroller.current;
+  if (!el) return;
+
+  requestAnimationFrame(() => {
+    const maxScroll = el.scrollWidth - el.clientWidth;
+
+    el.scrollTo({
+      left: maxScroll / 2,
+      behavior: 'auto',
+    });
+  });
+}, []);
+
   const scrollByCards = (dir: 1 | -1) => {
     const el = scroller.current;
     if (!el) return;
@@ -48,7 +68,7 @@ export function CapturedByTribe({
       {/* Header */}
       <div className="container max-w-content text-center">
         <h2 className="text-h3 md:text-h2 font-display text-dark">{heading}</h2>
-        <p className="mt-4 text-base text-dark">{subheading}</p>
+        <p className="mt-2 text-base text-dark">{subheading}</p>
       </div>
 
       {/* Nav */}
@@ -61,15 +81,13 @@ export function CapturedByTribe({
       <ul
         ref={scroller}
         role="list"
-        className="mt-[clamp(24px,3vw,36px)] flex snap-x snap-mandatory items-center gap-[26px]
-                   overflow-x-auto px-[clamp(16px,6vw,96px)] py-7
-                   [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        className="mt-6 flex snap-x snap-mandatory items-center gap-8 overflow-x-auto px-[10vw] py-7 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       >
         {photos.map((photo, i) => (
           <li
             key={i}
             data-tribe-card
-            className={`${photo.height} w-[clamp(230px,24vw,300px)] shrink-0 snap-center overflow-hidden
+            className={`${photo.height} w-[clamp(260px,18vw,320px)] shrink-0 snap-center overflow-hidden
                         rounded-route-sm bg-sand shadow-card`}
           >
             <img
@@ -106,7 +124,7 @@ function NavButton({
       type="button"
       aria-label={label}
       onClick={onClick}
-      className="flex h-11 w-11 items-center justify-center rounded-full bg-dark text-white
+      className="flex h-6 w-6 items-center justify-center rounded-full bg-dark text-white
                  transition-colors hover:bg-primary"
     >
       <svg
