@@ -13,7 +13,11 @@ import {SiteFooter} from '~/components/SiteFooter';
 
 export const meta: MetaFunction = () => [
   {title: 'Budget Desert Tour — 3-Day Marrakech to Sahara from €85'},
-  {name: 'description', content: '3-day small group desert tour from Marrakech to the Sahara. Real Berber camp, camel trek, fair price from €85.'},
+  {
+    name: 'description',
+    content:
+      '3-day small group desert tour from Marrakech to the Sahara. Real Berber camp, camel trek, fair price from €85.',
+  },
 ];
 
 export default function Homepage() {
@@ -31,7 +35,7 @@ export default function Homepage() {
         <Journey />
         <CampTiers />
         <CapturedByTribe />
-        {/* <FAQ /> */}
+        <FAQ />
         <BookingCTA />
       </main>
       {/* <SiteFooter /> */}

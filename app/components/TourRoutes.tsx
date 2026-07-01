@@ -85,7 +85,7 @@ export function TourRoutes({
             </svg>
           </svg>
         </div>
-        <h2 className="py-3 text-h3 md:text-h2 font-display text-dark">
+        <h2 className="py-3 text-h2 font-display text-dark">
           {heading}
         </h2>
         <p className="pb-16 text-dark text-base">

@@ -1,5 +1,4 @@
-import useEmblaCarousel from 'embla-carousel-react';
-import {useCallback, useEffect, useMemo, useState} from 'react';
+import {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 
 interface RouteStop {
   label: string;
@@ -156,23 +155,33 @@ export function Journey({
         </p>
 
         {/* "Here's why" bubble */}
-        <div className="mt-2 flex justify-center lg:mt-0">
-          <div className="flex items-end lg:absolute lg:right-107 lg:top-68 lg:z-[5] lg:-translate-x-[3.75rem]">
-            <span
-              role="img"
-              aria-label="Cool face"
-              className="z-10 text-[2.25rem] drop-shadow-[0_0.375rem_0.375rem_rgba(31,37,50,0.12)]"
-            >
-              {'\u{1F60E}'}
-            </span>
-            <div className="relative mb-5 ml-0.5 whitespace-nowrap rounded-[0.875rem] bg-dark px-3.5 py-2 text-label font-medium text-white shadow-[0_0.5rem_1.25rem_rgba(31,37,50,0.18)]">
-              Here&rsquo;s why.
-              <span
-                aria-hidden="true"
-                className="absolute -left-[0.3125rem] bottom-2 h-3.5 w-3.5 rotate-45 rounded-[0.1875rem] bg-dark"
-              />
+        <div className="mt-2 flex justify-center lg:mt-6 pb-6 lg:pb-0">
+            <div aria-label="Here's why." className="inline-flex ml-32 items-start font-body">
+              {/* Emoji + ground shadow */}
+              <span className="relative mt-12 shrink-0">
+                <span role="img" aria-label="Smiling face with sunglasses" className="block text-4xl leading-none">
+                  {'\u{1F60E}'}
+                </span>
+                <span
+                  aria-hidden="true"
+                  className="absolute -bottom-6 left-1/2 h-1.5 w-8 -translate-x-1/2 rounded-full bg-dark/14 blur-[3.5px]"
+                />
+              </span>
+
+              {/* Speech bubble */}
+              <span className="relative rounded-full bg-dark px-6 py-2 text-babel text-white">
+                Here&rsquo;s why.
+                <svg
+                  aria-hidden="true"
+                  width="24"
+                  height="20"
+                  viewBox="0 0 24 20"
+                  className="absolute -bottom-3.5 left-2.5 fill-dark"
+                >
+                  <path d="M6 0 C6 0 4 12 2 17 C2 17 13 8 20 1 Z" />
+                </svg>
+              </span>
             </div>
-          </div>
         </div>
       </header>
 
@@ -198,10 +207,10 @@ function DayRow({day, flip, isFirst, isLast}: {day: JourneyDay; flip: boolean; i
   const [open, setOpen] = useState(isFirst);
 
   return (
-    <div className="grid grid-cols-1 items-start gap-y-2 my-[clamp(3.5rem,8vw,6.875rem)] last:mb-0 lg:grid-cols-[1fr_4.75rem_1fr] lg:gap-x-[3.125rem]">
+    <div className="grid grid-cols-1 items-start gap-y-2 my-[clamp(2rem,8vw,4rem)] last:mb-0 lg:grid-cols-[1fr_4.75rem_1fr] lg:gap-x-12.5">
 
       {/* Content */}
-      <div className={`relative pt-[1.875rem] max-lg:pt-0 lg:row-start-1 ${flip ? 'lg:col-start-3' : 'lg:col-start-1'}`}>
+      <div className={`relative pt-7.5 max-lg:pt-0 lg:row-start-1 ${flip ? 'lg:col-start-3' : 'lg:col-start-1'}`}>
 
         {/* Mobile toggle — circle always centered, same position open/closed */}
         <button
@@ -213,10 +222,15 @@ function DayRow({day, flip, isFirst, isLast}: {day: JourneyDay; flip: boolean; i
         >
           <span
             aria-hidden="true"
-            className="day-circle flex h-13.5 w-13.5 flex-col items-center justify-center rounded-full bg-primary text-white"
+            className="day-circle relative flex h-13.5 w-13.5 flex-col items-center justify-center rounded-full bg-primary text-white"
           >
-            <span className="text-[0.5rem] font-semibold uppercase tracking-[0.12em] opacity-90">Day</span>
-            <span className="text-[1.45rem] font-bold">{day.number}</span>
+            <span
+              aria-hidden="true"
+              className="absolute inset-0 rounded-full bg-primary/50 animate-ping"
+              style={{animationDelay: `${(day.number - 1) * 0.5}s`}}
+            />
+            <span className="relative text-[0.5rem] font-semibold uppercase tracking-[0.12em] opacity-90">Day</span>
+            <span className="relative text-[1.45rem] font-bold">{day.number}</span>
           </span>
         </button>
 
@@ -231,7 +245,7 @@ function DayRow({day, flip, isFirst, isLast}: {day: JourneyDay; flip: boolean; i
 
             <span
               aria-hidden="true"
-              className="pointer-events-none absolute -top-22 z-0 text-[18.5rem] font-display text-dark/5 max-lg:hidden"
+              className="pointer-events-none absolute -top-40 z-0 text-[18.5rem] font-display text-dark/5 max-lg:hidden"
             >
               {day.number}
             </span>
@@ -245,7 +259,7 @@ function DayRow({day, flip, isFirst, isLast}: {day: JourneyDay; flip: boolean; i
             ))}
           </div>
 
-          <div className="mt-[1.875rem] flex flex-col items-start gap-3 sm:flex-row sm:gap-4">
+          <div className="mt-7.5 flex flex-col items-start gap-3 sm:flex-row sm:gap-4">
             <div className="flex w-full lg:w-32 flex-none items-start gap-2">
               <span role="img" aria-label="Cool face" className="text-[1.375rem]">
                 {'\u{1F60E}'}
@@ -256,7 +270,7 @@ function DayRow({day, flip, isFirst, isLast}: {day: JourneyDay; flip: boolean; i
               {day.highlights.map((h) => (
                 <li
                   key={h}
-                  className="inline-flex items-center gap-[0.6875rem] rounded-full rounded-tl-none bg-white px-[1.375rem] py-[0.8125rem] text-sm text-dark shadow-[0_0.375rem_1.125rem_rgba(31,37,50,0.07)]"
+                  className="inline-flex items-center gap-2.75 rounded-full rounded-tl-none bg-white px-5.5 py-3.25 text-sm text-dark shadow-[0_0.375rem_1.125rem_rgba(31,37,50,0.07)]"
                 >
                   <CheckIcon />
                   {h}
@@ -277,13 +291,18 @@ function DayRow({day, flip, isFirst, isLast}: {day: JourneyDay; flip: boolean; i
           <div className="journey-spine-line absolute left-1/2 top-44.5 border-l-2 border-dashed border-primary/45" />
         )}
         <div className="day-circle absolute left-1/2 top-37.5 flex h-14 w-14 -translate-x-1/2 flex-col items-center justify-center rounded-full bg-primary text-white">
-          <span className="text-[0.5rem] font-semibold uppercase tracking-[0.12em] opacity-90">Day</span>
-          <span className="text-2xl font-bold">{day.number}</span>
+          <span
+            aria-hidden="true"
+            className="absolute inset-0 rounded-full bg-primary/50 animate-ping"
+            style={{animationDelay: `${(day.number - 1) * 0.5}s`}}
+          />
+          <span className="relative text-[0.5rem] font-semibold uppercase tracking-[0.12em] opacity-90">Day</span>
+          <span className="relative text-2xl font-bold">{day.number}</span>
         </div>
       </div>
 
       {/* Media */}
-      <div className={`mx-auto mt-9 max-w-[35rem] pt-0 lg:row-start-1 lg:mx-0 lg:mt-0 lg:max-w-none lg:pt-4.5 ${flip ? 'lg:col-start-1' : 'lg:col-start-3'} ${open ? '' : 'max-lg:hidden'}`}>
+      <div className={`mx-auto mt-9 max-w-140 pt-0 lg:row-start-1 lg:mx-0 lg:mt-0 lg:max-w-none lg:pt-4.5 ${flip ? 'lg:col-start-1' : 'lg:col-start-3'} ${open ? '' : 'max-lg:hidden'}`}>
         <ImageCarousel images={day.images} />
 
         <StarRating rating={day.review.rating} dayNumber={day.number} />
@@ -314,7 +333,7 @@ function DayRow({day, flip, isFirst, isLast}: {day: JourneyDay; flip: boolean; i
 
 function RouteTimeline({stops}: {stops: RouteStop[]}) {
   return (
-    <div className="relative my-[1.625rem] mb-7 w-[20.625rem] max-w-full">
+    <div className="relative my-6.5 mb-7 w-82.5 max-w-full">
       <div aria-hidden="true" className="absolute top-1.5 left-[16.66%] right-[16.66%] border-t-2 border-dashed border-primary/55" />
       <div className="relative flex">
         {stops.map((s) => (
@@ -332,94 +351,166 @@ function RouteTimeline({stops}: {stops: RouteStop[]}) {
 
 function ImageCarousel({images}: {images: {src: string; alt: string}[]}) {
   const n = images.length;
-  const [emblaRef, emblaApi] = useEmblaCarousel({loop: true, axis: 'y', duration: 32});
-  const [selectedIdx, setSelectedIdx] = useState(0);
+  const [idx, setIdx] = useState(0);
+  const [dragX, setDragX] = useState(0);
+  const [phase, setPhase] = useState<'idle' | 'drag' | 'exit-l' | 'exit-r' | 'reset'>('idle');
+  const startX = useRef(0);
 
+  const peek1 = (idx + 1) % n;
+  const peek2 = (idx + 2) % n;
+
+  const THRESHOLD = 72;
+  const liveDrag = phase === 'drag' ? dragX : 0;
+  const progress = Math.min(Math.abs(liveDrag) / THRESHOLD, 1);
+  const rot = (liveDrag / 220) * 20;
+
+  const advance = useCallback((dir: 1 | -1) => {
+    if (phase !== 'idle') return;
+    setPhase(dir > 0 ? 'exit-l' : 'exit-r');
+  }, [phase]);
+
+  const onDown = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
+    if (phase !== 'idle') return;
+    startX.current = e.clientX;
+    setPhase('drag');
+    e.currentTarget.setPointerCapture(e.pointerId);
+  }, [phase]);
+
+  const onMove = useCallback((e: React.PointerEvent) => {
+    if (phase !== 'drag') return;
+    setDragX(e.clientX - startX.current);
+  }, [phase]);
+
+  const onUp = useCallback(() => {
+    if (phase !== 'drag') return;
+    if (Math.abs(dragX) >= THRESHOLD) {
+      setPhase(dragX < 0 ? 'exit-l' : 'exit-r');
+    } else {
+      setDragX(0);
+      setPhase('idle');
+    }
+  }, [phase, dragX]);
+
+  const onTransEnd = useCallback((e: React.TransitionEvent) => {
+    if (e.propertyName !== 'transform') return;
+    if (phase === 'exit-l') setIdx((v) => (v + 1) % n);
+    else if (phase === 'exit-r') setIdx((v) => (v - 1 + n) % n);
+    else return;
+    setDragX(0);
+    setPhase('reset'); // snap new image to 0 instantly — no entrance slide
+  }, [phase, n]);
+
+  // One frame after reset: re-enable transitions without playing an entrance animation
   useEffect(() => {
-    if (!emblaApi) return;
-    const onSelect = () => setSelectedIdx(emblaApi.selectedScrollSnap());
-    emblaApi.on('select', onSelect);
-    return () => { emblaApi.off('select', onSelect); };
-  }, [emblaApi]);
+    if (phase !== 'reset') return;
+    const id = requestAnimationFrame(() => setPhase('idle'));
+    return () => cancelAnimationFrame(id);
+  }, [phase]);
 
-  const peek1 = (selectedIdx + 1) % n;
-  const peek2 = (selectedIdx + 2) % n;
-  const prev = useCallback(() => emblaApi?.scrollPrev(), [emblaApi]);
-  const next = useCallback(() => emblaApi?.scrollNext(), [emblaApi]);
-
+  const cardStyle: React.CSSProperties =
+  phase === 'drag'
+    ? {
+        transform: `translateX(${dragX}px) rotate(${rot}deg)`,
+        transformOrigin: '50% 85%',
+        transition: 'none',
+        cursor: 'grabbing',
+        // filter: 'drop-shadow(0 8px 24px rgba(0,0,0,0.18))',
+      }
+  : phase === 'exit-l'
+    ? {
+        transform: 'translateX(-130%) rotate(-28deg)',
+        transformOrigin: '50% 85%',
+        transition: 'transform 0.38s cubic-bezier(0.4, 0, 0.8, 0.2), filter 0.38s ease',
+        opacity: 1,
+        // filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.06))',
+      }
+  : phase === 'exit-r'
+    ? {
+        transform: 'translateX(130%) rotate(28deg)',
+        transformOrigin: '50% 85%',
+        transition: 'transform 0.38s cubic-bezier(0.4, 0, 0.8, 0.2), filter 0.38s ease',
+        opacity: 1,
+        // filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.06))',
+      }
+  : phase === 'reset'
+    ? {
+        transform: 'translateX(0) rotate(20deg)',
+        transformOrigin: '50% 85%',
+        transition: 'transform 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
+        // filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.10))',
+      }
+  : {
+      transform: 'translateX(0) rotate(0deg)',
+      transformOrigin: '50% 85%',
+      transition: 'transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.35s ease',
+      cursor: 'grab',
+      // filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.10))',
+    };
+    
   return (
-    <div className="relative pt-7">
-      {/* Card 3 — back, peeks furthest from top, narrowest (decorative only) */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute top-0 left-[6%] right-[6%] h-75 overflow-hidden rounded-[1.25rem] bg-dark shadow-[0_0.5rem_1rem_rgba(31,37,50,0.10)]"
-      >
-        <img src={images[peek2].src} alt="" draggable={false} className="h-full w-full object-cover opacity-50" loading="lazy" />
-      </div>
-
-      {/* Card 2 — middle, peeks 3.5rem from top (decorative only) */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute top-3.5 left-[3%] right-[3%] h-75 overflow-hidden rounded-[1.25rem] bg-dark shadow-[0_0.75rem_1.5rem_rgba(31,37,50,0.14)]"
-      >
-        <img src={images[peek1].src} alt="" draggable={false} className="h-full w-full object-cover opacity-75" loading="lazy" />
-      </div>
-
-      {/* Card 1 — front, full width, Embla slides vertically inside */}
-      <div className="relative z-10 h-75 rounded-[1.25rem] shadow-[0_1.375rem_2.75rem_rgba(31,37,50,0.28)]">
-        <div ref={emblaRef} className="h-full overflow-hidden rounded-[1.25rem]">
-          <div className="flex h-full flex-col">
-            {images.map((img, i) => (
-              <div key={i} className="h-75 w-full flex-none shrink-0">
-                <img
-                  src={img.src}
-                  alt={i === selectedIdx ? img.alt : ''}
-                  draggable={false}
-                  className="h-full w-full object-cover"
-                  loading="lazy"
-                />
-              </div>
-            ))}
-          </div>
+    <div className="relative select-none touch-none">
+      {/* ── Card stack — overflow-hidden clips the card during drag/exit ── */}
+      <div className="relative overflow-hidden pt-7">
+        {/* Back card */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute left-[6%] right-[6%] h-75 overflow-hidden rounded-[1.25rem] bg-dark"
+          style={{top: `${progress * 3}px`, transition: phase === 'drag' ? 'none' : 'top 0.18s ease'}}
+        >
+          <img src={images[peek2].src} alt="" draggable={false} className="h-full w-full object-cover opacity-50" loading="lazy" />
         </div>
 
-        {/* Controls — same style, up/down arrows for vertical movement */}
-        <div className="absolute inset-x-0 bottom-4.5 z-10 flex items-center justify-center gap-3">
-          <button
-            type="button"
-            aria-label="Previous photo"
-            onClick={prev}
-            className="flex h-8.5 w-8.5 items-center justify-center rounded-full bg-white text-dark shadow-[0_0.25rem_0.75rem_rgba(0,0,0,0.22)] transition-transform hover:scale-105"
-          >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-              <path d="m18 15-6-6-6 6" />
-            </svg>
-          </button>
-
-          <div className="flex gap-1.5">
-            {images.map((_, i) => (
-              <button
-                key={i}
-                type="button"
-                aria-label={`Slide ${i + 1}`}
-                aria-current={i === selectedIdx ? 'true' : undefined}
-                onClick={() => emblaApi?.scrollTo(i)}
-                className={`h-1.5 rounded-full transition-all duration-300 ${i === selectedIdx ? 'w-5 bg-white' : 'w-1.5 bg-white/50'}`}
-              />
-            ))}
-          </div>
-
-          <button
-            type="button"
-            aria-label="Next photo"
-            onClick={next}
-            className="flex h-8.5 w-8.5 items-center justify-center rounded-full bg-white text-dark shadow-[0_0.25rem_0.75rem_rgba(0,0,0,0.22)] transition-transform hover:scale-105"
-          >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-              <path d="m6 9 6 6 6-6" />
-            </svg>
-          </button>
+        {/* Middle card */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute left-[3%] right-[3%] h-75 overflow-hidden rounded-[1.25rem] bg-dark"
+          style={{top: `${14 - progress * 7}px`, transition: phase === 'drag' ? 'none' : 'top 0.18s ease'}}
+        >
+          <img src={images[peek1].src} alt="" draggable={false} className="h-full w-full object-cover opacity-75" loading="lazy" />
         </div>
+
+        {/* Front card — draggable, rotates with finger */}
+        <div
+          className="relative z-10 h-75 overflow-hidden rounded-[1.25rem] shadow-card-m cursor-grab"
+          style={cardStyle}
+          onPointerDown={onDown}
+          onPointerMove={onMove}
+          onPointerUp={onUp}
+          onPointerCancel={onUp}
+          onTransitionEnd={onTransEnd}
+        >
+          <img
+            src={images[idx].src}
+            alt={images[idx].alt}
+            draggable={false}
+            className="h-full w-full object-cover"
+            loading="lazy"
+          />
+        </div>
+      </div>
+
+      {/* ── Buttons — absolute over the card, never move with it ── */}
+      <div className="pointer-events-none absolute inset-x-0 bottom-4 z-20 flex justify-center gap-2">
+        <button
+          type="button"
+          aria-label="Previous photo"
+          onClick={() => advance(-1)}
+          className="pointer-events-auto flex h-8.5 w-8.5 items-center justify-center rounded-full bg-white text-dark shadow-[0_0.25rem_0.75rem_rgba(0,0,0,0.22)] transition-transform hover:scale-105"
+        >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <path d="m15 18-6-6 6-6" />
+          </svg>
+        </button>
+        <button
+          type="button"
+          aria-label="Next photo"
+          onClick={() => advance(1)}
+          className="pointer-events-auto flex h-8.5 w-8.5 items-center justify-center rounded-full bg-white text-dark shadow-[0_0.25rem_0.75rem_rgba(0,0,0,0.22)] transition-transform hover:scale-105"
+        >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <path d="m9 18 6-6-6-6" />
+          </svg>
+        </button>
       </div>
     </div>
   );
