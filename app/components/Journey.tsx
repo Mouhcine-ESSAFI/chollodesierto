@@ -197,6 +197,18 @@ export function Journey({
           />
         ))}
       </div>
+
+      {/* ── CTA ── */}
+      <div className="mx-auto flex max-w-content flex-col items-center">
+        <div aria-hidden="true" className="h-20 w-0 border-l-2 border-dashed border-primary/45" />
+        <a
+          href="/book"
+          className="inline-flex items-center gap-3 rounded-full bg-primary px-8 py-4.5 font-display text-btn text-sand shadow-card-m transition-all hover:scale-[1.03] hover:shadow-[0_0.75rem_2rem_rgba(196,90,44,0.45)]"
+        >
+          Start your Journey Today
+          <span role="img" aria-label="Winking face" className="leading-none">{'\u{1F609}'}</span>
+        </a>
+      </div>
     </section>
   );
 }
@@ -223,12 +235,9 @@ function DayRow({day, flip, isFirst, isLast}: {day: JourneyDay; flip: boolean; i
           <span
             aria-hidden="true"
             className="day-circle relative flex h-13.5 w-13.5 flex-col items-center justify-center rounded-full bg-primary text-white"
+            data-day={day.number}
           >
-            <span
-              aria-hidden="true"
-              className="absolute inset-0 rounded-full bg-primary/50 animate-ping"
-              style={{animationDelay: `${(day.number - 1) * 0.5}s`}}
-            />
+            <span aria-hidden="true" className="day-ping" />
             <span className="relative text-[0.5rem] font-semibold uppercase tracking-[0.12em] opacity-90">Day</span>
             <span className="relative text-[1.45rem] font-bold">{day.number}</span>
           </span>
@@ -241,7 +250,7 @@ function DayRow({day, flip, isFirst, isLast}: {day: JourneyDay; flip: boolean; i
               {day.title}
             </h3>
 
-            <RouteTimeline stops={day.route} />
+            <RouteTimeline stops={day.route} isFirstDay={isFirst} isLastDay={isLast} />
 
             <span
               aria-hidden="true"
@@ -287,15 +296,16 @@ function DayRow({day, flip, isFirst, isLast}: {day: JourneyDay; flip: boolean; i
         {!isFirst && (
           <div className="absolute left-1/2 top-0 h-44.5 border-l-2 border-dashed border-primary/45" />
         )}
-        {!isLast && (
+        {!isLast ? (
           <div className="journey-spine-line absolute left-1/2 top-44.5 border-l-2 border-dashed border-primary/45" />
+        ) : (
+          <div className="absolute bottom-0 left-1/2 top-44.5 border-l-2 border-dashed border-primary/45" />
         )}
-        <div className="day-circle absolute left-1/2 top-37.5 flex h-14 w-14 -translate-x-1/2 flex-col items-center justify-center rounded-full bg-primary text-white">
-          <span
-            aria-hidden="true"
-            className="absolute inset-0 rounded-full bg-primary/50 animate-ping"
-            style={{animationDelay: `${(day.number - 1) * 0.5}s`}}
-          />
+        <div
+          className="day-circle absolute left-1/2 top-37.5 flex h-14 w-14 -translate-x-1/2 flex-col items-center justify-center rounded-full bg-primary text-white"
+          data-day={day.number}
+        >
+          <span aria-hidden="true" className="day-ping" />
           <span className="relative text-[0.5rem] font-semibold uppercase tracking-[0.12em] opacity-90">Day</span>
           <span className="relative text-2xl font-bold">{day.number}</span>
         </div>
@@ -331,19 +341,22 @@ function DayRow({day, flip, isFirst, isLast}: {day: JourneyDay; flip: boolean; i
   );
 }
 
-function RouteTimeline({stops}: {stops: RouteStop[]}) {
+function RouteTimeline({stops, isFirstDay, isLastDay}: {stops: RouteStop[]; isFirstDay: boolean; isLastDay: boolean}) {
   return (
     <div className="relative my-6.5 mb-7 w-82.5 max-w-full">
       <div aria-hidden="true" className="absolute top-1.5 left-[16.66%] right-[16.66%] border-t-2 border-dashed border-primary/55" />
       <div className="relative flex">
-        {stops.map((s) => (
-          <div key={s.label} className="flex flex-1 flex-col items-center">
-            <span
-              className={`h-3 w-3 rounded-full ${s.active ? 'bg-primary' : 'border-2 border-primary bg-white'}`}
-            />
-            <span className="mt-2.5 text-xs font-semibold text-primary">{s.label}</span>
-          </div>
-        ))}
+        {stops.map((s, i) => {
+          const filled = (isFirstDay && i === 0) || (isLastDay && i === stops.length - 1);
+          return (
+            <div key={s.label} className="flex flex-1 flex-col items-center">
+              <span
+                className={`h-3 w-3 rounded-full ${filled ? 'bg-primary' : 'border-2 border-primary bg-sand'}`}
+              />
+              <span className="mt-2.5 text-xs font-semibold text-primary">{s.label}</span>
+            </div>
+          );
+        })}
       </div>
     </div>
   );
@@ -407,72 +420,30 @@ function ImageCarousel({images}: {images: {src: string; alt: string}[]}) {
     return () => cancelAnimationFrame(id);
   }, [phase]);
 
-  const cardStyle: React.CSSProperties =
-  phase === 'drag'
-    ? {
-        transform: `translateX(${dragX}px) rotate(${rot}deg)`,
-        transformOrigin: '50% 85%',
-        transition: 'none',
-        cursor: 'grabbing',
-        // filter: 'drop-shadow(0 8px 24px rgba(0,0,0,0.18))',
-      }
-  : phase === 'exit-l'
-    ? {
-        transform: 'translateX(-130%) rotate(-28deg)',
-        transformOrigin: '50% 85%',
-        transition: 'transform 0.38s cubic-bezier(0.4, 0, 0.8, 0.2), filter 0.38s ease',
-        opacity: 1,
-        // filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.06))',
-      }
-  : phase === 'exit-r'
-    ? {
-        transform: 'translateX(130%) rotate(28deg)',
-        transformOrigin: '50% 85%',
-        transition: 'transform 0.38s cubic-bezier(0.4, 0, 0.8, 0.2), filter 0.38s ease',
-        opacity: 1,
-        // filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.06))',
-      }
-  : phase === 'reset'
-    ? {
-        transform: 'translateX(0) rotate(20deg)',
-        transformOrigin: '50% 85%',
-        transition: 'transform 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
-        // filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.10))',
-      }
-  : {
-      transform: 'translateX(0) rotate(0deg)',
-      transformOrigin: '50% 85%',
-      transition: 'transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.35s ease',
-      cursor: 'grab',
-      // filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.10))',
-    };
-    
   return (
     <div className="relative select-none touch-none">
       {/* ── Card stack — overflow-hidden clips the card during drag/exit ── */}
-      <div className="relative overflow-hidden pt-7">
+      <div
+        className="carousel-wrap relative overflow-hidden pt-7"
+        data-phase={phase}
+        style={{
+          '--dp': progress,
+          ...(phase === 'drag' ? {'--dx': `${dragX}px`, '--dr': `${rot}deg`} : {}),
+        } as React.CSSProperties}
+      >
         {/* Back card */}
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute left-[6%] right-[6%] h-75 overflow-hidden rounded-[1.25rem] bg-dark"
-          style={{top: `${progress * 3}px`, transition: phase === 'drag' ? 'none' : 'top 0.18s ease'}}
-        >
+        <div aria-hidden="true" className="carousel-peek-back">
           <img src={images[peek2].src} alt="" draggable={false} className="h-full w-full object-cover opacity-50" loading="lazy" />
         </div>
 
         {/* Middle card */}
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute left-[3%] right-[3%] h-75 overflow-hidden rounded-[1.25rem] bg-dark"
-          style={{top: `${14 - progress * 7}px`, transition: phase === 'drag' ? 'none' : 'top 0.18s ease'}}
-        >
+        <div aria-hidden="true" className="carousel-peek-mid">
           <img src={images[peek1].src} alt="" draggable={false} className="h-full w-full object-cover opacity-75" loading="lazy" />
         </div>
 
         {/* Front card — draggable, rotates with finger */}
         <div
-          className="relative z-10 h-75 overflow-hidden rounded-[1.25rem] shadow-card-m cursor-grab"
-          style={cardStyle}
+          className="carousel-card relative z-10 h-75 overflow-hidden rounded-[1.25rem] shadow-card-m"
           onPointerDown={onDown}
           onPointerMove={onMove}
           onPointerUp={onUp}
@@ -527,7 +498,7 @@ function StarRating({rating, dayNumber}: {rating: number; dayNumber: number}) {
     <div
       role="img"
       aria-label={`Rated ${rating} out of 5`}
-      className="mt-6 flex justify-center gap-[0.1875rem] text-[#F5B72B]"
+      className="mt-6 flex justify-center gap-0.75 text-[#F5B72B]"
     >
       {stars.map((kind, i) => (
         <Star key={i} kind={kind} id={`journey-d${dayNumber}-star-${i}`} />

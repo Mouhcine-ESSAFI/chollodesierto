@@ -10,6 +10,7 @@ import {CapturedByTribe} from '~/components/CapturedByTribe';
 import {FAQ} from '~/components/FAQ';
 import {BookingCTA} from '~/components/BookingCTA';
 import {SiteFooter} from '~/components/SiteFooter';
+import {Testimonials} from '~/components/Testimonials';
 
 export const meta: MetaFunction = () => [
   {title: 'Budget Desert Tour — 3-Day Marrakech to Sahara from €85'},
@@ -37,6 +38,7 @@ export default function Homepage() {
         <CapturedByTribe />
         <FAQ />
         <BookingCTA />
+        <Testimonials />
       </main>
       {/* <SiteFooter /> */}
     </>

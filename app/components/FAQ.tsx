@@ -74,25 +74,25 @@ export function FAQ({
   return (
     <section
       aria-label="What's in the price and what to bring"
-      className="bg-gradient-to-b from-white via-white to-sand py-section"
+      className="bg-gradient-to-b from-white from-30% to-sand py-section"
     >
       <div className="container max-w-content">
 
         {/* Header */}
-        <div className="mx-auto mb-[clamp(44px,5vw,72px)] max-w-[900px] text-center">
-          <h2 className="text-h3 md:text-h2 font-display text-dark">{heading}</h2>
-          <p className="mt-[18px] text-base text-dark">{subheading}</p>
+        <div className="mx-auto mb-[clamp(44px,5vw,72px)] max-w-225 text-center">
+          <h2 className="text-h2 font-display text-dark">{heading}</h2>
+          <p className="mt-4.5 text-base text-dark">{subheading}</p>
         </div>
 
         {/* Two columns */}
         <div className="grid grid-cols-1 items-start gap-10 md:grid-cols-[1.05fr_0.95fr] md:gap-[clamp(48px,6vw,104px)]">
 
           {/* Included card */}
-          <div className="rounded-card bg-white p-[clamp(30px,3.4vw,46px)] shadow-card-hover">
-            <div className="mb-[30px] flex items-center gap-3.5">
+          <div className="rounded-card bg-white p-[clamp(30px,3.4vw,46px)] shadow-card">
+            <div className="mb-7.5 flex items-center gap-3.5">
               <span
                 aria-hidden="true"
-                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-forest"
+                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-forest"
               >
                 <CheckIcon className="text-white" />
               </span>
@@ -104,9 +104,9 @@ export function FAQ({
           </div>
 
           {/* Bring-yourself column */}
-          <div className="pt-[clamp(6px,1.4vw,22px)]">
-            <div className="mb-[30px] flex items-center gap-3.5">
-              <span role="img" aria-label="Backpack" className="text-[34px] leading-none">
+          <div className="p-[clamp(30px,3.4vw,46px)]">
+            <div className="mb-7.5 flex items-center gap-3.5">
+              <span role="img" aria-label="Backpack" className="text-3xl leading-none">
                 🎒
               </span>
               <h3 className="text-h3 font-body font-bold tracking-tight text-primary">
@@ -120,16 +120,16 @@ export function FAQ({
 
         {/* Testimonial */}
         {showReview && (
-          <figure className="relative mx-auto mt-[clamp(60px,7vw,104px)] max-w-[620px] px-11 text-center">
+          <figure className="relative mx-auto mt-[clamp(60px,7vw,104px)] max-w-155 px-11 text-center">
             <span
               aria-hidden="true"
-              className="pointer-events-none absolute -bottom-1.5 left-0 select-none font-serif text-[108px] leading-none text-dark/[0.09]"
+              className="pointer-events-none absolute -bottom-1.5 left-0 select-none font-serif text-[108px] leading-none text-dark/9"
             >
               &ldquo;
             </span>
             <span
               aria-hidden="true"
-              className="pointer-events-none absolute -bottom-1.5 right-0 select-none font-serif text-[108px] leading-none text-dark/[0.09]"
+              className="pointer-events-none absolute -bottom-1.5 right-0 select-none font-serif text-[108px] leading-none text-dark/9"
             >
               &rdquo;
             </span>
