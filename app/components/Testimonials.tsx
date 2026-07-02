@@ -59,7 +59,12 @@ export function Testimonials({
   const active = ((page % pageCount) + pageCount) % pageCount;
 
   const paused = useRef(false);
+  const trackRef = useRef<HTMLDivElement>(null);
   const go = useCallback((p: number) => setPage(p), []);
+
+  useEffect(() => {
+    trackRef.current?.style.setProperty('--tst-slide', String(active));
+  }, [active]);
 
   useEffect(() => {
     if (!autoplayMs || pageCount < 2) return;
@@ -89,11 +94,11 @@ export function Testimonials({
           onMouseLeave={() => (paused.current = false)}
         >
           <div
-            className="flex transition-transform duration-620 ease-[cubic-bezier(0.22,1,0.36,1)] will-change-transform"
-            style={{transform: `translateX(-${active * 100}%)`}}
+            ref={trackRef}
+            className="tst-track flex will-change-transform"
           >
             {pages.map((chunk, p) => (
-              <div key={p} aria-hidden={p !== active} className="w-full shrink-0">
+              <div key={p} aria-hidden={p !== active} className="w-full shrink-0" data-tst-active={p === active}>
                 <ul
                   role="list"
                   className="mx-auto grid max-w-130 grid-cols-1 gap-10
@@ -102,11 +107,6 @@ export function Testimonials({
                   {chunk.map((review, i) => (
                     <li
                       key={i}
-                      style={
-                        p === active
-                          ? {animation: `tst-rise 0.6s cubic-bezier(0.22,1,0.36,1) ${0.08 + i * 0.09}s both`}
-                          : undefined
-                      }
                     >
                       <figure className="relative px-[clamp(20px,2.4vw,40px)] text-center">
                         <StarRating rating={review.rating} idPrefix={`p${p}-${i}`} />
@@ -184,8 +184,6 @@ export function Testimonials({
 
       </div>
 
-      {/* Card entrance keyframes */}
-      <style>{`@keyframes tst-rise { from { transform: translateY(16px); } to { transform: none; } }`}</style>
     </section>
   );
 }

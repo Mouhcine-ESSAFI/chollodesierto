@@ -233,6 +233,47 @@ a { text-decoration: none; }
   transition: none;
 }
 
+/* ─── Testimonials — slide track + staggered card entrance ─── */
+@keyframes tst-rise {
+  from { transform: translateY(14px); opacity: 0; }
+  to   { transform: none;             opacity: 1; }
+}
+.tst-track {
+  transform: translateX(calc(-1 * var(--tst-slide, 0) * 100%));
+}
+[data-tst-active="true"] li {
+  animation: tst-rise 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+[data-tst-active="true"] li:nth-child(1) { animation-delay: 0.08s; }
+[data-tst-active="true"] li:nth-child(2) { animation-delay: 0.17s; }
+[data-tst-active="true"] li:nth-child(3) { animation-delay: 0.26s; }
+
+/* ─── FAQ accordion ─── */
+.faq-body {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: max-height 0.42s cubic-bezier(0.22, 1, 0.36, 1),
+              opacity   0.42s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.faq-body[data-open="true"] {
+  max-height: 28.75rem;
+  opacity: 1;
+}
+.faq-chevron {
+  transition: transform 0.42s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.faq-chevron[data-open="true"] {
+  transform: rotate(180deg);
+}
+.faq-chevron path:last-child {
+  opacity: 1;
+  transition: opacity 0.42s ease;
+}
+.faq-chevron[data-open="true"] path:last-child {
+  opacity: 0;
+}
+
 /* ─── CapturedByTribe nav button — arrow bounce on hover ─── */
 @keyframes arrow-bounce-r {
   0%, 100% { transform: translateX(0); }

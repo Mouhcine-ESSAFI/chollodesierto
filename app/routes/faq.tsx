@@ -1,10 +1,10 @@
 import {type MetaFunction} from 'react-router';
 import {SiteNavbar} from '~/components/SiteNavbar';
-import {FAQ} from '~/components/FAQ';
+import {Included} from '~/components/Included';
 import {SiteFooter} from '~/components/SiteFooter';
 
 export const meta: MetaFunction = () => [
-  {title: 'FAQ — Budget Desert Tour'},
+  {title: 'Included — Budget Desert Tour'},
   {
     name: 'description',
     content:
@@ -12,12 +12,12 @@ export const meta: MetaFunction = () => [
   },
 ];
 
-export default function FAQPage() {
+export default function IncludedPage() {
   return (
     <>
       <SiteNavbar />
       <main id="main-content" className="pt-24">
-        <FAQ />
+        <Included />
       </main>
       <SiteFooter />
     </>

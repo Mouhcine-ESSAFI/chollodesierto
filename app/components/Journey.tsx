@@ -317,11 +317,11 @@ function DayRow({day, flip, isFirst, isLast}: {day: JourneyDay; flip: boolean; i
 
         <StarRating rating={day.review.rating} dayNumber={day.number} />
 
-        <figure className="relative mx-auto mt-[1.125rem] max-w-[27.5rem] px-[1.875rem] text-center">
-          <span aria-hidden="true" className="absolute -bottom-[1.625rem] left-0 font-display text-[5.625rem] text-dark/[0.08] max-lg:hidden">
+        <figure className="relative mx-auto mt-4.5 max-w-110 px-7.5 text-center">
+          <span aria-hidden="true" className="absolute -bottom-6.5 left-0 font-display text-[5.625rem] text-dark/8 max-lg:hidden">
             &ldquo;
           </span>
-          <span aria-hidden="true" className="absolute -bottom-[1.625rem] right-0 font-display text-[5.625rem] text-dark/[0.08] max-lg:hidden">
+          <span aria-hidden="true" className="absolute -bottom-6.5 right-0 font-display text-[5.625rem] text-dark/8 max-lg:hidden">
             &rdquo;
           </span>
           <blockquote className="relative z-10 text-[1.0625rem] font-bold text-dark text-balance">
@@ -362,20 +362,18 @@ function RouteTimeline({stops, isFirstDay, isLastDay}: {stops: RouteStop[]; isFi
   );
 }
 
+const DRAG_THRESHOLD = 72;
+
 function ImageCarousel({images}: {images: {src: string; alt: string}[]}) {
   const n = images.length;
   const [idx, setIdx] = useState(0);
-  const [dragX, setDragX] = useState(0);
   const [phase, setPhase] = useState<'idle' | 'drag' | 'exit-l' | 'exit-r' | 'reset'>('idle');
   const startX = useRef(0);
+  const dragXRef = useRef(0);
+  const wrapRef = useRef<HTMLDivElement>(null);
 
   const peek1 = (idx + 1) % n;
   const peek2 = (idx + 2) % n;
-
-  const THRESHOLD = 72;
-  const liveDrag = phase === 'drag' ? dragX : 0;
-  const progress = Math.min(Math.abs(liveDrag) / THRESHOLD, 1);
-  const rot = (liveDrag / 220) * 20;
 
   const advance = useCallback((dir: 1 | -1) => {
     if (phase !== 'idle') return;
@@ -391,26 +389,42 @@ function ImageCarousel({images}: {images: {src: string; alt: string}[]}) {
 
   const onMove = useCallback((e: React.PointerEvent) => {
     if (phase !== 'drag') return;
-    setDragX(e.clientX - startX.current);
+    const dx = e.clientX - startX.current;
+    dragXRef.current = dx;
+    const progress = Math.min(Math.abs(dx) / DRAG_THRESHOLD, 1);
+    const rot = (dx / 220) * 20;
+    const wrap = wrapRef.current;
+    if (wrap) {
+      wrap.style.setProperty('--dp', String(progress));
+      wrap.style.setProperty('--dx', `${dx}px`);
+      wrap.style.setProperty('--dr', `${rot}deg`);
+    }
   }, [phase]);
 
   const onUp = useCallback(() => {
     if (phase !== 'drag') return;
-    if (Math.abs(dragX) >= THRESHOLD) {
-      setPhase(dragX < 0 ? 'exit-l' : 'exit-r');
+    const dx = dragXRef.current;
+    const wrap = wrapRef.current;
+    if (wrap) {
+      wrap.style.setProperty('--dp', '0');
+      wrap.style.removeProperty('--dx');
+      wrap.style.removeProperty('--dr');
+    }
+    dragXRef.current = 0;
+    if (Math.abs(dx) >= DRAG_THRESHOLD) {
+      setPhase(dx < 0 ? 'exit-l' : 'exit-r');
     } else {
-      setDragX(0);
       setPhase('idle');
     }
-  }, [phase, dragX]);
+  }, [phase]);
 
   const onTransEnd = useCallback((e: React.TransitionEvent) => {
     if (e.propertyName !== 'transform') return;
     if (phase === 'exit-l') setIdx((v) => (v + 1) % n);
     else if (phase === 'exit-r') setIdx((v) => (v - 1 + n) % n);
     else return;
-    setDragX(0);
-    setPhase('reset'); // snap new image to 0 instantly — no entrance slide
+    dragXRef.current = 0;
+    setPhase('reset');
   }, [phase, n]);
 
   // One frame after reset: re-enable transitions without playing an entrance animation
@@ -424,12 +438,9 @@ function ImageCarousel({images}: {images: {src: string; alt: string}[]}) {
     <div className="relative select-none touch-none">
       {/* ── Card stack — overflow-hidden clips the card during drag/exit ── */}
       <div
+        ref={wrapRef}
         className="carousel-wrap relative overflow-hidden pt-7"
         data-phase={phase}
-        style={{
-          '--dp': progress,
-          ...(phase === 'drag' ? {'--dx': `${dragX}px`, '--dr': `${rot}deg`} : {}),
-        } as React.CSSProperties}
       >
         {/* Back card */}
         <div aria-hidden="true" className="carousel-peek-back">

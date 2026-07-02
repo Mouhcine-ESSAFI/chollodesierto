@@ -7,10 +7,11 @@ import {TourRoutes} from '~/components/TourRoutes';
 import {Journey} from '~/components/Journey';
 import {CampTiers} from '~/components/CampTiers';
 import {CapturedByTribe} from '~/components/CapturedByTribe';
-import {FAQ} from '~/components/FAQ';
+import {Included} from '~/components/Included';
 import {BookingCTA} from '~/components/BookingCTA';
 import {SiteFooter} from '~/components/SiteFooter';
 import {Testimonials} from '~/components/Testimonials';
+import {Faq} from '~/components/Faq';
 
 export const meta: MetaFunction = () => [
   {title: 'Budget Desert Tour — 3-Day Marrakech to Sahara from €85'},
@@ -36,9 +37,10 @@ export default function Homepage() {
         <Journey />
         <CampTiers />
         <CapturedByTribe />
-        <FAQ />
+        <Included />
         <BookingCTA />
         <Testimonials />
+        <Faq />
       </main>
       {/* <SiteFooter /> */}
     </>

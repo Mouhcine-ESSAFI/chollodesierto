@@ -1,154 +1,100 @@
-import {useMemo} from 'react';
+import {useState} from 'react';
 
-interface ChecklistItem {
-  /** Emoji glyph. */
-  icon: string;
-  /** Accessible label for the emoji. */
-  iconLabel: string;
-  text: string;
+interface Faq {
+  q: string;
+  a: string;
 }
 
-interface Review {
-  rating: number; // 0–5, halves supported
-  quote: string;
-  name: string;
-  flag: string;
-  country: string;
-  date: string;
-}
-
-const INCLUDED: ChecklistItem[] = [
-  {icon: '🚐', iconLabel: 'Minibus', text: 'AC minibus + English-speaking driver'},
-  {icon: '🐫', iconLabel: 'Camel', text: 'Camel trek into Erg Chebbi at sunset'},
-  {icon: '🏕️', iconLabel: 'Camp', text: 'Camp accommodation (your chosen tier)'},
-  {icon: '🍲', iconLabel: 'Meals', text: 'All meals (2 breakfasts, 2 dinners, water at meals)'},
-  {icon: '🎶', iconLabel: 'Music', text: 'Live Berber music night around the fire'},
-  {icon: '🌅', iconLabel: 'Sunrise', text: 'Sunrise dune climb on Day 3'},
-  {icon: '🏛️', iconLabel: 'Stops', text: 'Stops at Ait Ben Haddou, Ouarzazate, Todra Gorge, Dades Valley'},
-  {icon: '📷', iconLabel: 'Photos', text: 'All the photos you can take'},
-  {icon: '✨', iconLabel: 'Stories', text: 'Stories that will outlast the trip'},
+const FAQS: Faq[] = [
+  {q: 'Wait… is it really cold at night?', a: 'Yes — even in summer. Desert nights drop fast after sunset. Bring layers. We’re not kidding.'},
+  {q: 'What if I’ve never ridden a camel?', a: 'Neither had most of our travelers. The camels are calm, the pace is slow, and our guides walk beside you the whole way.'},
+  {q: 'Can I do this with kids?', a: 'Absolutely. Families join every week. The minibus, camp beds, and meals all work for children, and the camel trek is short and gentle.'},
+  {q: 'Are there bathrooms at the camp?', a: 'Yes. Shared bathrooms come standard; Comfort and Superior camps include a private bathroom inside your tent.'},
+  {q: 'Will there be Wi-Fi? Be honest.', a: 'Barely, and that’s kind of the point. There’s patchy signal at camp — enough for a quick message, not for doom-scrolling.'},
+  {q: 'I’m a solo traveler. Will I feel out of place?', a: 'Not at all. Roughly a third of our travelers come solo. Shared dinners around the fire make it easy to meet people.'},
+  {q: 'What if it rains?', a: 'Rain in the Sahara is rare, but the itinerary flexes if weather turns. Your guide adjusts stops so you never miss the highlights.'},
+  {q: 'How far in advance should I book?', a: 'Two to four weeks is comfortable in peak season (Sep–Nov, Mar–May). Off-season, a few days is often enough.'},
+  {q: 'What’s your cancellation policy?', a: 'Free cancellation up to 7 days before departure for a full refund. Inside 7 days we’ll rebook you or refund 50%.'},
+  {q: 'Can you pick me up from my riad or the airport?', a: 'Yes. Riad pickup in Marrakech is included. Airport pickup can be arranged — just tell us your flight details.'},
 ];
 
-const BRING: ChecklistItem[] = [
-  {icon: '🧥', iconLabel: 'Warm layers', text: 'Warm layers (desert nights are cold, year-round)'},
-  {icon: '🕶️', iconLabel: 'Sun protection', text: 'Sunglasses, sunscreen, hat'},
-  {icon: '🔋', iconLabel: 'Power bank', text: 'Power bank (limited electricity at camp)'},
-  {icon: '💧', iconLabel: 'Water bottle', text: 'Reusable water bottle'},
-  {icon: '💶', iconLabel: 'Cash', text: 'Cash for drinks, tips, extras'},
-  {icon: '📸', iconLabel: 'Camera', text: 'Camera (your phone works fine)'},
-  {icon: '❤️', iconLabel: 'Open mind', text: 'An open mind'},
-];
-
-const REVIEW: Review = {
-  rating: 4.5,
-  quote:
-    '\u201CThe \u2018bring warm layers\u2019 warning saved me. December desert is no joke.\u201D',
-  name: 'Aiko',
-  flag: '🇯🇵',
-  country: 'Japan',
-  date: 'December 2024',
-};
-
-export interface FAQProps {
+export interface FaqProps {
   heading?: string;
-  subheading?: string;
-  includedTitle?: string;
-  bringTitle?: string;
-  included?: ChecklistItem[];
-  bring?: ChecklistItem[];
-  review?: Review;
-  /** Show the star rating + testimonial. */
-  showReview?: boolean;
+  faqs?: Faq[];
+  /** Index of the item open on first render (-1 = all closed). */
+  defaultOpen?: number;
+  whatsappUrl?: string;
+  whatsappNote?: string;
 }
 
-export function FAQ({
-  heading = 'What’s in the price. What’s in your backpack.',
-  subheading = 'We believe in transparent pricing. No hidden fees, no surprise charges.',
-  includedTitle = 'All of this is included',
-  bringTitle = 'Bring these yourself',
-  included = INCLUDED,
-  bring = BRING,
-  review = REVIEW,
-  showReview = true,
-}: FAQProps) {
+export function Faq({
+  heading = 'Real questions from real travelers!',
+  faqs = FAQS,
+  defaultOpen = 0,
+  whatsappUrl = '#',
+  whatsappNote = 'WhatsApp us — we usually answer within an hour.',
+}: FaqProps) {
+  const [open, setOpen] = useState(defaultOpen);
+
   return (
     <section
-      aria-label="What's in the price and what to bring"
-      className="bg-gradient-to-b from-white from-30% to-sand py-section"
+      aria-label="Frequently asked questions"
+      className="bg-gradient-to-b from-white from-20% to-sand py-section"
     >
       <div className="container max-w-content">
 
         {/* Header */}
-        <div className="mx-auto mb-[clamp(44px,5vw,72px)] max-w-225 text-center">
-          <h2 className="text-h2 font-display text-dark">{heading}</h2>
-          <p className="mt-4.5 text-base text-dark">{subheading}</p>
+        <h2 className="mx-auto mb-[clamp(40px,5vw,60px)] max-w-190 text-center text-h3 md:text-h2 font-display text-dark">
+          {heading}
+        </h2>
+
+        {/* Accordion */}
+        <ul role="list" className="mx-auto flex max-w-190 flex-col gap-3.5">
+          {faqs.map((faq, i) => {
+            const isOpen = i === open;
+            return (
+              <li key={i} className="list-none">
+                <button
+                  type="button"
+                  aria-expanded={isOpen}
+                  onClick={() => setOpen(isOpen ? -1 : i)}
+                  className="relative w-full rounded-full bg-white px-[clamp(48px,6vw,60px)] py-5.5 text-center shadow-card"
+                >
+                  <span className="text-[clamp(1.125rem,1.5vw,1.25rem)] font-semibold text-dark">
+                    {faq.q}
+                  </span>
+                  <span className="absolute right-[clamp(24px,3vw,34px)] top-1/2 flex -translate-y-1/2">
+                    <PlusMinus open={isOpen} />
+                  </span>
+                </button>
+
+                {/* Animated answer — sits below the pill, left-aligned */}
+                <div className="faq-body" data-open={isOpen}>
+                  <p className="m-0 px-[clamp(20px,3vw,30px)] pb-2 pt-4.5 text-left text-base text-dark">
+                    {faq.a}
+                  </p>
+                </div>
+              </li>
+            );
+          })}
+        </ul>
+
+        {/* Footer / WhatsApp */}
+        <div className="mt-[clamp(48px,6vw,80px)] text-center">
+          <p className="mb-2 flex items-center justify-center gap-2 text-base font-semibold text-dark">
+            <span role="img" aria-label="Thinking face" className="text-xl">🤔</span>
+            Still have questions?
+          </p>
+          <p className="mb-5.5 text-base text-dark/80">{whatsappNote}</p>
+          <a
+            href={whatsappUrl}
+            className="inline-flex items-center gap-2.5 rounded-full bg-[#25A65B] px-8.5 py-3.75 font-display text-btn text-white
+                       shadow-card transition-[background-color,transform] hover:-translate-y-0.5 hover:bg-[#1f8f4c]"
+          >
+            <WhatsAppIcon />
+            Chat on WhatsApp
+          </a>
         </div>
-
-        {/* Two columns */}
-        <div className="grid grid-cols-1 items-start gap-10 md:grid-cols-[1.05fr_0.95fr] md:gap-[clamp(48px,6vw,104px)]">
-
-          {/* Included card */}
-          <div className="rounded-card bg-white p-[clamp(30px,3.4vw,46px)] shadow-card">
-            <div className="mb-7.5 flex items-center gap-3.5">
-              <span
-                aria-hidden="true"
-                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-forest"
-              >
-                <CheckIcon className="text-white" />
-              </span>
-              <h3 className="text-h3 font-body font-bold tracking-tight text-forest">
-                {includedTitle}
-              </h3>
-            </div>
-            <Checklist items={included} />
-          </div>
-
-          {/* Bring-yourself column */}
-          <div className="p-[clamp(30px,3.4vw,46px)]">
-            <div className="mb-7.5 flex items-center gap-3.5">
-              <span role="img" aria-label="Backpack" className="text-3xl leading-none">
-                🎒
-              </span>
-              <h3 className="text-h3 font-body font-bold tracking-tight text-primary">
-                {bringTitle}
-              </h3>
-            </div>
-            <Checklist items={bring} />
-          </div>
-
-        </div>
-
-        {/* Testimonial */}
-        {showReview && (
-          <figure className="relative mx-auto mt-[clamp(60px,7vw,104px)] max-w-155 px-11 text-center">
-            <span
-              aria-hidden="true"
-              className="pointer-events-none absolute -bottom-1.5 left-0 select-none font-serif text-[108px] leading-none text-dark/9"
-            >
-              &ldquo;
-            </span>
-            <span
-              aria-hidden="true"
-              className="pointer-events-none absolute -bottom-1.5 right-0 select-none font-serif text-[108px] leading-none text-dark/9"
-            >
-              &rdquo;
-            </span>
-
-            <StarRating rating={review.rating} />
-
-            <blockquote className="relative z-10 mt-5 font-body font-bold text-dark text-[clamp(1.0625rem,1.8vw,1.3rem)] leading-relaxed text-balance">
-              {review.quote}
-            </blockquote>
-
-            <figcaption className="relative z-10 mt-5 flex items-center justify-center gap-2.5 font-body font-medium text-base text-dark/75">
-              <span>{review.name}</span>
-              <span aria-hidden="true" className="text-dark/35">·</span>
-              <span role="img" aria-label={review.country} className="text-xl">{review.flag}</span>
-              <span aria-hidden="true" className="text-dark/35">·</span>
-              <span>{review.date}</span>
-            </figcaption>
-          </figure>
-        )}
 
       </div>
     </section>
@@ -157,90 +103,27 @@ export function FAQ({
 
 // ── Sub-components ──────────────────────────────────────────────
 
-function Checklist({items}: {items: ChecklistItem[]}) {
+function PlusMinus({open}: {open: boolean}) {
   return (
-    <ul role="list" className="flex flex-col gap-5">
-      {items.map((item) => (
-        <li
-          key={item.text}
-          className="flex items-start gap-4 text-base leading-snug text-dark/90"
-        >
-          <span
-            role="img"
-            aria-label={item.iconLabel}
-            className="w-[26px] shrink-0 text-center text-[22px] leading-tight"
-          >
-            {item.icon}
-          </span>
-          <span>{item.text}</span>
-        </li>
-      ))}
-    </ul>
-  );
-}
-
-function CheckIcon({className = ''}: {className?: string}) {
-  return (
-    <svg
-      width="22"
-      height="22"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="3"
-      strokeLinecap="round"
-      strokeLinejoin="round"
+    <span
+      className="faq-chevron shrink-0 text-primary"
+      data-open={open}
       aria-hidden="true"
-      className={className}
     >
-      <path d="M20 6 9 17l-5-5" />
-    </svg>
-  );
-}
-
-function StarRating({rating}: {rating: number}) {
-  const stars = useMemo(() => {
-    const full = Math.floor(rating);
-    const half = rating - full >= 0.5;
-    return Array.from({length: 5}, (_, i) =>
-      i < full ? 'full' : i === full && half ? 'half' : 'empty',
-    );
-  }, [rating]);
-
-  return (
-    <div
-      role="img"
-      aria-label={`Rated ${rating} out of 5`}
-      className="mb-5 flex justify-center gap-1 text-[#F4B41E]"
-    >
-      {stars.map((kind, i) => (
-        <Star key={i} kind={kind} id={`pb-star-${i}`} />
-      ))}
-    </div>
-  );
-}
-
-function Star({kind, id}: {kind: string; id: string}) {
-  const d =
-    'M12 2.5l2.9 5.9 6.5.95-4.7 4.58 1.1 6.47L12 17.9l-5.8 3.07 1.1-6.47-4.7-4.58 6.5-.95L12 2.5z';
-  if (kind === 'half') {
-    return (
-      <svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true">
-        <defs>
-          <linearGradient id={id}>
-            <stop offset="50%" stopColor="currentColor" />
-            <stop offset="50%" stopColor="currentColor" stopOpacity="0.3" />
-          </linearGradient>
-        </defs>
-        <path d={d} fill={`url(#${id})`} />
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round">
+        <path d="M5 12h14" />
+        <path d="M12 5v14" />
       </svg>
-    );
-  }
+    </span>
+  );
+}
+
+function WhatsAppIcon() {
   return (
-    <svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true">
-      <path d={d} fill="currentColor" fillOpacity={kind === 'empty' ? 0.3 : 1} />
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22h.004c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2zm0 18.15h-.004a8.23 8.23 0 0 1-4.19-1.15l-.3-.18-3.11.82.83-3.04-.2-.31a8.2 8.2 0 0 1-1.26-4.38c0-4.54 3.7-8.23 8.24-8.23 2.2 0 4.27.86 5.82 2.42a8.18 8.18 0 0 1 2.41 5.82c0 4.54-3.69 8.24-8.23 8.24zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.12-.16.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.51.11-.11.25-.29.37-.43.13-.14.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.4-.42-.56-.42-.14 0-.31-.02-.47-.02s-.43.06-.66.31c-.23.25-.87.85-.87 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.68-1.18.21-.58.21-1.07.14-1.18-.06-.11-.22-.17-.47-.29z" />
     </svg>
   );
 }
 
-export default FAQ;
+export default Faq;
