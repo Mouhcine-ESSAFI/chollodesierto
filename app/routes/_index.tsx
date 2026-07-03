@@ -42,7 +42,7 @@ export default function Homepage() {
         <Testimonials />
         <Faq />
       </main>
-      {/* <SiteFooter /> */}
+      <SiteFooter />
     </>
   );
 }

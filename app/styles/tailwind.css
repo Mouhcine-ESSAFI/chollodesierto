@@ -290,6 +290,21 @@ a { text-decoration: none; }
   animation: arrow-bounce-l 0.55s ease-in-out infinite;
 }
 
+/* ─── SiteFooter ─── */
+.sf-headline {
+  text-shadow: 0 2px 18px rgba(40, 16, 8, 0.4);
+}
+.sf-checks {
+  column-gap: clamp(20px, 3vw, 34px);
+}
+.sf-footer-bar {
+  padding-bottom: clamp(40px, 6vw, 60px);
+}
+.sf-camel {
+  bottom: 1rem;
+  width: clamp(170px, 24vw, 272px);
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition: none !important; animation: none !important; }
 }
