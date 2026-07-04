@@ -58,7 +58,7 @@ export function SiteFooter({
       className="hero-bg relative overflow-hidden font-body"
     >
       {/* ── Sunset scene (mirrors Hero layer stack) ── */}
-      <div className="relative flex min-h-180 items-start justify-center px-5 text-center py-section">
+      <div className="relative flex min-h-180 items-start justify-center px-5 text-center py-32">
         {/* Layer 4 — Sunlight */}
         <div aria-hidden="true" className="absolute inset-x-0 bottom-0 z-4 pointer-events-none h-full flex items-end">
           <img src={sunlightSvg} alt="" className="w-full h-full max-h-180 lg:min-h-212 object-cover" />
@@ -174,7 +174,7 @@ export function SiteFooter({
           ))}
         </div>
 
-        <nav aria-label="Legal" className="mb-10 md:mb-14 flex flex-wrap items-center justify-center gap-3">
+        <nav aria-label="Legal" className="mb-10 md:mb-16 flex flex-wrap items-center justify-center gap-3">
           {LEGAL_LINKS.map((link, i) => (
             <span key={link.label} className="flex items-center gap-3">
               <a href={link.href} className="text-sand text-[0.85rem] transition-colors hover:text-[#e5d6c2]">
@@ -191,7 +191,7 @@ export function SiteFooter({
 
         <div className="mb-7 md:mb-8 inline-flex flex-col items-center gap-3 text-center sm:flex-row sm:gap-[18px] sm:text-left">
           <CompassMark />
-          <span className="font-display font-bold text-[#f2e6d3] text-base leading-[1.08]">
+          <span className="font-display font-bold text-sand text-base">
             Budget
             <br />
             Desert
@@ -199,7 +199,7 @@ export function SiteFooter({
             Tour
           </span>
           <span aria-hidden="true" className="hidden w-px self-stretch bg-[#e5d6c2]/25 sm:block" />
-          <span className="text-[#b9a790] text-[0.76rem] italic leading-normal">
+          <span className="text-sand text-[0.76rem]">
             Real Sahara.
             <br />
             Fair price.
@@ -208,7 +208,7 @@ export function SiteFooter({
           </span>
         </div>
 
-        <p className="text-[#8f7d6a] text-[0.8rem]">&copy; 2026 Budget Desert Tour &trade;. All rights reserved.</p>
+        <p className="text-sand text-[0.8rem]">&copy; 2026 Budget Desert Tour &trade;. All rights reserved.</p>
       </footer>
     </section>
   );
