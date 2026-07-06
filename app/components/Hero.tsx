@@ -38,7 +38,7 @@ export function Hero() {
         </p>
         <div className="flex flex-wrap gap-3.5 justify-center mb-6">
           <a
-            href="#book"
+            href="/booking"
             className="font-display text-btn bg-primary text-sand px-8 py-3.5 rounded-full hover:opacity-90 transition-opacity"
           >
             Book Your Adventure →

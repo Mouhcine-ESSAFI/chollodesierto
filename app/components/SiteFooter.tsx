@@ -16,7 +16,7 @@ interface SocialLink {
 const CHECKS: string[] = ['Secure payment', 'Free cancellation', 'Verified local agency'];
 
 const NAV_LINKS: NavLink[] = [
-  {label: 'Book', href: '#book'},
+  {label: 'Book', href: '/booking'},
   {label: 'Routes', href: '#routes'},
   {label: 'Reviews', href: '#reviews'},
   {label: 'FAQ', href: '#faq'},
@@ -48,7 +48,7 @@ export interface SiteFooterProps {
 
 export function SiteFooter({
   headline = 'Your story starts at sunset.',
-  ctaHref = '#book',
+  ctaHref = '/booking',
   whatsappHref = '#whatsapp',
   showCamels = true,
 }: SiteFooterProps) {
