@@ -62,7 +62,7 @@ export default function TourPage() {
                 <p className="font-display text-h1 text-forest">€{tour.price}</p>
                 <p className="text-sm text-dark/50 mb-8">per person</p>
                 <a
-                  href="/book"
+                  href="/booking"
                   className="block w-full text-center font-display text-btn text-sand bg-primary rounded-full py-4 hover:opacity-90 transition-opacity"
                 >
                   Book This Route →

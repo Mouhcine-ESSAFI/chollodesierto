@@ -202,7 +202,7 @@ export function Journey({
       <div className="mx-auto flex max-w-content flex-col items-center">
         <div aria-hidden="true" className="h-20 w-0 border-l-2 border-dashed border-primary/45" />
         <a
-          href="/book"
+          href="/booking"
           className="inline-flex items-center gap-3 rounded-full bg-primary px-8 py-4.5 font-display text-btn text-sand shadow-card-m transition-all hover:scale-[1.03] hover:shadow-[0_0.75rem_2rem_rgba(196,90,44,0.45)]"
         >
           Start your Journey Today

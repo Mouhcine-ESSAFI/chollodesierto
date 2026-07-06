@@ -96,7 +96,7 @@ export function SiteNavbar() {
 function BookButton({ fullWidth = false }: { fullWidth?: boolean }) {
   return (
     <Link
-      to="/book"
+      to="/booking"
       className={`font-display text-btn text-sand text-center bg-primary rounded-full px-7 py-2 hover:opacity-90 transition-opacity whitespace-nowrap ${fullWidth ? 'w-full' : ''}`}
     >
       Book Now
