@@ -1,7 +1,7 @@
 import {type MetaFunction} from 'react-router';
 import {SiteNavbar} from '~/components/SiteNavbar';
 import {BookingHero} from '~/components/BookingHero';
-import {BookingCTA} from '~/components/BookingCTA';
+import {Testimonials} from '~/components/Testimonials';
 import {SiteFooter} from '~/components/SiteFooter';
 
 export const meta: MetaFunction = () => [
@@ -15,7 +15,7 @@ export default function BookPage() {
       <SiteNavbar />
       <main id="main-content">
         <BookingHero />
-        {/* <BookingCTA /> */}
+        <Testimonials />
       </main>
       <SiteFooter />
     </>
