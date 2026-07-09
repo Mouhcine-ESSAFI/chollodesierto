@@ -1,3 +1,6 @@
+import dunesSvg from '~/assets/dunes.svg?url';
+import sunSvg from '~/assets/sun.svg?url';
+import sunlightSvg from '~/assets/sunlight.svg?url';
 import {useMemo, useState} from 'react';
 
 // ── Types ──────────────────────────────────────────────────────
@@ -87,7 +90,7 @@ function addDays(d: Date, n: number) {
 
 function buildMonthCells(year: number, monthIndex: number, departDate: Date, returnDate: Date): DayCell[] {
   const first = new Date(year, monthIndex, 1);
-  const startWeekday = (first.getDay() + 6) % 7; // 0 = Monday
+  const startWeekday = (first.getDay() + 6) % 7;
   const daysInMonth = new Date(year, monthIndex + 1, 0).getDate();
   const cells: DayCell[] = [];
   for (let i = 0; i < startWeekday; i++) {
@@ -106,16 +109,12 @@ function buildMonthCells(year: number, monthIndex: number, departDate: Date, ret
 // ── Component ──────────────────────────────────────────────────
 
 export interface BookingHeroProps {
-  heroImage?: string;
-  heroImageAlt?: string;
   routes?: RouteOption[];
   camps?: CampOption[];
   whatsappHref?: string;
 }
 
 export function BookingHero({
-  heroImage = 'https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=1800&q=80',
-  heroImageAlt = 'Golden Sahara sand dunes at sunset',
   routes = ROUTES,
   camps = CAMPS,
   whatsappHref = '#whatsapp',
@@ -132,7 +131,7 @@ export function BookingHero({
   const [transferType, setTransferType] = useState<TransferType>('oneway');
 
   const monthBaseYear = 2026;
-  const monthBaseIndex = 5; // June
+  const monthBaseIndex = 5;
 
   const selectedRoute = routes.find((r) => r.id === routeId) ?? routes[0];
   const selectedCamp = camps.find((c) => c.id === campId) ?? camps[0];
@@ -173,28 +172,33 @@ export function BookingHero({
       {/* ── Hero ── */}
       <section
         aria-label="Book your adventure"
-        className="relative flex min-h-[460px] items-center justify-center overflow-hidden"
+        className="hero-bg relative overflow-hidden font-body"
       >
-        <img
-          src={heroImage}
-          alt={heroImageAlt}
-          className="absolute inset-0 h-full w-full object-cover"
-          loading="lazy"
-        />
-        <div
-          aria-hidden="true"
-          className="absolute inset-0 bg-gradient-to-b from-black/28 via-black/[0.18] to-sand"
-        />
-        <div className="relative z-10 max-w-[720px] px-6 text-center">
-          <h1 className="font-display text-[clamp(2.2rem,5vw,3.4rem)] font-bold text-white [text-shadow:0_2px_18px_rgba(0,0,0,0.25)]">
+        {/* Layer 4 — Sunlight */}
+        <div aria-hidden="true" className="absolute inset-x-0 bottom-0 z-4 h-full flex items-end pointer-events-none">
+          <img src={sunlightSvg} alt="" className="w-full h-full max-h-180 lg:max-h-212 object-cover" />
+        </div>
+        {/* Layer 3 — Warm gradient */}
+        <div aria-hidden="true" className="hero-gradient absolute inset-x-0 bottom-0 z-6 h-full pointer-events-none" />
+        {/* Layer 2 — Sun */}
+        <div aria-hidden="true" className="absolute inset-x-0 bottom-0 z-8 h-full flex items-end pointer-events-none">
+          <img src={sunSvg} alt="" className="w-full h-full max-h-180 lg:max-h-212 object-cover" />
+        </div>
+        {/* Layer 1 — Dunes */}
+        <div aria-hidden="true" className="absolute inset-x-0 bottom-0 z-10 pointer-events-none">
+          <img src={dunesSvg} alt="" className="w-full h-60 lg:h-42 object-cover object-bottom" />
+        </div>
+        {/* Content */}
+        <div className="relative z-20 flex min-h-115 flex-col items-center justify-center px-5 pt-28 pb-20 text-center">
+          <h1 className="font-display text-hero bh-headline text-sand max-w-180">
             Book your adventure.
           </h1>
-          <p className="mt-[18px] text-[clamp(1rem,1.6vw,1.2rem)] leading-relaxed text-white/90 [text-shadow:0_1px_10px_rgba(0,0,0,0.2)]">
+          <p className="mt-4 text-base md:text-lg text-sand/90 bh-subtext">
             Five quick choices, and you&rsquo;re going.
             <br />
             We&rsquo;ll handle the rest.
           </p>
-          <div className="mt-[22px] flex animate-bounce justify-center" aria-hidden="true">
+          <div className="mt-5 flex animate-bounce justify-center" aria-hidden="true">
             <svg width="22" height="14" viewBox="0 0 22 14" fill="none">
               <path d="M2 2l9 9 9-9" stroke="#fff" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
@@ -203,15 +207,15 @@ export function BookingHero({
       </section>
 
       {/* ── Body ── */}
-      <section aria-label="Booking form" className="bg-sand px-5 py-[clamp(40px,6vw,72px)]">
-        <div className="container max-w-[1280px]">
+      <section aria-label="Booking form" className="bg-sand py-section">
+        <div className="container max-w-content">
           <div className="grid grid-cols-1 gap-12 lg:grid-cols-[1fr_380px] lg:items-start lg:gap-16">
 
             {/* ── Steps column ── */}
             <div className="relative">
               <div
                 aria-hidden="true"
-                className="absolute bottom-[90px] left-[19px] top-5 border-l-2 border-dashed border-primary/40"
+                className="absolute bottom-22.5 left-4.75 top-5 border-l-2 border-dashed border-primary/40"
               />
 
               {/* Step 1 — Route */}
@@ -225,27 +229,27 @@ export function BookingHero({
                         type="button"
                         onClick={() => setRouteId(r.id)}
                         aria-pressed={selected}
-                        className={`flex items-start justify-between gap-3 rounded-[20px] p-5 text-left transition-colors ${
+                        className={`flex items-start justify-between gap-3 rounded-card p-5 text-left transition-colors ${
                           selected ? 'bg-primary' : 'border border-primary/25 bg-white'
                         }`}
                       >
                         <div>
-                          <p className={`mb-1.5 text-[0.65rem] font-bold uppercase tracking-[0.08em] ${selected ? 'text-white/80' : 'text-primary'}`}>
+                          <p className={`mb-1.5 text-label-2xs font-semibold uppercase ${selected ? 'text-white/80' : 'text-primary'}`}>
                             Per Person
                           </p>
-                          <p className={`text-[1.6rem] font-bold ${selected ? 'text-white' : 'text-dark'}`}>€{r.price}</p>
+                          <p className={`font-display text-price ${selected ? 'text-white' : 'text-forest'}`}>€{r.price}</p>
                         </div>
                         <div className="flex flex-col gap-1.5">
                           {r.stops.map((name, i) => (
                             <div key={name + i} className="flex items-center gap-2">
                               <span
-                                className={`inline-block h-[9px] w-[9px] rounded-full ${
+                                className={`inline-block size-2.25 rounded-full ${
                                   i === 1
                                     ? `border-2 ${selected ? 'border-white bg-primary' : 'border-primary bg-white'}`
                                     : selected ? 'bg-white' : 'bg-primary'
                                 }`}
                               />
-                              <span className={`text-[0.8rem] font-semibold ${selected ? 'text-white' : 'text-primary'}`}>{name}</span>
+                              <span className={`text-label font-semibold ${selected ? 'text-white' : 'text-primary'}`}>{name}</span>
                             </div>
                           ))}
                         </div>
@@ -266,7 +270,7 @@ export function BookingHero({
                         type="button"
                         onClick={() => setCampId(c.id)}
                         aria-pressed={selected}
-                        className={`flex items-center justify-between gap-3.5 rounded-[20px] p-4 text-left transition-colors ${
+                        className={`flex items-center justify-between gap-3.5 rounded-card p-4 text-left transition-colors ${
                           selected ? 'bg-primary' : 'border border-primary/25 bg-white'
                         }`}
                       >
@@ -274,10 +278,10 @@ export function BookingHero({
                           <p className={`mb-1 text-[0.62rem] font-bold uppercase tracking-[0.06em] ${selected ? 'text-white/75' : 'text-dark/45'}`}>
                             {c.priceLabel}
                           </p>
-                          <p className={`text-[1.05rem] font-bold ${selected ? 'text-white' : 'text-forest'}`}>{c.priceValue}</p>
+                          <p className={`text-base font-bold ${selected ? 'text-white' : 'text-forest'}`}>{c.priceValue}</p>
                         </div>
                         <div className={`self-stretch border-l border-dashed ${selected ? 'border-white/40' : 'border-dark/20'}`} />
-                        <p className={`flex-1 text-right text-[0.85rem] font-bold ${selected ? 'text-white' : 'text-dark'}`}>{c.name}</p>
+                        <p className={`flex-1 text-right text-label font-bold ${selected ? 'text-white' : 'text-dark'}`}>{c.name}</p>
                       </button>
                     );
                   })}
@@ -286,16 +290,16 @@ export function BookingHero({
 
               {/* Step 3 — Date */}
               <Step number={3} title="Pick your date." description="When do you want to leave?">
-                <div className="rounded-[22px] bg-white p-[clamp(18px,2.4vw,28px)] shadow-card-hover">
+                <div className="rounded-card bg-white p-4.5 sm:p-7 shadow-card">
                   <div className="grid grid-cols-1 gap-7 sm:grid-cols-2">
-                    {months.map((m, i) => (
+                    {months.map((m) => (
                       <div key={m.label}>
                         <div className="mb-3.5 flex items-center justify-between">
                           <button
                             type="button"
                             aria-label="Previous month"
                             onClick={() => setMonthOffset((o) => o - 1)}
-                            className="flex h-[26px] w-[26px] items-center justify-center rounded-full border border-dark/15 bg-white text-dark"
+                            className="flex size-6.5 items-center justify-center rounded-full border border-dark/15 bg-white text-dark"
                           >
                             &lsaquo;
                           </button>
@@ -304,7 +308,7 @@ export function BookingHero({
                             type="button"
                             aria-label="Next month"
                             onClick={() => setMonthOffset((o) => o + 1)}
-                            className="flex h-[26px] w-[26px] items-center justify-center rounded-full border border-dark/15 bg-white text-dark"
+                            className="flex size-6.5 items-center justify-center rounded-full border border-dark/15 bg-white text-dark"
                           >
                             &rsaquo;
                           </button>
@@ -323,13 +327,13 @@ export function BookingHero({
                               type="button"
                               disabled={cell.blank}
                               onClick={() => cell.date && pickDate(cell.date)}
-                              className={`aspect-square rounded-full text-[0.85rem] font-medium ${
+                              className={`aspect-square rounded-full text-label font-medium ${
                                 cell.blank
                                   ? 'invisible'
                                   : cell.isStart || cell.isEnd
                                   ? 'bg-primary font-bold text-white'
                                   : cell.inRange
-                                  ? 'bg-primary/[0.18] font-semibold text-primary'
+                                  ? 'bg-primary/18 font-semibold text-primary'
                                   : 'bg-transparent text-dark/80'
                               }`}
                             >
@@ -350,16 +354,16 @@ export function BookingHero({
                     type="button"
                     aria-label="Decrease travelers"
                     onClick={() => setTravelers((t) => Math.max(1, t - 1))}
-                    className="flex h-11 w-11 items-center justify-center rounded-full border border-primary/30 bg-white text-[1.3rem] font-bold text-primary"
+                    className="flex h-11 w-11 items-center justify-center rounded-full border border-primary/30 bg-white text-h3 font-bold text-primary"
                   >
                     &minus;
                   </button>
-                  <span className="min-w-8 text-center font-display text-[1.6rem] font-bold text-dark">{travelers}</span>
+                  <span className="min-w-8 text-center font-display text-price font-bold text-dark">{travelers}</span>
                   <button
                     type="button"
                     aria-label="Increase travelers"
                     onClick={() => setTravelers((t) => Math.min(17, t + 1))}
-                    className="flex h-11 w-11 items-center justify-center rounded-full bg-primary text-[1.3rem] font-bold text-white"
+                    className="flex h-11 w-11 items-center justify-center rounded-full bg-primary text-h3 font-bold text-white"
                   >
                     +
                   </button>
@@ -382,7 +386,13 @@ export function BookingHero({
                     image="https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=300&q=80"
                     imageAlt="Individual quad bike in the dunes"
                   />
-                  <Stepper value={quadIndividual} onDec={() => setQuadIndividual((n) => Math.max(0, n - 1))} onInc={() => setQuadIndividual((n) => Math.min(10, n + 1))} decLabel="Decrease individual quads" incLabel="Increase individual quads" />
+                  <Stepper
+                    value={quadIndividual}
+                    onDec={() => setQuadIndividual((n) => Math.max(0, n - 1))}
+                    onInc={() => setQuadIndividual((n) => Math.min(10, n + 1))}
+                    decLabel="Decrease individual quads"
+                    incLabel="Increase individual quads"
+                  />
                 </div>
 
                 <p className="mb-3 text-base font-semibold text-dark">How many double quad do you need?</p>
@@ -394,12 +404,18 @@ export function BookingHero({
                     image="https://images.unsplash.com/photo-1517824806704-9040b037703b?auto=format&fit=crop&w=300&q=80"
                     imageAlt="Two travelers on a double quad bike"
                   />
-                  <Stepper value={quadDouble} onDec={() => setQuadDouble((n) => Math.max(0, n - 1))} onInc={() => setQuadDouble((n) => Math.min(10, n + 1))} decLabel="Decrease double quads" incLabel="Increase double quads" />
+                  <Stepper
+                    value={quadDouble}
+                    onDec={() => setQuadDouble((n) => Math.max(0, n - 1))}
+                    onInc={() => setQuadDouble((n) => Math.min(10, n + 1))}
+                    decLabel="Decrease double quads"
+                    incLabel="Increase double quads"
+                  />
                 </div>
 
-                <h3 className="mb-[18px] font-display text-[1.3rem] font-bold text-dark">We care about your comfort!</h3>
+                <h3 className="mb-4.5 font-display text-h3 font-bold text-dark">We care about your comfort!</h3>
 
-                <div className="mb-[18px] flex flex-wrap items-center justify-between gap-3">
+                <div className="mb-4.5 flex flex-wrap items-center justify-between gap-3">
                   <p className="text-base font-semibold text-dark">Would you like airport transfer?</p>
                   <SegmentedControl
                     options={[
@@ -413,13 +429,13 @@ export function BookingHero({
 
                 {transferEnabled && (
                   <div className="flex flex-wrap items-center gap-5">
-                    <div className="flex h-16 w-[230px] items-stretch overflow-hidden rounded-2xl border border-dark/10 bg-white shadow-card-hover">
+                    <div className="flex h-16 w-57.5 items-stretch overflow-hidden rounded-2xl border border-dark/10 bg-white shadow-card-m">
                       <div className="flex flex-1 flex-col justify-center px-3.5">
                         <p className="mb-0.5 text-[0.55rem] font-bold uppercase tracking-[0.06em] text-dark/45">Total transfer</p>
-                        <p className="text-[0.95rem] font-bold text-forest">+€{transferPrice}</p>
+                        <p className="text-base font-bold text-forest">+€{transferPrice}</p>
                       </div>
                       <div className="shrink-0 self-stretch border-l border-dashed border-dark/20" />
-                      <div className="flex w-[74px] shrink-0 flex-col justify-center gap-px px-2">
+                      <div className="flex w-18.5 shrink-0 flex-col justify-center gap-px px-2">
                         <span className="text-[0.62rem] font-bold leading-tight text-dark">{travelers} Travelers</span>
                         <span className="text-[0.62rem] font-bold leading-tight text-dark">1 Vehicle</span>
                         <span className="text-[0.62rem] font-bold leading-tight text-dark">{transferTypeLabel}</span>
@@ -428,7 +444,7 @@ export function BookingHero({
                         src="https://images.unsplash.com/photo-1493238792000-8113da705763?auto=format&fit=crop&w=300&q=80"
                         alt="Private airport transfer vehicle"
                         loading="lazy"
-                        className="w-[60px] shrink-0 object-cover"
+                        className="w-15 shrink-0 object-cover"
                       />
                     </div>
                     <SegmentedControl
@@ -446,13 +462,13 @@ export function BookingHero({
 
             {/* ── Trip Summary ── */}
             <aside aria-label="Your trip summary" className="lg:sticky lg:top-6">
-              <div className="rounded-[26px] bg-white p-[clamp(24px,2.6vw,32px)] shadow-card-hover">
-                <h2 className="mb-[22px] font-display text-[1.7rem] font-bold text-dark">Your Trip Summary</h2>
+              <div className="rounded-card bg-white p-6 lg:p-8 shadow-card">
+                <h2 className="mb-5.5 font-display bh-summary-title font-bold text-dark">Your Trip Summary</h2>
 
                 {/* Route */}
                 <div className="mb-2.5 flex items-baseline justify-between">
-                  <p className="text-[1.05rem] font-bold text-dark">The Route</p>
-                  <p className="text-[1.05rem] font-bold text-forest">{travelers} x €{selectedRoute.price}</p>
+                  <p className="text-base font-bold text-dark">The Route</p>
+                  <p className="text-base font-bold text-forest">{travelers} x €{selectedRoute.price}</p>
                 </div>
                 <div className="relative mb-6">
                   <div className="absolute left-[14%] right-[14%] top-[5px] border-t-2 border-dashed border-primary" />
@@ -460,11 +476,11 @@ export function BookingHero({
                     {selectedRoute.stops.map((name, i) => (
                       <div key={name + i} className="flex w-1/3 flex-col items-center gap-1.5">
                         <span
-                          className={`inline-block h-[11px] w-[11px] rounded-full ${
+                          className={`inline-block size-2.75 rounded-full ${
                             i === 1 ? 'border-2 border-primary bg-white' : 'bg-primary'
                           }`}
                         />
-                        <span className="text-[0.75rem] font-semibold text-primary">{name}</span>
+                        <span className="text-label font-semibold text-primary">{name}</span>
                       </div>
                     ))}
                   </div>
@@ -472,8 +488,8 @@ export function BookingHero({
 
                 {/* Sleep */}
                 <div className="mb-2.5 flex items-baseline justify-between">
-                  <p className="text-[1.05rem] font-bold text-dark">Where You&rsquo;ll Sleep</p>
-                  <p className="text-[1.05rem] font-bold text-forest">
+                  <p className="text-base font-bold text-dark">Where You&rsquo;ll Sleep</p>
+                  <p className="text-base font-bold text-forest">
                     {selectedCamp.delta === 0 ? 'Included' : `${travelers} x €${selectedCamp.delta}`}
                   </p>
                 </div>
@@ -489,8 +505,8 @@ export function BookingHero({
                 {quadDouble > 0 && (
                   <>
                     <div className="mb-2.5 flex items-baseline justify-between">
-                      <p className="text-[1.05rem] font-bold text-dark">Double Quad</p>
-                      <p className="text-[1.05rem] font-bold text-forest">{quadDouble} x €65</p>
+                      <p className="text-base font-bold text-dark">Double Quad</p>
+                      <p className="text-base font-bold text-forest">{quadDouble} x €65</p>
                     </div>
                     <SummaryTicket
                       image="https://images.unsplash.com/photo-1517824806704-9040b037703b?auto=format&fit=crop&w=500&q=80"
@@ -506,8 +522,8 @@ export function BookingHero({
                 {quadIndividual > 0 && (
                   <>
                     <div className="mb-2.5 flex items-baseline justify-between">
-                      <p className="text-[1.05rem] font-bold text-dark">Individual Quad</p>
-                      <p className="text-[1.05rem] font-bold text-forest">{quadIndividual} x €45</p>
+                      <p className="text-base font-bold text-dark">Individual Quad</p>
+                      <p className="text-base font-bold text-forest">{quadIndividual} x €45</p>
                     </div>
                     <SummaryTicket
                       image="https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=500&q=80"
@@ -523,10 +539,10 @@ export function BookingHero({
                 {transferEnabled && (
                   <>
                     <div className="mb-2.5 flex items-baseline justify-between">
-                      <p className="text-[1.05rem] font-bold text-dark">Airport transfer</p>
-                      <p className="text-[1.05rem] font-bold text-forest">1 x €{transferPrice}</p>
+                      <p className="text-base font-bold text-dark">Airport transfer</p>
+                      <p className="text-base font-bold text-forest">1 x €{transferPrice}</p>
                     </div>
-                    <div className="mb-6 flex h-16 items-stretch overflow-hidden rounded-2xl border border-dark/10 shadow-card-hover">
+                    <div className="mb-6 flex h-16 items-stretch overflow-hidden rounded-2xl border border-dark/10 shadow-card-m">
                       <img
                         src="https://images.unsplash.com/photo-1493238792000-8113da705763?auto=format&fit=crop&w=200&q=80"
                         alt="Airport transfer vehicle"
@@ -543,17 +559,17 @@ export function BookingHero({
                 )}
 
                 {/* When you'll leave */}
-                <div className="flex items-center justify-between border-t border-dark/[0.08] py-3.5">
-                  <p className="text-[0.95rem] font-semibold text-dark">When You&rsquo;ll Leave</p>
-                  <p className="flex items-center gap-1.5 text-[0.95rem] font-bold text-dark">
+                <div className="flex items-center justify-between border-t border-dark/8 py-3.5">
+                  <p className="text-base font-semibold text-dark">When You&rsquo;ll Leave</p>
+                  <p className="flex items-center gap-1.5 text-base font-bold text-dark">
                     {whenLeaveText} <span role="img" aria-label="Calendar">&#128197;</span>
                   </p>
                 </div>
 
                 {/* Travelers */}
-                <div className="mb-5 flex items-center justify-between border-t border-dark/[0.08] py-3.5">
-                  <p className="text-[0.95rem] font-semibold text-dark">Nbr of Travelers</p>
-                  <p className="flex items-center gap-1.5 text-[0.95rem] font-bold text-dark">
+                <div className="mb-5 flex items-center justify-between border-t border-dark/8 py-3.5">
+                  <p className="text-base font-semibold text-dark">Nbr of Travelers</p>
+                  <p className="flex items-center gap-1.5 text-base font-bold text-dark">
                     {travelers} traveler{travelers === 1 ? '' : 's'} <span role="img" aria-label="Travelers">&#128694;</span>
                   </p>
                 </div>
@@ -561,27 +577,27 @@ export function BookingHero({
                 {/* Reserve */}
                 <button
                   type="button"
-                  className="flex w-full items-center justify-between rounded-full bg-primary py-[15px] pl-[22px] pr-2.5 font-display text-[1.05rem] font-bold text-white shadow-[0_16px_34px_-16px_rgba(193,90,43,0.7)]"
+                  className="flex w-full items-center justify-between rounded-full bg-primary py-3.75 pl-5.5 pr-2.5 font-display text-base font-bold text-white bh-btn-shadow"
                 >
                   <span>
                     Reserve your spot <span aria-hidden="true">&rarr;</span>
                   </span>
-                  <span className="flex flex-col items-end rounded-full bg-white/[0.14] px-4 py-1.5">
+                  <span className="flex flex-col items-end rounded-full bg-white/14 px-4 py-1.5">
                     <span className="text-[0.55rem] font-bold uppercase tracking-[0.06em] opacity-85">Total price</span>
-                    <span className="text-[1.05rem] font-bold">€{total}</span>
+                    <span className="text-base font-bold">€{total}</span>
                   </span>
                 </button>
 
-                <ul role="list" className="mt-[18px] flex flex-col gap-2.5">
-                  <li className="flex items-center gap-2.5 text-[0.85rem] text-dark">
+                <ul role="list" className="mt-4.5 flex flex-col gap-2.5">
+                  <li className="flex items-center gap-2.5 text-label text-dark">
                     <CheckIcon className="text-primary" />
                     Free cancellation up to 48h before
                   </li>
-                  <li className="flex items-center gap-2.5 text-[0.85rem] text-dark">
+                  <li className="flex items-center gap-2.5 text-label text-dark">
                     <StarIcon className="text-primary" />
                     Book your spot with 20%
                   </li>
-                  <li className="flex items-center gap-2.5 text-[0.85rem] text-dark">
+                  <li className="flex items-center gap-2.5 text-label text-dark">
                     <HeartIcon className="text-primary" />
                     Clear pricing, no surprise surcharges
                   </li>
@@ -589,19 +605,19 @@ export function BookingHero({
               </div>
 
               {/* WhatsApp card */}
-              <div className="mt-4 rounded-[22px] bg-dark px-6 py-[26px] text-center">
-                <p className="mb-3.5 text-[0.95rem] font-bold text-white">
+              <div className="mt-4 rounded-card bg-dark px-6 py-6.5 text-center">
+                <p className="mb-3.5 text-base font-bold text-white">
                   <span role="img" aria-label="Thinking">&#129300;</span> Questions before you book?
                 </p>
                 <a
                   href={whatsappHref}
                   aria-label="Chat with us on WhatsApp"
-                  className="flex items-center justify-center gap-2.5 rounded-full bg-[#25D366] px-5 py-[13px] text-[0.95rem] font-bold text-white"
+                  className="flex items-center justify-center gap-2.5 rounded-full bg-[#25D366] px-5 py-3.25 text-base font-bold text-white"
                 >
                   <WhatsAppIcon />
                   Chat on WhatsApp
                 </a>
-                <p className="mt-3 text-[0.78rem] text-white/65">
+                <p className="mt-3 text-label text-white/65">
                   WhatsApp us
                   <br />
                   We usually answer within an hour.
@@ -632,13 +648,13 @@ function Step({
   children: React.ReactNode;
 }) {
   return (
-    <div className={`relative grid grid-cols-[40px_1fr] gap-x-5 ${last ? '' : 'pb-12'}`}>
-      <div className="z-10 flex h-10 w-10 items-center justify-center rounded-full bg-primary text-[1.1rem] font-bold text-white shadow-[0_6px_16px_-6px_rgba(193,90,43,0.6)]">
+    <div className={`relative grid grid-cols-[2.5rem_1fr] gap-x-5 ${last ? '' : 'pb-12'}`}>
+      <div className="z-10 flex h-10 w-10 items-center justify-center rounded-full bg-primary text-btn font-bold text-white bh-num-shadow">
         {number}
       </div>
       <div>
-        <h2 className="mb-1.5 font-display text-[clamp(1.4rem,2.4vw,1.75rem)] font-bold text-dark">{title}</h2>
-        <p className="mb-5 text-[0.95rem] text-dark/60">{description}</p>
+        <h2 className="mb-1.5 font-display bh-step-title font-bold text-dark">{title}</h2>
+        <p className="mb-5 text-label text-dark/60">{description}</p>
         {children}
       </div>
     </div>
@@ -659,14 +675,14 @@ function TicketCard({
   imageAlt: string;
 }) {
   return (
-    <div className="flex h-16 w-[260px] items-stretch overflow-hidden rounded-2xl border border-dark/10 bg-white shadow-card-hover">
+    <div className="flex h-16 w-65 items-stretch overflow-hidden rounded-2xl border border-dark/10 bg-white shadow-card-m">
       <div className="flex flex-1 flex-col justify-center px-3.5">
         <p className="mb-0.5 text-[0.6rem] font-bold uppercase tracking-[0.06em] text-dark/45">{eyebrow}</p>
-        <p className="text-[0.95rem] font-bold text-forest">{price}</p>
+        <p className="text-base font-bold text-forest">{price}</p>
       </div>
       <div className="shrink-0 self-stretch border-l border-dashed border-dark/20" />
-      <p className="flex w-[54px] shrink-0 items-center px-2 text-[0.72rem] font-bold leading-tight text-dark">{label}</p>
-      <img src={image} alt={imageAlt} loading="lazy" className="w-[104px] shrink-0 object-cover" />
+      <p className="flex w-13.5 shrink-0 items-center px-2 text-label font-bold leading-tight text-dark">{label}</p>
+      <img src={image} alt={imageAlt} loading="lazy" className="w-26 shrink-0 object-cover" />
     </div>
   );
 }
@@ -685,7 +701,7 @@ function SummaryTicket({
   label: string;
 }) {
   return (
-    <div className="mb-6 flex h-16 items-stretch overflow-hidden rounded-2xl border border-dark/[0.08] shadow-card-hover">
+    <div className="mb-6 flex h-16 items-stretch overflow-hidden rounded-2xl border border-dark/8 shadow-card-m">
       <img src={image} alt={imageAlt} loading="lazy" className="w-16 shrink-0 object-cover" />
       <div className="shrink-0 self-stretch border-l border-dashed border-dark/20" />
       <div className="flex shrink-0 flex-col justify-center whitespace-nowrap px-3.5">
@@ -694,7 +710,7 @@ function SummaryTicket({
       </div>
       <div className="shrink-0 self-stretch border-l border-dashed border-dark/20" />
       <div className="flex items-center px-3.5">
-        <span className="text-[0.85rem] font-bold text-dark">{label}</span>
+        <span className="text-label font-bold text-dark">{label}</span>
       </div>
     </div>
   );
@@ -719,16 +735,16 @@ function Stepper({
         type="button"
         aria-label={decLabel}
         onClick={onDec}
-        className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-[1.15rem] font-bold text-primary"
+        className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-h3 font-bold text-primary"
       >
         &minus;
       </button>
-      <span className="min-w-5 text-center font-display text-[1.3rem] font-bold text-dark">{value}</span>
+      <span className="min-w-5 text-center font-display text-h3 font-bold text-dark">{value}</span>
       <button
         type="button"
         aria-label={incLabel}
         onClick={onInc}
-        className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-[1.15rem] font-bold text-primary"
+        className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-h3 font-bold text-primary"
       >
         +
       </button>
@@ -754,7 +770,7 @@ function SegmentedControl({
             key={opt.value}
             type="button"
             onClick={() => onChange(opt.value)}
-            className={`rounded-full px-[18px] py-2 text-[0.85rem] font-bold ${
+            className={`rounded-full px-4.5 py-2 text-label font-bold ${
               active ? 'bg-primary text-white' : 'text-dark'
             }`}
           >
