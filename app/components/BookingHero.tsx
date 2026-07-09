@@ -315,7 +315,7 @@ export function BookingHero({
                         </div>
                         <div className="mb-1.5 grid grid-cols-7 gap-0.5">
                           {WEEKDAYS.map((wd) => (
-                            <span key={wd} className="py-1 text-center text-[0.7rem] font-semibold text-dark/40">
+                            <span key={wd} className="py-1 text-center text-xs font-semibold text-dark/40">
                               {wd}
                             </span>
                           ))}
@@ -471,16 +471,16 @@ export function BookingHero({
                   <p className="text-base font-bold text-forest">{travelers} x €{selectedRoute.price}</p>
                 </div>
                 <div className="relative mb-6">
-                  <div className="absolute left-[14%] right-[14%] top-[5px] border-t-2 border-dashed border-primary" />
+                  <div className="absolute left-1/6 right-1/6 top-1/8 border-t-2 border-dashed border-primary" />
                   <div className="relative flex justify-between">
                     {selectedRoute.stops.map((name, i) => (
-                      <div key={name + i} className="flex w-1/3 flex-col items-center gap-1.5">
+                      <div key={name + i} className="flex w-1/3 flex-col items-center gap-2.75">
                         <span
-                          className={`inline-block size-2.75 rounded-full ${
+                          className={`inline-block h-3 w-3 rounded-full ${
                             i === 1 ? 'border-2 border-primary bg-white' : 'bg-primary'
                           }`}
                         />
-                        <span className="text-label font-semibold text-primary">{name}</span>
+                        <span className="text-xs font-medium text-primary">{name}</span>
                       </div>
                     ))}
                   </div>
@@ -551,8 +551,8 @@ export function BookingHero({
                       />
                       <div className="shrink-0 self-stretch border-l border-dashed border-dark/20" />
                       <div className="flex flex-col justify-center gap-px px-3.5">
-                        <span className="text-[0.7rem] font-semibold leading-snug text-dark">{travelers} Travelers</span>
-                        <span className="text-[0.7rem] font-semibold leading-snug text-dark">1 Vehicle &middot; {transferTypeLabel}</span>
+                        <span className="text-xs font-medium leading-snug text-dark">{travelers} Travelers</span>
+                        <span className="text-xs font-medium leading-snug text-dark">1 Vehicle &middot; {transferTypeLabel}</span>
                       </div>
                     </div>
                   </>
@@ -577,14 +577,14 @@ export function BookingHero({
                 {/* Reserve */}
                 <button
                   type="button"
-                  className="flex w-full items-center justify-between rounded-full bg-primary py-3.75 pl-5.5 pr-2.5 font-display text-base font-bold text-white bh-btn-shadow"
+                  className="flex w-full items-center justify-between rounded-full bg-primary py-3.75 pl-5.5 pr-2.5 font-display text-btn text-white bh-btn-shadow"
                 >
                   <span>
                     Reserve your spot <span aria-hidden="true">&rarr;</span>
                   </span>
                   <span className="flex flex-col items-end rounded-full bg-white/14 px-4 py-1.5">
-                    <span className="text-[0.55rem] font-bold uppercase tracking-[0.06em] opacity-85">Total price</span>
-                    <span className="text-base font-bold">€{total}</span>
+                    <span className="text-label-2xs font-semibold uppercase opacity-85">Total price</span>
+                    <span className="text-price font-display">€{total}</span>
                   </span>
                 </button>
 
@@ -677,11 +677,11 @@ function TicketCard({
   return (
     <div className="flex h-16 w-65 items-stretch overflow-hidden rounded-2xl border border-dark/10 bg-white shadow-card-m">
       <div className="flex flex-1 flex-col justify-center px-3.5">
-        <p className="mb-0.5 text-[0.6rem] font-bold uppercase tracking-[0.06em] text-dark/45">{eyebrow}</p>
-        <p className="text-base font-bold text-forest">{price}</p>
+        <p className="mb-0.5 text-label-2xs font-semibold uppercase text-dark/45">{eyebrow}</p>
+        <p className="font-display text-price text-forest">{price}</p>
       </div>
       <div className="shrink-0 self-stretch border-l border-dashed border-dark/20" />
-      <p className="flex w-13.5 shrink-0 items-center px-2 text-label font-bold leading-tight text-dark">{label}</p>
+      <p className="flex w-13.5 shrink-0 items-center px-2 text-xs font-bold leading-tight text-dark">{label}</p>
       <img src={image} alt={imageAlt} loading="lazy" className="w-26 shrink-0 object-cover" />
     </div>
   );
@@ -705,8 +705,8 @@ function SummaryTicket({
       <img src={image} alt={imageAlt} loading="lazy" className="w-16 shrink-0 object-cover" />
       <div className="shrink-0 self-stretch border-l border-dashed border-dark/20" />
       <div className="flex shrink-0 flex-col justify-center whitespace-nowrap px-3.5">
-        <span className="text-[0.6rem] font-bold uppercase tracking-[0.06em] text-dark/45">{eyebrow}</span>
-        <span className="text-base font-bold text-forest">{price}</span>
+        <span className="text-label-2xs font-semibold uppercase text-dark/45">{eyebrow}</span>
+        <span className="font-display text-price text-forest">{price}</span>
       </div>
       <div className="shrink-0 self-stretch border-l border-dashed border-dark/20" />
       <div className="flex items-center px-3.5">
