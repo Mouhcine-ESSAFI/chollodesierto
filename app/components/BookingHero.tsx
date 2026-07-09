@@ -243,13 +243,13 @@ export function BookingHero({
                           {r.stops.map((name, i) => (
                             <div key={name + i} className="flex items-center gap-2">
                               <span
-                                className={`inline-block size-2.25 rounded-full ${
+                                className={`inline-block h-3 w-3 rounded-full ${
                                   i === 1
                                     ? `border-2 ${selected ? 'border-white bg-primary' : 'border-primary bg-white'}`
                                     : selected ? 'bg-white' : 'bg-primary'
                                 }`}
                               />
-                              <span className={`text-label font-semibold ${selected ? 'text-white' : 'text-primary'}`}>{name}</span>
+                              <span className={`text-xs font-medium ${selected ? 'text-white' : 'text-primary'}`}>{name}</span>
                             </div>
                           ))}
                         </div>
@@ -275,13 +275,13 @@ export function BookingHero({
                         }`}
                       >
                         <div className="flex-1">
-                          <p className={`mb-1 text-[0.62rem] font-bold uppercase tracking-[0.06em] ${selected ? 'text-white/75' : 'text-dark/45'}`}>
+                          <p className={`mb-1 text-label-2xs font-semibold uppercase ${selected ? 'text-white/75' : 'text-dark/45'}`}>
                             {c.priceLabel}
                           </p>
-                          <p className={`text-base font-bold ${selected ? 'text-white' : 'text-forest'}`}>{c.priceValue}</p>
+                          <p className={`font-display text-price ${selected ? 'text-white' : 'text-forest'}`}>{c.priceValue}</p>
                         </div>
                         <div className={`self-stretch border-l border-dashed ${selected ? 'border-white/40' : 'border-dark/20'}`} />
-                        <p className={`flex-1 text-right text-label font-bold ${selected ? 'text-white' : 'text-dark'}`}>{c.name}</p>
+                        <p className={`flex-1 text-right text-base font-bold ${selected ? 'text-white' : 'text-dark'}`}>{c.name}</p>
                       </button>
                     );
                   })}
@@ -431,14 +431,14 @@ export function BookingHero({
                   <div className="flex flex-wrap items-center gap-5">
                     <div className="flex h-16 w-57.5 items-stretch overflow-hidden rounded-2xl border border-dark/10 bg-white shadow-card-m">
                       <div className="flex flex-1 flex-col justify-center px-3.5">
-                        <p className="mb-0.5 text-[0.55rem] font-bold uppercase tracking-[0.06em] text-dark/45">Total transfer</p>
-                        <p className="text-base font-bold text-forest">+€{transferPrice}</p>
+                        <p className="mb-0.5 text-label-2xs font-semibold uppercase text-dark/45">Total transfer</p>
+                        <p className="font-display text-price text-forest">+€{transferPrice}</p>
                       </div>
                       <div className="shrink-0 self-stretch border-l border-dashed border-dark/20" />
                       <div className="flex w-18.5 shrink-0 flex-col justify-center gap-px px-2">
-                        <span className="text-[0.62rem] font-bold leading-tight text-dark">{travelers} Travelers</span>
-                        <span className="text-[0.62rem] font-bold leading-tight text-dark">1 Vehicle</span>
-                        <span className="text-[0.62rem] font-bold leading-tight text-dark">{transferTypeLabel}</span>
+                        <span className="text-label-2xs font-medium leading-tight text-dark">{travelers} Travelers</span>
+                        <span className="text-label-2xs font-medium leading-tight text-dark">1 Vehicle</span>
+                        <span className="text-label-2xs font-medium leading-tight text-dark">{transferTypeLabel}</span>
                       </div>
                       <img
                         src="https://images.unsplash.com/photo-1493238792000-8113da705763?auto=format&fit=crop&w=300&q=80"
