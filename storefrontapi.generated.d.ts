@@ -288,6 +288,74 @@ export type FooterQuery = {
   >;
 };
 
+export type TourRoutesQueryVariables = StorefrontAPI.Exact<{
+  [key: string]: never;
+}>;
+
+export type TourRoutesQuery = {
+  metaobjects: {
+    nodes: Array<
+      Pick<StorefrontAPI.Metaobject, 'id' | 'handle'> & {
+        fields: Array<
+          Pick<StorefrontAPI.MetaobjectField, 'key' | 'value'> & {
+            reference?: StorefrontAPI.Maybe<{
+              image?: StorefrontAPI.Maybe<
+                Pick<StorefrontAPI.Image, 'url' | 'altText'>
+              >;
+            }>;
+          }
+        >;
+      }
+    >;
+  };
+};
+
+export type CampTiersQueryVariables = StorefrontAPI.Exact<{
+  [key: string]: never;
+}>;
+
+export type CampTiersQuery = {
+  metaobjects: {
+    nodes: Array<
+      Pick<StorefrontAPI.Metaobject, 'id' | 'handle'> & {
+        fields: Array<
+          Pick<StorefrontAPI.MetaobjectField, 'key' | 'value'> & {
+            reference?: StorefrontAPI.Maybe<{
+              image?: StorefrontAPI.Maybe<
+                Pick<StorefrontAPI.Image, 'url' | 'altText'>
+              >;
+            }>;
+          }
+        >;
+      }
+    >;
+  };
+};
+
+export type FaqsQueryVariables = StorefrontAPI.Exact<{[key: string]: never}>;
+
+export type FaqsQuery = {
+  metaobjects: {
+    nodes: Array<
+      Pick<StorefrontAPI.Metaobject, 'id'> & {
+        fields: Array<Pick<StorefrontAPI.MetaobjectField, 'key' | 'value'>>;
+      }
+    >;
+  };
+};
+
+export type ReviewsQueryVariables = StorefrontAPI.Exact<{[key: string]: never}>;
+
+export type ReviewsQuery = {
+  metaobjects: {
+    nodes: Array<
+      Pick<StorefrontAPI.Metaobject, 'id'> & {
+        fields: Array<Pick<StorefrontAPI.MetaobjectField, 'key' | 'value'>>;
+      }
+    >;
+  };
+};
+
 interface GeneratedQueryTypes {
   '#graphql\n  fragment Shop on Shop {\n    id\n    name\n    description\n    primaryDomain {\n      url\n    }\n    brand {\n      logo {\n        image {\n          url\n        }\n      }\n    }\n  }\n  query Header(\n    $country: CountryCode\n    $headerMenuHandle: String!\n    $language: LanguageCode\n  ) @inContext(language: $language, country: $country) {\n    shop {\n      ...Shop\n    }\n    menu(handle: $headerMenuHandle) {\n      ...Menu\n    }\n  }\n  #graphql\n  fragment MenuItem on MenuItem {\n    id\n    resourceId\n    tags\n    title\n    type\n    url\n  }\n  fragment ChildMenuItem on MenuItem {\n    ...MenuItem\n  }\n  fragment ParentMenuItem on MenuItem {\n    ...MenuItem\n    items {\n      ...ChildMenuItem\n    }\n  }\n  fragment Menu on Menu {\n    id\n    items {\n      ...ParentMenuItem\n    }\n  }\n\n': {
     return: HeaderQuery;
@@ -296,6 +364,22 @@ interface GeneratedQueryTypes {
   '#graphql\n  query Footer(\n    $country: CountryCode\n    $footerMenuHandle: String!\n    $language: LanguageCode\n  ) @inContext(language: $language, country: $country) {\n    menu(handle: $footerMenuHandle) {\n      ...Menu\n    }\n  }\n  #graphql\n  fragment MenuItem on MenuItem {\n    id\n    resourceId\n    tags\n    title\n    type\n    url\n  }\n  fragment ChildMenuItem on MenuItem {\n    ...MenuItem\n  }\n  fragment ParentMenuItem on MenuItem {\n    ...MenuItem\n    items {\n      ...ChildMenuItem\n    }\n  }\n  fragment Menu on Menu {\n    id\n    items {\n      ...ParentMenuItem\n    }\n  }\n\n': {
     return: FooterQuery;
     variables: FooterQueryVariables;
+  };
+  '#graphql\n  query TourRoutes {\n    metaobjects(type: "tour_route", first: 10) {\n      nodes {\n        id\n        handle\n        fields {\n          key\n          value\n          reference {\n            ... on MediaImage {\n              image {\n                url(transform: { maxWidth: 900, preferredContentType: WEBP })\n                altText\n              }\n            }\n          }\n        }\n      }\n    }\n  }\n': {
+    return: TourRoutesQuery;
+    variables: TourRoutesQueryVariables;
+  };
+  '#graphql\n  query CampTiers {\n    metaobjects(type: "camp_tier", first: 10) {\n      nodes {\n        id\n        handle\n        fields {\n          key\n          value\n          reference {\n            ... on MediaImage {\n              image {\n                url(transform: { maxWidth: 900, preferredContentType: WEBP })\n                altText\n              }\n            }\n          }\n        }\n      }\n    }\n  }\n': {
+    return: CampTiersQuery;
+    variables: CampTiersQueryVariables;
+  };
+  '#graphql\n  query Faqs {\n    metaobjects(type: "faq_item", first: 20) {\n      nodes {\n        id\n        fields { key value }\n      }\n    }\n  }\n': {
+    return: FaqsQuery;
+    variables: FaqsQueryVariables;
+  };
+  '#graphql\n  query Reviews {\n    metaobjects(type: "review", first: 20) {\n      nodes {\n        id\n        fields { key value }\n      }\n    }\n  }\n': {
+    return: ReviewsQuery;
+    variables: ReviewsQueryVariables;
   };
 }
 

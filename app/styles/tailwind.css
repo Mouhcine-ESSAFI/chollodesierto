@@ -178,6 +178,11 @@ a { text-decoration: none; }
 [data-day="1"] .day-ping { animation-delay: 0s; }
 [data-day="2"] .day-ping { animation-delay: 0.8s; }
 [data-day="3"] .day-ping { animation-delay: 1.6s; }
+[data-step="1"] .day-ping { animation-delay: 0s; }
+[data-step="2"] .day-ping { animation-delay: 0.5s; }
+[data-step="3"] .day-ping { animation-delay: 1s; }
+[data-step="4"] .day-ping { animation-delay: 1.5s; }
+[data-step="5"] .day-ping { animation-delay: 2s; }
 
 /* ─── Image carousel ─── */
 .carousel-wrap { --dp: 0; }
@@ -305,13 +310,6 @@ a { text-decoration: none; }
   width: clamp(170px, 24vw, 272px);
 }
 
-/* ─── BookingHero ─── */
-.bh-headline      { text-shadow: 0 2px 18px rgba(0, 0, 0, 0.28);                    }
-.bh-subtext       { text-shadow: 0 1px 10px rgba(0, 0, 0, 0.2);                     }
-.bh-step-title    { font-size: clamp(1.4rem, 2.4vw, 1.75rem);                       }
-.bh-summary-title { font-size: 1.7rem;                                               }
-.bh-num-shadow    { box-shadow: 0 0.375rem 1rem -0.375rem rgba(193, 90, 43, 0.6);   }
-.bh-btn-shadow    { box-shadow: 0 1rem 2.125rem -1rem rgba(193, 90, 43, 0.7);       }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition: none !important; animation: none !important; }

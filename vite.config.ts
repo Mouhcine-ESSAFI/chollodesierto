@@ -24,7 +24,11 @@ export default defineConfig({
   server: {
     host: '0.0.0.0',
     port: 4050,
-    allowedHosts: ['chollodesierto.com', 'www.chollodesierto.com'],
+    allowedHosts: ['localhost', '127.0.0.1', 'chollodesierto.com', 'www.chollodesierto.com'],
+    watch: {
+      usePolling: true,
+      interval: 300,
+    },
   },
   build: {
     assetsInlineLimit: 0,
