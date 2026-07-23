@@ -44,7 +44,7 @@ export async function loader({context}: LoaderFunctionArgs) {
     cart: cart.get(),
     isLoggedIn: customerAccount.isLoggedIn(),
     publicStoreDomain: env.PUBLIC_STORE_DOMAIN,
-    shop: getShopAnalytics({storefront, publicStorefrontId: env.PUBLIC_STOREFRONT_ID}),
+    shop: getShopAnalytics({storefront, publicStorefrontId: env.PUBLIC_STOREFRONT_ID}).catch(() => null),
     consent: {
       checkoutDomain: env.PUBLIC_CHECKOUT_DOMAIN,
       storefrontAccessToken: env.PUBLIC_STOREFRONT_API_TOKEN,
@@ -67,7 +67,7 @@ export function Layout({children}: {children?: React.ReactNode}) {
         <Links />
       </head>
       <body>
-        {data ? (
+        {data?.shop ? (
           <Analytics.Provider cart={data.cart} shop={data.shop} consent={data.consent}>
             {children}
           </Analytics.Provider>
