@@ -2,7 +2,7 @@ import type {MetaFunction} from 'react-router';
 import {SiteNavbar} from '~/components/SiteNavbar';
 import {AboutHero} from '~/components/AboutHero';
 import {AboutStory} from '~/components/AboutStory';
-import {Partners} from '~/components/Partners';
+import {AboutPartners} from '~/components/AboutPartners';
 import {SiteFooter} from '~/components/SiteFooter';
 
 export const meta: MetaFunction = () => [
@@ -21,7 +21,7 @@ export default function AboutPage() {
       <main>
         <AboutHero />
         <AboutStory />
-        <Partners />
+        <AboutPartners />
       </main>
       <SiteFooter />
     </>
