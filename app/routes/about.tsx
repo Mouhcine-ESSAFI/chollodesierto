@@ -2,6 +2,7 @@ import type {MetaFunction} from 'react-router';
 import {SiteNavbar} from '~/components/SiteNavbar';
 import {AboutHero} from '~/components/AboutHero';
 import {AboutStory} from '~/components/AboutStory';
+import {AboutValues} from '~/components/AboutValues';
 import {AboutPartners} from '~/components/AboutPartners';
 import {SiteFooter} from '~/components/SiteFooter';
 
@@ -21,6 +22,7 @@ export default function AboutPage() {
       <main>
         <AboutHero />
         <AboutStory />
+        <AboutValues />
         <AboutPartners />
       </main>
       <SiteFooter />
