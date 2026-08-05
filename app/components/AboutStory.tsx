@@ -95,13 +95,13 @@ export function AboutStory({
             </div>
 
             {/* ── Desktop: overlapping collage ── */}
-            <figure className="hidden md:block absolute right-0 top-0 aspect-video w-120 max-w-full overflow-hidden rounded-card shadow-card-hover">
+            <figure className="hidden md:block absolute right-0 top-0 aspect-video w-120 max-w-full overflow-hidden rounded-card shadow-card-m">
               <img src={kasbah.src} alt={kasbah.alt} className="h-full w-full object-cover" loading="lazy" />
             </figure>
-            <figure className="hidden md:block absolute left-0 top-64 aspect-3/2 w-108 max-w-full overflow-hidden rounded-card shadow-card-hover">
+            <figure className="hidden md:block absolute left-0 top-64 aspect-3/2 w-108 max-w-full overflow-hidden rounded-card shadow-card-m">
               <img src={camel.src} alt={camel.alt} className="h-full w-full object-cover" loading="lazy" />
             </figure>
-            <figure className="hidden md:block absolute right-4 top-106 aspect-5/7 w-52 overflow-hidden rounded-card shadow-card-hover">
+            <figure className="hidden md:block absolute right-4 top-106 aspect-5/7 w-52 overflow-hidden rounded-card shadow-card-m">
               <img src={campfire.src} alt={campfire.alt} className="h-full w-full object-cover" loading="lazy" />
             </figure>
             <span aria-hidden="true" className="hidden md:block absolute right-16 top-80 text-3xl">

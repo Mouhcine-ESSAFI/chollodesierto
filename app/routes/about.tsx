@@ -22,8 +22,8 @@ export default function AboutPage() {
       <main>
         <AboutHero />
         <AboutStory />
-        <AboutValues />
         <AboutPartners />
+        <AboutValues />
       </main>
       <SiteFooter />
     </>

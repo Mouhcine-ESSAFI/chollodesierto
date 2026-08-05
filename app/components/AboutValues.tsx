@@ -79,14 +79,12 @@ export function AboutValues({
               className="flex gap-[1.1rem] rounded-card bg-white p-7 shadow-card"
             >
               <span
-                className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-full ${
-                  v.icon === 'heart' ? 'bg-[#FBE0DA] text-[#C1272D]' : 'bg-[#F1E4D0] text-primary'
-                }`}
+                className={`flex h-18 w-18 shrink-0 items-center justify-center rounded-full bg-[#F1E4D0] text-primary`}
               >
                 <ValueGlyph icon={v.icon} />
               </span>
               <div>
-                <h3 className="mb-2 font-display text-h3 text-dark">{v.title}</h3>
+                <h3 className="mb-2 font-display text-btn text-dark">{v.title}</h3>
                 <p className="text-base leading-relaxed text-dark/80">{v.body}</p>
               </div>
             </article>
