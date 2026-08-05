@@ -5,6 +5,7 @@ import {AboutStory} from '~/components/AboutStory';
 import {AboutValues} from '~/components/AboutValues';
 import {AboutPartners} from '~/components/AboutPartners';
 import {SiteFooter} from '~/components/SiteFooter';
+import {AboutBookingSupports} from '~/components/AboutBookingSupports';
 
 export const meta: MetaFunction = () => [
   {title: 'About Us — Chollodesierto'},
@@ -24,6 +25,7 @@ export default function AboutPage() {
         <AboutStory />
         <AboutPartners />
         <AboutValues />
+        <AboutBookingSupports />
       </main>
       <SiteFooter />
     </>
