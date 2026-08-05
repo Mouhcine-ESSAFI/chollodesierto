@@ -34,6 +34,9 @@ export interface CapturedByTribeProps {
   media?: TribeItem[];
 }
 
+const easeInOutCubic = (t: number) =>
+  t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+
 export function CapturedByTribe({
   heading = 'Captured by the tribe',
   subheading = 'Real travelers. Real moments.',
@@ -43,35 +46,99 @@ export function CapturedByTribe({
   const trackRef = useRef<HTMLUListElement>(null);
   const offsetRef = useRef(0);
   const rafRef = useRef<number>(0);
-  const pausedRef = useRef(false);
+
+  // width (px) of ONE full pass through `media` — measured from real layout,
+  // not scrollWidth/2 (which is off by a gap and causes the loop-seam glitch)
+  const loopWidthRef = useRef(0);
+
+  // pause sources, tracked independently so they never clobber each other
+  const hoverRef = useRef(false);
+  const draggingRef = useRef(false);
+  const videoOpenRef = useRef(false);
+
+  // drag state
+  const dragStartXRef = useRef(0);
+  const dragStartOffsetRef = useRef(0);
+  const hasDraggedRef = useRef(false);
+
+  // click-triggered smooth animation
+  const animRef = useRef<{start: number; from: number; to: number; duration: number} | null>(null);
 
   const [activeVideo, setActiveVideo] = useState<TribeVideo | null>(null);
 
+  const applyTransform = useCallback(() => {
+    if (trackRef.current) {
+      trackRef.current.style.transform = `translateX(${offsetRef.current}px)`;
+    }
+  }, []);
+
+  const normalizeOffset = useCallback(() => {
+    const loopWidth = loopWidthRef.current;
+    if (loopWidth <= 0) return;
+    while (offsetRef.current <= -loopWidth) offsetRef.current += loopWidth;
+    while (offsetRef.current > 0) offsetRef.current -= loopWidth;
+  }, []);
+
+  const measureLoopWidth = useCallback(() => {
+    const el = trackRef.current;
+    if (!el) return;
+    const half = el.children.length / 2;
+    const marker = el.children[half] as HTMLElement | undefined;
+    // offsetLeft of the first item of the *second* copy is the exact distance
+    // we need to shift by for the two copies to line up perfectly — this
+    // accounts for real gaps/widths instead of guessing via scrollWidth/2.
+    if (marker) loopWidthRef.current = marker.offsetLeft;
+  }, []);
+
   const openVideo = useCallback((item: TribeVideo) => {
-    pausedRef.current = true;
+    videoOpenRef.current = true;
     setActiveVideo(item);
   }, []);
 
   const closeVideo = useCallback(() => {
+    videoOpenRef.current = false;
     setActiveVideo(null);
-    pausedRef.current = false;
   }, []);
 
-  // Infinite-loop marquee via rAF — mutates style directly to avoid React re-renders
+  // Measure loop width on mount + whenever layout could change
   useEffect(() => {
+    measureLoopWidth();
     const el = trackRef.current;
     if (!el) return;
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const ro = new ResizeObserver(() => measureLoopWidth());
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [measureLoopWidth, media]);
 
+  // Single rAF loop drives autoplay AND click-triggered animations,
+  // so they never fight over the transform.
+  useEffect(() => {
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const SPEED = 0.6;
 
     const tick = () => {
-      if (!pausedRef.current) {
-        const halfWidth = el.scrollWidth / 2;
-        if (halfWidth > 0) {
+      if (animRef.current) {
+        const anim = animRef.current;
+        const elapsed = performance.now() - anim.start;
+        const t = Math.min(elapsed / anim.duration, 1);
+        offsetRef.current = anim.from + (anim.to - anim.from) * easeInOutCubic(t);
+        applyTransform();
+        if (t >= 1) {
+          animRef.current = null;
+          normalizeOffset();
+          applyTransform();
+        }
+      } else if (
+        !reduceMotion &&
+        !hoverRef.current &&
+        !draggingRef.current &&
+        !videoOpenRef.current
+      ) {
+        const loopWidth = loopWidthRef.current;
+        if (loopWidth > 0) {
           offsetRef.current -= SPEED;
-          if (offsetRef.current <= -halfWidth) offsetRef.current += halfWidth;
-          el.style.transform = `translateX(${offsetRef.current}px)`;
+          if (offsetRef.current <= -loopWidth) offsetRef.current += loopWidth;
+          applyTransform();
         }
       }
       rafRef.current = requestAnimationFrame(tick);
@@ -79,19 +146,67 @@ export function CapturedByTribe({
 
     rafRef.current = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(rafRef.current);
-  }, []);
+  }, [applyTransform, normalizeOffset]);
 
+  // Smooth, eased scroll for the prev/next buttons
   const scrollByCards = (dir: 1 | -1) => {
     const el = trackRef.current;
     if (!el) return;
-    const halfWidth = el.scrollWidth / 2;
-    const card = el.querySelector<HTMLElement>('[data-tribe-card]');
-    const step = card ? card.getBoundingClientRect().width + 32 : 300;
 
-    offsetRef.current -= dir * step * 2;
-    if (offsetRef.current <= -halfWidth) offsetRef.current += halfWidth;
-    if (offsetRef.current > 0) offsetRef.current -= halfWidth;
-    el.style.transform = `translateX(${offsetRef.current}px)`;
+    // Wrap the current position back into range FIRST. Since the two
+    // rendered copies are pixel-identical, this never causes a visual
+    // jump — but it stops rapid repeated clicks from pushing the offset
+    // past the last rendered <li>, which is what caused the "blank"
+    // flash: the track was being scrolled off the end of the duplicated
+    // content, not failing to load images.
+    normalizeOffset();
+    applyTransform();
+
+    const card = el.querySelector<HTMLElement>('[data-tribe-card]');
+    const gap = 32; // matches gap-8
+    const cardWidth = card ? card.getBoundingClientRect().width : 300;
+    const step = (cardWidth + gap) * 2;
+
+    animRef.current = {
+      start: performance.now(),
+      from: offsetRef.current,
+      to: offsetRef.current - dir * step,
+      duration: 500,
+    };
+  };
+
+  // ── Drag handlers (mouse + touch via Pointer Events) ──────────
+  const handlePointerDown = (e: React.PointerEvent<HTMLUListElement>) => {
+    draggingRef.current = true;
+    hasDraggedRef.current = false;
+    animRef.current = null;
+    dragStartXRef.current = e.clientX;
+    dragStartOffsetRef.current = offsetRef.current;
+    (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+  };
+
+  const handlePointerMove = (e: React.PointerEvent<HTMLUListElement>) => {
+    if (!draggingRef.current) return;
+    const dx = e.clientX - dragStartXRef.current;
+    if (Math.abs(dx) > 4) hasDraggedRef.current = true;
+    offsetRef.current = dragStartOffsetRef.current + dx;
+    applyTransform();
+  };
+
+  const endDrag = () => {
+    if (!draggingRef.current) return;
+    draggingRef.current = false;
+    normalizeOffset();
+    applyTransform();
+  };
+
+  // Clicks that happen right after a drag shouldn't open the video modal
+  const handleCardClick = (e: React.MouseEvent, item: TribeVideo) => {
+    if (hasDraggedRef.current) {
+      e.preventDefault();
+      return;
+    }
+    openVideo(item);
   };
 
   // Duplicate the media array for a seamless loop
@@ -117,13 +232,19 @@ export function CapturedByTribe({
       {/* Carousel — overflow-hidden clips the moving track */}
       <div
         className="mt-6 overflow-hidden"
-        onMouseEnter={() => { pausedRef.current = true; }}
-        onMouseLeave={() => { if (!activeVideo) pausedRef.current = false; }}
+        onMouseEnter={() => { hoverRef.current = true; }}
+        onMouseLeave={() => { hoverRef.current = false; endDrag(); }}
       >
         <ul
           ref={trackRef}
           role="list"
-          className="flex items-center gap-8 py-7 will-change-transform"
+          onPointerDown={handlePointerDown}
+          onPointerMove={handlePointerMove}
+          onPointerUp={endDrag}
+          onPointerCancel={endDrag}
+          onDragStart={(e) => e.preventDefault()}
+          style={{touchAction: 'pan-y'}}
+          className="flex items-center gap-8 py-7 will-change-transform select-none cursor-grab active:cursor-grabbing"
         >
           {allItems.map((item, i) =>
             item.kind === 'video' ? (
@@ -135,7 +256,10 @@ export function CapturedByTribe({
                 <img
                   src={item.poster}
                   alt={item.alt}
-                  loading="lazy"
+                  loading="eager"
+                  decoding="async"
+                  fetchPriority={i < media.length ? 'high' : 'auto'}
+                  draggable={false}
                   className="block h-full w-full object-cover"
                 />
                 {/* Cinematic vignette */}
@@ -147,11 +271,11 @@ export function CapturedByTribe({
                 <button
                   type="button"
                   aria-label={`Play video: ${item.alt}`}
-                  onClick={() => openVideo(item)}
+                  onClick={(e) => handleCardClick(e, item)}
                   className="absolute inset-0 flex items-center justify-center"
                 >
-                  <span className="flex h-14 w-14 items-center justify-center rounded-full bg-white/20 backdrop-blur-sm transition-colors hover:bg-white/35">
-                    <span className="play-btn-shadow flex h-9 w-9 items-center justify-center rounded-full bg-primary">
+                  <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center">
+                    <span className="play-btn-shadow flex h-10 w-10 items-center justify-center rounded-full bg-primary z-10">
                       <svg width="14" height="16" viewBox="0 0 22 24" fill="none" aria-hidden="true">
                         <path
                           d="M3 2.6c0-1.2 1.3-1.95 2.34-1.34l13.2 8.9c.97.65.97 2.07 0 2.72l-13.2 8.9C4.3 23.4 3 22.6 3 21.4V2.6Z"
@@ -159,6 +283,7 @@ export function CapturedByTribe({
                         />
                       </svg>
                     </span>
+                    <span aria-hidden="true" className="day-ping" />
                   </span>
                 </button>
               </li>
@@ -171,7 +296,10 @@ export function CapturedByTribe({
                 <img
                   src={item.src}
                   alt={item.alt}
-                  loading="lazy"
+                  loading="eager"
+                  decoding="async"
+                  fetchPriority={i < media.length ? 'high' : 'auto'}
+                  draggable={false}
                   className="block h-full w-full object-cover"
                 />
               </li>

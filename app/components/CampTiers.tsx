@@ -204,7 +204,7 @@ export function CampTiers({
                   {camp.name}
                 </h3>
                 <div className="flex flex-col text-center">
-                  <span className="text-label-2xs font-semibold uppercase text-forest">
+                  <span className="text-label-2xs font-bold uppercase text-forest -mb-1">
                     {camp.priceLabel}
                   </span>
                   <span className="text-price font-display text-forest">
@@ -252,10 +252,10 @@ export function CampTiers({
         {/* ── Testimonial ── */}
         {showReview && (
           <figure className="relative mx-auto mt-5.5 max-w-130 px-6 text-center">
-            <span aria-hidden="true" className="pointer-events-none absolute -bottom-20 left-0 md:left-45 select-none font-serif text-9xl text-dark/5">
+            <span aria-hidden="true" className="pointer-events-none absolute -bottom-21 left-0 md:left-15 select-none text-9xl text-dark/5">
               &ldquo;
             </span>
-            <span aria-hidden="true" className="pointer-events-none absolute -bottom-20 right-0 md:right-45 select-none font-serif text-9xl text-dark/5">
+            <span aria-hidden="true" className="pointer-events-none absolute -bottom-21 right-0 md:right-15 select-none text-9xl text-dark/5">
               &rdquo;
             </span>
 

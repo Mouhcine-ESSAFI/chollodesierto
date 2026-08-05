@@ -111,20 +111,20 @@ export function Testimonials({
                       <figure className="relative px-[clamp(20px,2.4vw,40px)] text-center">
                         <StarRating rating={review.rating} idPrefix={`p${p}-${i}`} />
 
-                        <blockquote className="relative z-10 mt-4.5 font-body font-medium text-[clamp(1.0625rem,1.35vw,1.15rem)] leading-normal text-dark/90 text-balance">
+                        <blockquote className="relative z-10 mt-4.5 font-body font-bold text-[clamp(1.0625rem,1.35vw,1.15rem)] text-dark/90">
                           {review.quote}
                         </blockquote>
 
                         <div className="relative mt-5.5">
                           <span
                             aria-hidden="true"
-                            className="pointer-events-none absolute -top-3.5 left-0 select-none font-serif text-[66px] leading-none text-dark/9"
+                            className="pointer-events-none absolute -bottom-21 left-0 md:-left-10 select-none text-9xl leading-none text-dark/9"
                           >
                             &ldquo;
                           </span>
                           <span
                             aria-hidden="true"
-                            className="pointer-events-none absolute -top-3.5 right-0 select-none font-serif text-[66px] leading-none text-dark/9"
+                            className="pointer-events-none absolute -bottom-21 right-0 md:-right-10 select-none text-9xl leading-none text-dark/9"
                           >
                             &rdquo;
                           </span>
@@ -167,8 +167,8 @@ export function Testimonials({
           <button
             type="button"
             onClick={onPrimaryCta}
-            className="rounded-full bg-primary px-10 py-4 font-display text-btn font-bold text-white
-                       shadow-card-m transition-[background-color,transform] hover:-translate-y-0.5 hover:bg-primary/90"
+            className="rounded-full bg-primary px-10 py-4 font-display text-btn text-white
+                       shadow-card-m transition-[background-color,transform] hover:bg-primary/90"
           >
             {primaryCtaLabel}
           </button>
@@ -176,7 +176,7 @@ export function Testimonials({
             type="button"
             onClick={onSecondaryCta}
             className="rounded-full border border-dark/15 bg-white px-10 py-4 font-display text-btn text-dark
-                       shadow-card-m transition-[border-color,color,transform] hover:-translate-y-0.5 hover:border-primary hover:text-primary"
+                       shadow-card-m transition-[border-color,color,transform] hover:border-primary hover:text-primary"
           >
             {secondaryCtaLabel}
           </button>

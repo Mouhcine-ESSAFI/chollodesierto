@@ -53,12 +53,12 @@ export function BookingCTA({
         <div className="mx-auto max-w-170">
 
           {/* Column headers — hidden on mobile (rows carry their own marks) */}
-          <div className="hidden grid-cols-2 items-center gap-5 px-5.5 pb-6 md:grid">
-            <div className="flex items-center gap-2.5">
+          <div className="flex-col grid-cols-2 items-center gap-5 md:px-5.5 md:grid">
+            <div className="flex items-center pb-6 gap-2.5">
               <span role="img" aria-label="Unamused face" className="text-[22px] leading-none">😒</span>
               <span className="text-h3 font-medium text-sand/55">{usualLabel}</span>
             </div>
-            <div className="flex items-center gap-2.5">
+            <div className="flex items-center pb-8 md:pb-6 gap-2.5">
               <span role="img" aria-label="Smiling face with heart-eyes" className="text-[22px] leading-none">🤩</span>
               <span className="text-h3 font-bold text-sand">{oursLabel}</span>
             </div>
@@ -69,13 +69,13 @@ export function BookingCTA({
             {rows.map((row, i) => (
               <li
                 key={i}
-                className="grid grid-cols-1 items-stretch overflow-hidden rounded-3xl rounded-tl-none bg-white/5 md:grid-cols-2 md:rounded-full md:rounded-tl-none"
+                className="grid grid-cols-1 items-stretch overflow-hidden rounded-3xl rounded-tl-none bg-white/9 md:grid-cols-2 md:rounded-full md:rounded-tl-none"
               >
-                <div className="flex items-center gap-2.75 px-6.5 py-4.5 text-label leading-snug text-sand/50">
+                <div className="flex items-center gap-2.75 pl-4 md:pl-14 py-4.5 text-label text-sand/50">
                   <CrossIcon className="shrink-0 text-sand/40 md:hidden" />
                   {row.usual}
                 </div>
-                <div className="flex items-center gap-2.75 border-t border-white/8 bg-white/4 px-6.5 py-4.5 text-label font-medium leading-snug text-sand md:border-t-0">
+                <div className="flex items-center gap-2.75 border-t border-white/8 pl-4 py-4.5 text-label text-sand md:border-t-0">
                   <CheckIcon className="shrink-0 text-primary" />
                   {row.ours}
                 </div>

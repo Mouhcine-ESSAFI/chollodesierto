@@ -200,7 +200,7 @@ export function Journey({
 
       {/* ── CTA ── */}
       <div className="mx-auto flex max-w-content flex-col items-center">
-        <div aria-hidden="true" className="h-20 w-0 border-l-2 border-dashed border-primary/45" />
+        <div aria-hidden="true" className="h-20 lg:mt-1 lg:ml-0.5 w-0 border-l-2 border-dashed border-primary/45" />
         <a
           href="/booking"
           className="inline-flex items-center gap-3 rounded-full bg-primary px-8 py-4.5 font-display text-btn text-sand shadow-card-m transition-all hover:scale-[1.03] hover:shadow-[0_0.75rem_2rem_rgba(196,90,44,0.45)]"
@@ -317,11 +317,11 @@ function DayRow({day, flip, isFirst, isLast}: {day: JourneyDay; flip: boolean; i
 
         <StarRating rating={day.review.rating} dayNumber={day.number} />
 
-        <figure className="relative mx-auto mt-4.5 max-w-110 px-7.5 text-center">
-          <span aria-hidden="true" className="absolute -bottom-6.5 left-0 font-display text-[5.625rem] text-dark/8 max-lg:hidden">
+        <figure className="relative mx-auto mt-4.5 px-7.5 text-center">
+          <span aria-hidden="true" className="absolute -bottom-21 left-30 text-9xl text-dark/5 max-lg:hidden">
             &ldquo;
           </span>
-          <span aria-hidden="true" className="absolute -bottom-6.5 right-0 font-display text-[5.625rem] text-dark/8 max-lg:hidden">
+          <span aria-hidden="true" className="absolute -bottom-21 right-30 text-9xl text-dark/5 max-lg:hidden">
             &rdquo;
           </span>
           <blockquote className="relative z-10 text-[1.0625rem] font-bold text-dark text-balance">

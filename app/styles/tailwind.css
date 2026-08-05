@@ -173,7 +173,7 @@ a { text-decoration: none; }
   border-radius: 50%;
   background-color: rgba(196, 90, 44, 0.42);
   pointer-events: none;
-  animation: day-ripple 2.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite;
+  animation: day-ripple 3s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite;
 }
 [data-day="1"] .day-ping { animation-delay: 0s; }
 [data-day="2"] .day-ping { animation-delay: 0.8s; }

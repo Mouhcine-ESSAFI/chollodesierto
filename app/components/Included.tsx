@@ -160,13 +160,13 @@ export function Included({
           <figure className="relative mx-auto mt-[clamp(60px,7vw,104px)] max-w-155 px-11 text-center">
             <span
               aria-hidden="true"
-              className="pointer-events-none absolute -bottom-1.5 left-0 select-none font-serif text-[108px] leading-none text-dark/9"
+              className="pointer-events-none absolute -bottom-21 left-30 select-none text-9xl leading-none text-dark/5"
             >
               &ldquo;
             </span>
             <span
               aria-hidden="true"
-              className="pointer-events-none absolute -bottom-1.5 right-0 select-none font-serif text-[108px] leading-none text-dark/9"
+              className="pointer-events-none absolute -bottom-21 right-30 select-none text-9xl leading-none text-dark/5"
             >
               &rdquo;
             </span>

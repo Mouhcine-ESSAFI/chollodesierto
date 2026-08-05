@@ -112,10 +112,10 @@ export function AboutStory({
 
         {/* Founder pull-quote */}
         <figure className="relative mx-auto mt-12 max-w-100 text-center md:-mt-section">
-          <span aria-hidden="true" className="absolute -bottom-10 left-0 font-display text-[4.5rem] leading-none text-primary/20">
+          <span aria-hidden="true" className="absolute -bottom-20 left-0 md:left-5 font-display text-9xl text-primary/5">
             &ldquo;
           </span>
-          <span aria-hidden="true" className="absolute -bottom-10 right-0 font-display text-[4.5rem] leading-none text-primary/20">
+          <span aria-hidden="true" className="absolute -bottom-20 right-0 md:right- 5 font-display text-9xl text-primary/5">
             &rdquo;
           </span>
           <blockquote className="text-base font-bold text-dark md:text-[clamp(0.6rem,1.8vw,0.875rem)]">

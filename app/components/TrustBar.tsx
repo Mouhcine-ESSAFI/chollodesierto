@@ -82,12 +82,9 @@ export function TrustBar({poster, videoUrl, posterAlt = 'Excursion preview'}: Tr
                 className="absolute inset-0 bg-gradient-to-b from-black/5 via-transparent to-black/15"
               />
               {/* play button */}
-              <span
-                className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2
-                           flex h-20 w-20 items-center justify-center rounded-full
-                           bg-white/15 backdrop-blur-sm transition-colors group-hover:bg-white/30"
-              >
-                <span className="play-btn-shadow flex h-12 w-12 items-center justify-center rounded-full bg-primary">
+              <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center">
+                <span aria-hidden="true" className="day-ping"></span>
+                <span className="play-btn-shadow flex h-12 w-12 items-center justify-center rounded-full bg-primary z-1">
                   <svg width="22" height="24" viewBox="0 0 22 24" fill="none" aria-hidden="true">
                     <path
                       d="M3 2.6c0-1.2 1.3-1.95 2.34-1.34l13.2 8.9c.97.65.97 2.07 0 2.72l-13.2 8.9C4.3 23.4 3 22.6 3 21.4V2.6Z"

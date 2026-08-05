@@ -122,7 +122,7 @@ function RouteCard({route}: {route: Route}) {
     <li className={`relative flex flex-col items-center ${route.featured ? 'is-featured' : ''}`}>
       {route.featured ? (
         <div className="rounded-route-sm bg-dark shadow-card">
-          <p className="py-1.5 text-center text-label font-bold text-white">{route.badge}</p>
+          <p className="py-1.5 text-center text-label font-display text-white">{route.badge}</p>
           <CardImage route={route} featured />
           <div className="relative -mt-4 min-h-62 rounded-route-sm bg-white px-6 pb-20 pt-7">
             <CardBody route={route} />
@@ -207,7 +207,7 @@ function PriceBar({route}: {route: Route}) {
   return (
     <div className="absolute -bottom-7.5 flex h-18 items-center rounded-full bg-white pr-2 shadow-card-m w-76 justify-end">
       <div className="flex flex-col text-center pr-4">
-        <span className="text-label-2xs font-semibold uppercase text-forest">Per person</span>
+        <span className="text-label-2xs font-bold uppercase text-forest -mb-1">Per person</span>
         <span className="text-price font-display text-forest">{route.price}</span>
       </div>
       <a

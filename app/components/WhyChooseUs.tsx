@@ -79,10 +79,10 @@ export function WhyChooseUs({
 
         {/* ── Featured review ── */}
         <figure className="relative mx-auto mt-section max-w-150 px-6 text-center">
-          <span aria-hidden="true" className="pointer-events-none absolute -bottom-20 left-0 md:left-45 select-none font-serif text-9xl text-dark/5">
+          <span aria-hidden="true" className="pointer-events-none absolute -bottom-21 left-0 md:left-30 select-none text-9xl text-dark/5">
             &ldquo;
           </span>
-          <span aria-hidden="true" className="pointer-events-none absolute -bottom-20 right-0 md:right-45 select-none font-serif text-9xl text-dark/5">
+          <span aria-hidden="true" className="pointer-events-none absolute -bottom-21 right-0 md:right-30 select-none text-9xl text-dark/5">
             &rdquo;
           </span>
 
