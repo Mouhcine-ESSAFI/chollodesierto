@@ -306,7 +306,7 @@ function DayRow({day, flip, isFirst, isLast}: {day: JourneyDay; flip: boolean; i
           data-day={day.number}
         >
           <span aria-hidden="true" className="day-ping" />
-          <span className="relative text-[0.5rem] font-bold uppercase tracking-[0.12em] opacity-90 -mb-1">Day</span>
+          <span className="relative text-[0.5rem] font-bold uppercase tracking-[0.12em] -mb-1">Day</span>
           <span className="relative text-2xl font-display">{day.number}</span>
         </div>
       </div>
