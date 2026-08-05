@@ -353,7 +353,7 @@ export function BookingBody({
                     >
                       <div className="flex flex-col justify-center items-center">
                         <p
-                          className={`text-label-2xs uppercase ${selected ? 'text-white' : 'text-forest'}`}
+                          className={`text-label-2xs uppercase -mb-1.5 font-bold ${selected ? 'text-white' : 'text-forest'}`}
                         >
                           Per Person
                         </p>
@@ -415,7 +415,7 @@ export function BookingBody({
                     >
                       <div className="flex flex-col justify-center items-center">
                         <p
-                          className={`text-label-2xs uppercase ${selected ? 'text-white/75' : 'text-dark/45'}`}
+                          className={`text-label-2xs uppercase -mb-1.5 font-bold ${selected ? 'text-white' : 'text-forest'}`}
                         >
                           {c.priceLabel}
                         </p>
@@ -603,7 +603,7 @@ export function BookingBody({
                           +€{transferPrice}
                         </p>
                       </div>
-                      <div className="shrink-0 self-stretch border-l-2 border-dashed border-primary" />
+                      <div className="shrink-0 self-stretch border-l-1 border-dashed border-primary" />
                       <div className="flex shrink-0 flex-col justify-center gap-px px-4 font-bold text-left">
                         <span className="text-xs text-dark">
                           {travelers} Travelers
@@ -677,7 +677,7 @@ export function BookingBody({
                 <p className="text-h3 font-bold text-dark">
                   Where You&rsquo;ll Sleep
                 </p>
-                <p className="text-price font-bold text-forest">
+                <p className="text-price font-display text-forest">
                   {selectedCamp.delta === 0
                     ? 'Included'
                     : `${travelers} x €${selectedCamp.delta}`}
@@ -737,7 +737,7 @@ export function BookingBody({
                           +€{transferPrice}
                         </p>
                       </div>
-                      <div className="shrink-0 self-stretch border-l-2 border-dashed border-primary" />
+                      <div className="shrink-0 self-stretch border-l-1 border-dashed border-primary" />
                       <div className="flex shrink-0 flex-col justify-center gap-px px-4 font-bold text-left">
                         <span className="text-xs text-dark">
                           {travelers} Travelers
@@ -991,7 +991,7 @@ function TicketCard({
           <p className="text-label-2xs uppercase text-dark">{eyebrow}</p>
           <p className="font-display text-price text-forest">{price}</p>
         </div>
-        <div className="self-stretch border-l-2 border-dashed border-primary" />
+        <div className="self-stretch border-l-1 border-dashed border-primary" />
         <p className="flex flex-1 items-center px-4 text-xs text-dark font-bold">
           {label}
         </p>
@@ -1026,7 +1026,7 @@ function SummaryTicket({
           <p className="text-label-2xs uppercase text-dark">{eyebrow}</p>
           <p className="font-display text-price text-forest">{price}</p>
         </div>
-        <div className="self-stretch border-l-2 border-dashed border-primary" />
+        <div className="self-stretch border-l-1 border-dashed border-primary" />
         <p className="flex flex-1 items-center px-4 text-xs text-dark font-bold">
           {label}
         </p>
