@@ -268,8 +268,9 @@ export function BookingBody({
   const [campId, setCampId] = useState(camps[1]?.id ?? camps[0].id);
   const [monthOffset, setMonthOffset] = useState(0);
   const [openFaq, setOpenFaq] = useState(-1);
-  const [departDate, setDepartDate] = useState(new Date(2026, 5, 19));
-  const [returnDate, setReturnDate] = useState(new Date(2026, 5, 26));
+  const DEFAULT_TRIP_DAYS = 2;
+  const [departDate, setDepartDate] = useState(() => new Date());
+  const [returnDate, setReturnDate] = useState(() => addDays(new Date(), DEFAULT_TRIP_DAYS),);
   const [travelers, setTravelers] = useState(2);
   const [extraQtys, setExtraQtys] = useState<Record<string, number>>(() =>
     Object.fromEntries(extras.map((e) => [e.id, e.defaultQty ?? 0])),
@@ -277,8 +278,8 @@ export function BookingBody({
   const [transferEnabled, setTransferEnabled] = useState(true);
   const [transferType, setTransferType] = useState<TransferType>('oneway');
 
-  const monthBaseYear = 2026;
-  const monthBaseIndex = 5;
+  const monthBaseYear = departDate.getFullYear();
+  const monthBaseIndex = departDate.getMonth();
 
   const selectedRoute = routes.find((r) => r.id === routeId) ?? routes[0];
   const selectedCamp = camps.find((c) => c.id === campId) ?? camps[0];
@@ -313,7 +314,7 @@ export function BookingBody({
 
   const pickDate = (date: Date) => {
     setDepartDate(date);
-    setReturnDate(addDays(date, 7));
+    setReturnDate(addDays(date, DEFAULT_TRIP_DAYS));
   };
 
   const changeExtraQty = (id: string, delta: number, max: number) => {
@@ -345,7 +346,7 @@ export function BookingBody({
                       type="button"
                       onClick={() => setRouteId(r.id)}
                       aria-pressed={selected}
-                      className={`flex min-h-28 items-center justify-between gap-4 rounded-card border-2 p-5 text-left transition-colors ${
+                      className={`flex min-h-28 items-center justify-between gap-4 rounded-card border-2 p-5 text-left transition-colors shadow-card ${
                         selected
                           ? 'border-transparent bg-primary'
                           : 'border-transparent bg-white hover:border-primary'
@@ -407,7 +408,7 @@ export function BookingBody({
                       type="button"
                       onClick={() => setCampId(c.id)}
                       aria-pressed={selected}
-                      className={`flex min-h-28 items-center justify-between gap-3.5 rounded-card border-2 p-5 text-left transition-colors ${
+                      className={`flex min-h-28 items-center justify-between gap-3.5 rounded-card border-2 p-5 text-left transition-colors shadow-card ${
                         selected
                           ? 'border-transparent bg-primary'
                           : 'border-transparent bg-white hover:border-primary'
@@ -454,7 +455,7 @@ export function BookingBody({
                           type="button"
                           aria-label="Previous month"
                           onClick={() => setMonthOffset((o) => o - 1)}
-                          className="flex size-6.5 items-center justify-center rounded-full border border-dark/15 bg-white text-dark"
+                          className="flex size-8 items-center justify-center rounded-full border border-dark/15 bg-dark text-white"
                         >
                           &lsaquo;
                         </button>
@@ -465,12 +466,12 @@ export function BookingBody({
                           type="button"
                           aria-label="Next month"
                           onClick={() => setMonthOffset((o) => o + 1)}
-                          className="flex size-6.5 items-center justify-center rounded-full border border-dark/15 bg-white text-dark"
+                          className="flex size-8 items-center justify-center rounded-full border border-dark/15 bg-dark text-white"
                         >
                           &rsaquo;
                         </button>
                       </div>
-                      <div className="mb-1.5 grid grid-cols-7 gap-0.5">
+                      <div className="mb-1.5 grid grid-cols-7 gap-0.5 border-b-2 border-dark/5">
                         {WEEKDAYS.map((wd) => (
                           <span
                             key={wd}
@@ -487,7 +488,7 @@ export function BookingBody({
                             type="button"
                             disabled={cell.blank}
                             onClick={() => cell.date && pickDate(cell.date)}
-                            className={`aspect-square rounded-full text-label font-medium ${
+                            className={`aspect-square rounded-full text-label font-bold ${
                               cell.blank
                                 ? 'invisible'
                                 : cell.isStart || cell.isEnd
@@ -518,7 +519,7 @@ export function BookingBody({
                   type="button"
                   aria-label="Decrease travelers"
                   onClick={() => setTravelers((t) => Math.max(1, t - 1))}
-                  className="flex h-14 w-14 items-center justify-center rounded-full bg-white hover:bg-primary text-4xl text-primary hover:text-white"
+                  className="flex h-14 w-14 items-center justify-center rounded-full bg-white hover:bg-primary text-4xl text-primary hover:text-white shadow-card"
                 >
                   &minus;
                 </button>
@@ -529,7 +530,7 @@ export function BookingBody({
                   type="button"
                   aria-label="Increase travelers"
                   onClick={() => setTravelers((t) => Math.min(17, t + 1))}
-                  className="flex h-14 w-14 items-center justify-center rounded-full bg-white hover:bg-primary text-4xl text-primary hover:text-white"
+                  className="flex h-14 w-14 items-center justify-center rounded-full bg-white hover:bg-primary text-4xl text-primary hover:text-white shadow-card"
                 >
                   +
                 </button>
@@ -596,7 +597,7 @@ export function BookingBody({
                   <div className="flex min-h-28 lg:min-w-90 max-w-xs items-stretch overflow-hidden rounded-card bg-white shadow-card-m">
                     <div className="flex flex-1 justify-center text-center py-5 rounded-card bg-white -mr-5 z-10">
                       <div className="flex flex-1 flex-col justify-center px-4">
-                        <p className="text-label-2xs uppercase text-forest">
+                        <p className="text-label-2xs uppercase text-forest font-bold -mb-1">
                           Total transfer
                         </p>
                         <p className="font-display text-price text-forest">
@@ -730,7 +731,7 @@ export function BookingBody({
                   <div className="flex h-22 items-stretch overflow-hidden rounded-card bg-white border border-sand mb-6">
                     <div className="flex flex-1 justify-center text-center py-5 rounded-card bg-white -mr-5 z-10">
                       <div className="flex flex-1 flex-col justify-center">
-                        <p className="text-label-2xs uppercase text-forest">
+                        <p className="text-label-2xs uppercase text-forest font-bold -mb-1">
                           Total transfer
                         </p>
                         <p className="font-display text-price text-forest">
@@ -783,13 +784,13 @@ export function BookingBody({
               {/* Reserve */}
               <button
                 type="button"
-                className="flex w-full items-center rounded-full bg-white p-1 font-display text-btn text-forest shadow-card-m"
+                className="flex w-full items-center rounded-full bg-white p-1 text-btn text-forest shadow-card-m"
               >
-                <span className="py-3 px-6 bg-amber-500 rounded-full text-white">
+                <span className="py-3 px-6 bg-amber-500 rounded-full text-white font-display">
                   Reserve your spot <span aria-hidden="true">&rarr;</span>
                 </span>
                 <span className="flex flex-col justify-center text-center pl-7">
-                  <span className="text-label-2xs uppercase">Total price</span>
+                  <span className="text-label-2xs uppercase text-forest font-bold -mb-1">Total price</span>
                   <span className="text-price font-display">€{total}</span>
                 </span>
               </button>
@@ -988,7 +989,7 @@ function TicketCard({
     <div className="flex h-28 w-full lg:min-w-90 max-w-xs items-stretch overflow-hidden rounded-card shadow-card-m">
       <div className="flex flex-1 items-stretch py-5 rounded-card bg-white -mr-5 z-10">
         <div className="flex w-28 shrink-0 flex-col justify-center text-center">
-          <p className="text-label-2xs uppercase text-dark">{eyebrow}</p>
+          <p className="text-label-2xs uppercase text-forest font-bold -mb-1">{eyebrow}</p>
           <p className="font-display text-price text-forest">{price}</p>
         </div>
         <div className="self-stretch border-l-1 border-dashed border-primary" />
@@ -1023,7 +1024,7 @@ function SummaryTicket({
     <div className="flex h-22 w-full min-w-content items-stretch overflow-hidden rounded-card border border-sand mb-6">
       <div className="flex flex-1 items-stretch py-5 rounded-card bg-white -mr-5 z-10">
         <div className="flex w-28 shrink-0 flex-col justify-center text-center">
-          <p className="text-label-2xs uppercase text-dark">{eyebrow}</p>
+          <p className="text-label-2xs uppercase text-forest font-bold -mb-1">{eyebrow}</p>
           <p className="font-display text-price text-forest">{price}</p>
         </div>
         <div className="self-stretch border-l-1 border-dashed border-primary" />
@@ -1060,7 +1061,7 @@ function Stepper({
         type="button"
         aria-label={decLabel}
         onClick={onDec}
-        className="flex h-14 w-14 items-center justify-center rounded-full bg-white hover:bg-primary text-4xl hover:text-white text-primary"
+        className="flex h-14 w-14 items-center justify-center rounded-full bg-white hover:bg-primary text-4xl hover:text-white text-primary shadow-card"
       >
         &minus;
       </button>
@@ -1071,7 +1072,7 @@ function Stepper({
         type="button"
         aria-label={incLabel}
         onClick={onInc}
-        className="flex h-14 w-14 items-center justify-center rounded-full bg-white hover:bg-primary text-4xl hover:text-white text-primary"
+        className="flex h-14 w-14 items-center justify-center rounded-full bg-white hover:bg-primary text-4xl hover:text-white text-primary shadow-card"
       >
         +
       </button>
@@ -1089,7 +1090,7 @@ function SegmentedControl({
   onChange: (v: string) => void;
 }) {
   return (
-    <div className="inline-flex rounded-full bg-white min-w-48">
+    <div className="inline-flex rounded-full bg-white min-w-48 shadow-card">
       {options.map((opt) => (
         <button
           key={opt.value}
