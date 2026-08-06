@@ -56,7 +56,7 @@ export function AboutValues({
 }: AboutValuesProps) {
   return (
     <section aria-label="Our values" className="relative overflow-hidden bg-linear-to-b from-white to-sand py-section font-body">
-      <div className="container mx-auto max-w-content px-8">
+      <div className="container mx-auto max-w-content px-8 pb-section">
 
         {/* Heading */}
         <div className="mb-13 text-center">
