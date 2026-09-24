@@ -1,0 +1,95 @@
+{
+  "3-day-sahara-tour": [
+    {
+      "id": "gid://shopify/ProductVariant/43295619022946",
+      "options": {
+        "Route": "Classic Loop",
+        "Camp Tier": "Shared Camp"
+      }
+    },
+    {
+      "id": "gid://shopify/ProductVariant/43295619055714",
+      "options": {
+        "Route": "Classic Loop",
+        "Camp Tier": "Comfort Camp"
+      }
+    },
+    {
+      "id": "gid://shopify/ProductVariant/43295619088482",
+      "options": {
+        "Route": "Classic Loop",
+        "Camp Tier": "Superior Camp"
+      }
+    },
+    {
+      "id": "gid://shopify/ProductVariant/43295619121250",
+      "options": {
+        "Route": "Grand Crossing",
+        "Camp Tier": "Shared Camp"
+      }
+    },
+    {
+      "id": "gid://shopify/ProductVariant/43295619154018",
+      "options": {
+        "Route": "Grand Crossing",
+        "Camp Tier": "Comfort Camp"
+      }
+    },
+    {
+      "id": "gid://shopify/ProductVariant/43295619186786",
+      "options": {
+        "Route": "Grand Crossing",
+        "Camp Tier": "Superior Camp"
+      }
+    },
+    {
+      "id": "gid://shopify/ProductVariant/43295619219554",
+      "options": {
+        "Route": "Reverse Crossing",
+        "Camp Tier": "Shared Camp"
+      }
+    },
+    {
+      "id": "gid://shopify/ProductVariant/43295619252322",
+      "options": {
+        "Route": "Reverse Crossing",
+        "Camp Tier": "Comfort Camp"
+      }
+    },
+    {
+      "id": "gid://shopify/ProductVariant/43295619285090",
+      "options": {
+        "Route": "Reverse Crossing",
+        "Camp Tier": "Superior Camp"
+      }
+    }
+  ],
+  "quad-bike-rental": [
+    {
+      "id": "gid://shopify/ProductVariant/43295619317858",
+      "options": {
+        "Type": "Individual"
+      }
+    },
+    {
+      "id": "gid://shopify/ProductVariant/43295619350626",
+      "options": {
+        "Type": "Double"
+      }
+    }
+  ],
+  "airport-transfer": [
+    {
+      "id": "gid://shopify/ProductVariant/43295619383394",
+      "options": {
+        "Direction": "One way"
+      }
+    },
+    {
+      "id": "gid://shopify/ProductVariant/43295619416162",
+      "options": {
+        "Direction": "Return"
+      }
+    }
+  ]
+}

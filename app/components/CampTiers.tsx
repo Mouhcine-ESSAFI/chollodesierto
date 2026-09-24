@@ -1,3 +1,6 @@
+import {SafeImage} from './SafeImage';
+import {useT} from '~/lib/ui-strings';
+
 interface Camp {
   name: string;
   image: string;
@@ -103,6 +106,8 @@ export interface CampTiersProps {
   /** Closing line under the CTA. */
   tagline?: string;
   ctaLabel?: string;
+  /** Where the CTA goes. Defaults to the booking page. */
+  ctaHref?: string;
   /** Raise the featured tier on desktop. */
   liftFeatured?: boolean;
   /** Show the "Best for" rows. */
@@ -121,14 +126,16 @@ export function CampTiers({
   camps = CAMPS,
   review = REVIEW,
   tagline = 'Same stars. Same fire. Different pillow.',
-  ctaLabel = 'Book Now',
+  ctaLabel,
+  ctaHref = '/booking',
   liftFeatured = true,
   showBestFor = true,
   showReview = true,
 }: CampTiersProps) {
+  const t = useT();
   return (
     <section
-      aria-label="Where you'll sleep"
+      aria-label={t('aria.camps.section', "Where you'll sleep")}
       className="bg-gradient-to-b from-white via-white to-sand py-section"
     >
       <div className="container max-w-content">
@@ -175,7 +182,7 @@ export function CampTiers({
                   camp.featured ? 'h-70' : 'h-70'
                 }`}
               >
-                <img
+                <SafeImage
                   src={camp.image}
                   alt={camp.imageAlt}
                   loading="lazy"
@@ -237,7 +244,7 @@ export function CampTiers({
                       {camp.bestForEmoji}
                     </span>
                     <div>
-                      <p className="text-btn font-display text-dark">Best for</p>
+                      <p className="text-btn font-display text-dark">{t('camps.best_for', 'Best for')}</p>
                       <p className="mt-1 text-base leading-[1.4] text-dark">
                         {camp.bestForText}
                       </p>
@@ -277,13 +284,13 @@ export function CampTiers({
 
         {/* ── CTA ── */}
         <div className="mt-14 text-center">
-          <button
-            type="button"
-            className="rounded-full bg-primary px-14 py-4 font-display text-btn text-white
+          <a
+            href={ctaHref}
+            className="inline-block rounded-full bg-primary px-14 py-4 font-display text-btn text-white
                        shadow-card transition-colors hover:bg-primary/90"
           >
-            {ctaLabel}
-          </button>
+            {ctaLabel ?? t('camps.cta', 'Book Now')}
+          </a>
           <p className="mt-8 text-base text-dark">{tagline}</p>
         </div>
 
@@ -324,6 +331,7 @@ function CheckIcon({className = ''}: {className?: string}) {
 }
 
 function StarRating({rating}: {rating: number}) {
+  const t = useT();
   const full = Math.floor(rating);
   const half = rating - full >= 0.5;
   const stars = Array.from({length: 5}, (_, i) =>
@@ -333,7 +341,7 @@ function StarRating({rating}: {rating: number}) {
   return (
     <div
       role="img"
-      aria-label={`Rated ${rating} out of 5`}
+      aria-label={t('aria.rating', 'Rated {rating} out of 5', {rating})}
       className="mb-5.5 flex justify-center gap-1 text-amber-300"
     >
       {stars.map((kind, i) => (

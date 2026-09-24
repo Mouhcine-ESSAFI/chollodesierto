@@ -1,3 +1,4 @@
+import {useT} from '~/lib/ui-strings';
 import {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 
 interface Testimonial {
@@ -31,8 +32,8 @@ export interface TestimonialsProps {
   autoplayMs?: number;
   primaryCtaLabel?: string;
   secondaryCtaLabel?: string;
-  onPrimaryCta?: () => void;
-  onSecondaryCta?: () => void;
+  primaryCtaHref?: string;
+  secondaryCtaHref?: string;
 }
 
 export function Testimonials({
@@ -41,11 +42,12 @@ export function Testimonials({
   reviews = TESTIMONIALS,
   perPage = 3,
   autoplayMs = 5500,
-  primaryCtaLabel = 'Book the Journey Now',
-  secondaryCtaLabel = 'Read all Reviews →',
-  onPrimaryCta,
-  onSecondaryCta,
+  primaryCtaLabel,
+  secondaryCtaLabel,
+  primaryCtaHref = '/booking',
+  secondaryCtaHref = '/reviews',
 }: TestimonialsProps) {
+  const t = useT();
   const pages = useMemo(() => {
     const chunks: Testimonial[][] = [];
     for (let i = 0; i < reviews.length; i += perPage) {
@@ -76,7 +78,7 @@ export function Testimonials({
 
   return (
     <section
-      aria-label="Traveler stories"
+      aria-label={t('aria.reviews.section', 'Traveler stories')}
       className="bg-gradient-to-b from-white from-40% to-sand py-section"
     >
       <div className="container max-w-content">
@@ -142,7 +144,7 @@ export function Testimonials({
                         <div className="mt-4 flex justify-center">
                           <span className="inline-flex items-center gap-1.5 rounded-full bg-forest/10 px-3 py-1.25 text-[0.5rem] font-semibold uppercase text-forest">
                             <CheckIcon />
-                            Verified traveler
+                            {t('reviews.verified', 'Verified traveler')}
                           </span>
                         </div>
                       </figure>
@@ -157,29 +159,35 @@ export function Testimonials({
         {/* Nav + progress dots */}
         {pageCount > 1 && (
           <div className="mt-[clamp(36px,4vw,52px)] flex items-center justify-center gap-4.5">
-            <NavButton label="Previous stories" dir="prev" onClick={() => go(page - 1)} />
-            <NavButton label="Next stories" dir="next" onClick={() => go(page + 1)} />
+            <NavButton
+              label={t('aria.reviews.prev', 'Previous stories')}
+              dir="prev"
+              onClick={() => go(page - 1)}
+            />
+            <NavButton
+              label={t('aria.reviews.next', 'Next stories')}
+              dir="next"
+              onClick={() => go(page + 1)}
+            />
           </div>
         )}
 
         {/* CTAs */}
         <div className="mt-[clamp(40px,5vw,64px)] flex flex-wrap justify-center gap-4">
-          <button
-            type="button"
-            onClick={onPrimaryCta}
-            className="rounded-full bg-primary px-10 py-4 font-display text-btn text-white
+          <a
+            href={primaryCtaHref}
+            className="inline-block rounded-full bg-primary px-10 py-4 font-display text-btn text-white
                        shadow-card-m transition-[background-color,transform] hover:bg-primary/90"
           >
-            {primaryCtaLabel}
-          </button>
-          <button
-            type="button"
-            onClick={onSecondaryCta}
-            className="rounded-full border border-dark/15 bg-white px-10 py-4 font-display text-btn text-dark
+            {primaryCtaLabel ?? t('reviews.cta_primary', 'Book the Journey Now')}
+          </a>
+          <a
+            href={secondaryCtaHref}
+            className="inline-block rounded-full border border-dark/15 bg-white px-10 py-4 font-display text-btn text-dark
                        shadow-card-m transition-[border-color,color,transform] hover:border-primary hover:text-primary"
           >
-            {secondaryCtaLabel}
-          </button>
+            {secondaryCtaLabel ?? t('reviews.cta_secondary', 'Read all Reviews →')}
+          </a>
         </div>
 
       </div>
@@ -243,6 +251,7 @@ function CheckIcon() {
 }
 
 function StarRating({rating, idPrefix}: {rating: number; idPrefix: string}) {
+  const t = useT();
   const stars = useMemo(() => {
     const full = Math.floor(rating);
     const half = rating - full >= 0.5;
@@ -254,7 +263,7 @@ function StarRating({rating, idPrefix}: {rating: number; idPrefix: string}) {
   return (
     <div
       role="img"
-      aria-label={`Rated ${rating} out of 5`}
+      aria-label={t('aria.rating', 'Rated {rating} out of 5', {rating})}
       className="mb-4.5 flex justify-center gap-[3px] text-[#F4B41E]"
     >
       {stars.map((kind, i) => (

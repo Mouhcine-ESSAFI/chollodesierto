@@ -1,21 +1,7 @@
-import {type MetaFunction} from 'react-router';
-import {SiteNavbar} from '~/components/SiteNavbar';
-import {TourRoutes} from '~/components/TourRoutes';
-import {SiteFooter} from '~/components/SiteFooter';
+import {redirect} from 'react-router';
 
-export const meta: MetaFunction = () => [
-  {title: 'Tour Routes — Budget Desert Tour'},
-  {name: 'description', content: 'Choose your route through Morocco. 3-day small group tours from Marrakech or Fez to the Sahara from €85.'},
-];
-
-export default function RoutesPage() {
-  return (
-    <>
-      <SiteNavbar />
-      <main id="main-content" className="pt-24">
-        <TourRoutes />
-      </main>
-      <SiteFooter />
-    </>
-  );
+// Routes is a homepage section (#routes), not a standalone page. This file only
+// exists to redirect anyone landing on the old /routes URL to that anchor.
+export async function loader() {
+  return redirect('/#routes');
 }

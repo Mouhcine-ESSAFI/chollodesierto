@@ -1,4 +1,6 @@
 import {useCallback, useEffect, useRef, useState} from 'react';
+import {useT} from '~/lib/ui-strings';
+import {SafeImage} from './SafeImage';
 
 interface TribePhoto {
   kind: 'photo';
@@ -43,6 +45,7 @@ export function CapturedByTribe({
   handle = 'BudgetDesertTour',
   media = MEDIA,
 }: CapturedByTribeProps) {
+  const t = useT();
   const trackRef = useRef<HTMLUListElement>(null);
   const offsetRef = useRef(0);
   const rafRef = useRef<number>(0);
@@ -214,7 +217,7 @@ export function CapturedByTribe({
 
   return (
     <section
-      aria-label="Captured by the tribe"
+      aria-label={t('aria.gallery.section', 'Captured by the tribe')}
       className="overflow-hidden bg-gradient-to-b from-white via-white to-sand py-section"
     >
       {/* Header */}
@@ -225,8 +228,16 @@ export function CapturedByTribe({
 
       {/* Nav */}
       <div className="mt-[clamp(36px,4vw,52px)] flex justify-center gap-4">
-        <NavButton label="Previous photos" onClick={() => scrollByCards(-1)} dir="prev" />
-        <NavButton label="Next photos" onClick={() => scrollByCards(1)} dir="next" />
+        <NavButton
+          label={t('aria.gallery.prev', 'Previous photos')}
+          onClick={() => scrollByCards(-1)}
+          dir="prev"
+        />
+        <NavButton
+          label={t('aria.gallery.next', 'Next photos')}
+          onClick={() => scrollByCards(1)}
+          dir="next"
+        />
       </div>
 
       {/* Carousel — overflow-hidden clips the moving track */}
@@ -253,7 +264,7 @@ export function CapturedByTribe({
                 data-tribe-card
                 className={`${item.height} relative w-[clamp(260px,18vw,320px)] shrink-0 overflow-hidden rounded-route-sm bg-dark shadow-card`}
               >
-                <img
+                <SafeImage
                   src={item.poster}
                   alt={item.alt}
                   loading="eager"
@@ -270,7 +281,7 @@ export function CapturedByTribe({
                 {/* Play button — same style as TrustBar */}
                 <button
                   type="button"
-                  aria-label={`Play video: ${item.alt}`}
+                  aria-label={t('aria.gallery.play_video', 'Play video: {name}', {name: item.alt})}
                   onClick={(e) => handleCardClick(e, item)}
                   className="absolute inset-0 flex items-center justify-center"
                 >
@@ -293,7 +304,7 @@ export function CapturedByTribe({
                 data-tribe-card
                 className={`${item.height} w-[clamp(260px,18vw,320px)] shrink-0 overflow-hidden rounded-route-sm bg-sand shadow-card`}
               >
-                <img
+                <SafeImage
                   src={item.src}
                   alt={item.alt}
                   loading="eager"
@@ -310,7 +321,7 @@ export function CapturedByTribe({
 
       {/* Footer */}
       <p className="px-6 pt-[clamp(36px,4vw,56px)] text-center text-base text-dark">
-        Tag <span className="font-semibold text-primary">@{handle}</span> to be featured.
+        {t('gallery.tag_prefix', 'Tag')} <span className="font-semibold text-primary">@{handle}</span> {t('gallery.tag_suffix', 'to be featured.')}
       </p>
 
       {/* Video modal */}
@@ -322,6 +333,7 @@ export function CapturedByTribe({
 // ── Sub-components ──────────────────────────────────────────────
 
 function VideoModal({item, onClose}: {item: TribeVideo; onClose: () => void}) {
+  const t = useT();
   // ref callback keeps play() tied to the user gesture (Safari/iOS autoplay policy)
   const setVideoRef = useCallback((el: HTMLVideoElement | null) => {
     el?.play().catch(() => {});
@@ -350,15 +362,15 @@ function VideoModal({item, onClose}: {item: TribeVideo; onClose: () => void}) {
           />
         ) : (
           <>
-            <img src={item.poster} alt={item.alt} className="absolute inset-0 h-full w-full object-cover" />
+            <SafeImage src={item.poster} alt={item.alt} className="absolute inset-0 h-full w-full object-cover" />
             <div className="absolute inset-0 flex items-center justify-center bg-dark/40">
-              <p className="font-body text-label uppercase tracking-widest text-sand/60">Video coming soon</p>
+              <p className="font-body text-label uppercase tracking-widest text-sand/60">{t('media.video_coming_soon', 'Video coming soon')}</p>
             </div>
           </>
         )}
         <button
           type="button"
-          aria-label="Close video"
+          aria-label={t('aria.gallery.close_video', 'Close video')}
           onClick={onClose}
           className="absolute right-3.5 top-3.5 flex h-10 w-10 items-center justify-center rounded-full bg-sand/15 text-xl text-sand transition-colors hover:bg-sand/25"
         >

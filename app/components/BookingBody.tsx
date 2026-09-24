@@ -1,4 +1,6 @@
 import {useMemo, useState} from 'react';
+import {useT} from '~/lib/ui-strings';
+import {useFetcher} from 'react-router';
 
 // ── Types (exported — loader maps Shopify metaobjects to these shapes) ──────
 
@@ -21,11 +23,14 @@ export interface CampOption {
 export interface ExtraOption {
   id: string;
   label: string;
+  /** The product variant's own name, when the label is built from it. */
+  variantTitle?: string;
   eyebrow: string;
   price: number;
   priceDisplay: string;
   image: string;
   imageAlt: string;
+  variantId: string;
   max?: number;
   defaultQty?: number;
 }
@@ -33,6 +38,8 @@ export interface ExtraOption {
 export interface TransferConfig {
   onewayPrice: number;
   returnPrice: number;
+  onewayVariantId: string;
+  returnVariantId: string;
   image: string;
   imageAlt: string;
 }
@@ -40,9 +47,9 @@ export interface TransferConfig {
 // ── Defaults (static fallback until Shopify metaobjects are wired) ──────────
 
 export const DEFAULT_ROUTES: RouteOption[] = [
-  {id: 'classic', stops: ['Marrakech', 'Merzouga', 'Marrakech'], price: 85},
-  {id: 'grand', stops: ['Marrakech', 'Merzouga', 'Fez'], price: 115},
-  {id: 'reverse', stops: ['Fez', 'Merzouga', 'Marrakech'], price: 155},
+  {id: 'classic-loop', stops: ['Marrakech', 'Merzouga', 'Marrakech'], price: 85},
+  {id: 'grand-crossing', stops: ['Marrakech', 'Merzouga', 'Fez'], price: 115},
+  {id: 'reverse-crossing', stops: ['Fez', 'Merzouga', 'Marrakech'], price: 155},
 ];
 
 export const DEFAULT_CAMPS: CampOption[] = [
@@ -78,6 +85,22 @@ export const DEFAULT_CAMPS: CampOption[] = [
   },
 ];
 
+// Tour variants are keyed by `${routeId}-${campId}` — one ProductVariant per
+// route × camp tier combination on the "3-Day Sahara Tour" product. The ids are
+// the Shopify metaobject handles, so the fallback data above and live
+// `tour_route` / `camp_tier` entries resolve through the same keys.
+export const DEFAULT_TOUR_VARIANT_IDS: Record<string, string> = {
+  'classic-loop-shared': 'gid://shopify/ProductVariant/43295619022946',
+  'classic-loop-comfort': 'gid://shopify/ProductVariant/43295619055714',
+  'classic-loop-superior': 'gid://shopify/ProductVariant/43295619088482',
+  'grand-crossing-shared': 'gid://shopify/ProductVariant/43295619121250',
+  'grand-crossing-comfort': 'gid://shopify/ProductVariant/43295619154018',
+  'grand-crossing-superior': 'gid://shopify/ProductVariant/43295619186786',
+  'reverse-crossing-shared': 'gid://shopify/ProductVariant/43295619219554',
+  'reverse-crossing-comfort': 'gid://shopify/ProductVariant/43295619252322',
+  'reverse-crossing-superior': 'gid://shopify/ProductVariant/43295619285090',
+};
+
 export const DEFAULT_EXTRAS: ExtraOption[] = [
   {
     id: 'quad-individual',
@@ -88,6 +111,7 @@ export const DEFAULT_EXTRAS: ExtraOption[] = [
     image:
       'https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=300&q=80',
     imageAlt: 'Individual quad bike in the dunes',
+    variantId: 'gid://shopify/ProductVariant/43295619317858',
     max: 10,
     defaultQty: 0,
   },
@@ -100,6 +124,7 @@ export const DEFAULT_EXTRAS: ExtraOption[] = [
     image:
       'https://images.unsplash.com/photo-1517824806704-9040b037703b?auto=format&fit=crop&w=300&q=80',
     imageAlt: 'Two travelers on a double quad bike',
+    variantId: 'gid://shopify/ProductVariant/43295619350626',
     max: 10,
     defaultQty: 1,
   },
@@ -108,6 +133,8 @@ export const DEFAULT_EXTRAS: ExtraOption[] = [
 export const DEFAULT_TRANSFER: TransferConfig = {
   onewayPrice: 25,
   returnPrice: 45,
+  onewayVariantId: 'gid://shopify/ProductVariant/43295619383394',
+  returnVariantId: 'gid://shopify/ProductVariant/43295619416162',
   image:
     'https://images.unsplash.com/photo-1493238792000-8113da705763?auto=format&fit=crop&w=300&q=80',
   imageAlt: 'Private airport transfer vehicle',
@@ -166,21 +193,62 @@ export const DEFAULT_FAQS: FaqItem[] = [
 
 // ── Internal helpers ────────────────────────────────────────────────────────
 
-const WEEKDAYS = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'];
-const MONTH_NAMES = [
-  'January',
-  'February',
-  'March',
-  'April',
-  'May',
-  'June',
-  'July',
-  'August',
-  'September',
-  'October',
-  'November',
-  'December',
-];
+// The calendar's day and month names are ui_strings, not Intl output: the
+// storefront has no locale of its own, and Intl on the client would disagree
+// with the server render. Keys are stable; only the Text changes per store.
+const WEEKDAY_KEYS = [
+  ['cal.mon', 'Mo'],
+  ['cal.tue', 'Tu'],
+  ['cal.wed', 'We'],
+  ['cal.thu', 'Th'],
+  ['cal.fri', 'Fr'],
+  ['cal.sat', 'Sa'],
+  ['cal.sun', 'Su'],
+] as const;
+
+const MONTH_KEYS = [
+  ['cal.january', 'January'],
+  ['cal.february', 'February'],
+  ['cal.march', 'March'],
+  ['cal.april', 'April'],
+  ['cal.may', 'May'],
+  ['cal.june', 'June'],
+  ['cal.july', 'July'],
+  ['cal.august', 'August'],
+  ['cal.september', 'September'],
+  ['cal.october', 'October'],
+  ['cal.november', 'November'],
+  ['cal.december', 'December'],
+] as const;
+
+/** Short day names as rendered in the summary line ("Mon, Sep 21"). */
+const SHORT_DAY_KEYS = [
+  ['cal.short_sun', 'Sun'],
+  ['cal.short_mon', 'Mon'],
+  ['cal.short_tue', 'Tue'],
+  ['cal.short_wed', 'Wed'],
+  ['cal.short_thu', 'Thu'],
+  ['cal.short_fri', 'Fri'],
+  ['cal.short_sat', 'Sat'],
+] as const;
+
+const SHORT_MONTH_KEYS = [
+  ['cal.short_jan', 'Jan'],
+  ['cal.short_feb', 'Feb'],
+  ['cal.short_mar', 'Mar'],
+  ['cal.short_apr', 'Apr'],
+  ['cal.short_may', 'May'],
+  ['cal.short_jun', 'Jun'],
+  ['cal.short_jul', 'Jul'],
+  ['cal.short_aug', 'Aug'],
+  ['cal.short_sep', 'Sep'],
+  ['cal.short_oct', 'Oct'],
+  ['cal.short_nov', 'Nov'],
+  ['cal.short_dec', 'Dec'],
+] as const;
+
+/** Month names used by buildMonthCells, which runs outside the component. */
+const MONTH_NAMES = MONTH_KEYS.map(([, en]) => en);
 
 type TransferType = 'oneway' | 'return';
 
@@ -253,18 +321,46 @@ export interface BookingBodyProps {
   priceIncludes?: PriceIncludeItem[];
   faqs?: FaqItem[];
   whatsappHref?: string;
+  /** Route handle from ?route= on /booking, used to preselect the route. */
+  initialRouteId?: string;
 }
 
 export function BookingBody({
   routes = DEFAULT_ROUTES,
   camps = DEFAULT_CAMPS,
-  extras = DEFAULT_EXTRAS,
+  extras: extrasProp = DEFAULT_EXTRAS,
   transfer = DEFAULT_TRANSFER,
   priceIncludes = DEFAULT_PRICE_INCLUDES,
   faqs = DEFAULT_FAQS,
   whatsappHref = '#whatsapp',
+  initialRouteId,
 }: BookingBodyProps) {
-  const [routeId, setRouteId] = useState(routes[0].id);
+  const t = useT();
+  // Day and month names, translated once per render.
+  const weekdays = WEEKDAY_KEYS.map(([k, en]) => t(k, en));
+  const monthNames = MONTH_KEYS.map(([k, en]) => t(k, en));
+  const shortDays = SHORT_DAY_KEYS.map(([k, en]) => t(k, en));
+  const shortMonths = SHORT_MONTH_KEYS.map(([k, en]) => t(k, en));
+
+  // An extra sourced from the quad product carries only the variant's own name
+  // ("Double"); the noun is a ui_string, applied once here so every place that
+  // shows the label — cards, headings, the summary — stays in step.
+  const extras = useMemo(
+    () =>
+      extrasProp.map((e) =>
+        e.variantTitle
+          ? {...e, label: t('booking.quad_label', '{variant} Quad', {variant: e.variantTitle})}
+          : e,
+      ),
+    [extrasProp, t],
+  );
+  // `initialRouteId` comes from ?route= on /booking, resolved server-side so the
+  // right route is selected in the first render rather than flashing.
+  const [routeId, setRouteId] = useState(
+    initialRouteId && routes.some((r) => r.id === initialRouteId)
+      ? initialRouteId
+      : routes[0].id,
+  );
   const [campId, setCampId] = useState(camps[1]?.id ?? camps[0].id);
   const [monthOffset, setMonthOffset] = useState(0);
   const [openFaq, setOpenFaq] = useState(-1);
@@ -277,6 +373,10 @@ export function BookingBody({
   );
   const [transferEnabled, setTransferEnabled] = useState(true);
   const [transferType, setTransferType] = useState<TransferType>('oneway');
+  const [validationError, setValidationError] = useState<string | null>(null);
+
+  const fetcher = useFetcher<{error?: string}>();
+  const isReserving = fetcher.state !== 'idle';
 
   const monthBaseYear = departDate.getFullYear();
   const monthBaseIndex = departDate.getMonth();
@@ -290,11 +390,11 @@ export function BookingBody({
       const year = monthBaseYear + Math.floor(total / 12);
       const monthIndex = ((total % 12) + 12) % 12;
       return {
-        label: `${MONTH_NAMES[monthIndex]} ${year}`,
+        label: `${monthNames[monthIndex]} ${year}`,
         cells: buildMonthCells(year, monthIndex, departDate, returnDate),
       };
     });
-  }, [monthOffset, departDate, returnDate]);
+  }, [monthOffset, departDate, returnDate, monthNames]);
 
   const transferPrice =
     transferType === 'oneway' ? transfer.onewayPrice : transfer.returnPrice;
@@ -306,11 +406,15 @@ export function BookingBody({
     extras.reduce((sum, e) => sum + (extraQtys[e.id] ?? 0) * e.price, 0) +
     (transferEnabled ? transferPrice : 0);
 
-  const dow = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][
+  const dow = shortDays[
     departDate.getDay()
   ];
-  const mon = MONTH_NAMES[departDate.getMonth()].slice(0, 3);
-  const whenLeaveText = `${dow}, ${mon} ${departDate.getDate()}`;
+  const mon = shortMonths[departDate.getMonth()];
+  const whenLeaveText = t('booking.when_leave', '{day}, {month} {date}', {
+    day: dow,
+    month: mon,
+    date: departDate.getDate(),
+  });
 
   const pickDate = (date: Date) => {
     setDepartDate(date);
@@ -324,8 +428,45 @@ export function BookingBody({
     }));
   };
 
+  const handleReserve = () => {
+    const tourVariantId = DEFAULT_TOUR_VARIANT_IDS[`${routeId}-${campId}`];
+    if (!tourVariantId) {
+      setValidationError(
+        'This route and camp combination is not bookable right now. Please try a different one or WhatsApp us.',
+      );
+      return;
+    }
+
+    const lines: Array<{merchandiseId: string; quantity: number}> = [
+      {merchandiseId: tourVariantId, quantity: travelers},
+    ];
+
+    for (const extra of extras) {
+      const qty = extraQtys[extra.id] ?? 0;
+      if (qty > 0) {
+        lines.push({merchandiseId: extra.variantId, quantity: qty});
+      }
+    }
+
+    if (transferEnabled) {
+      const transferVariantId =
+        transferType === 'oneway'
+          ? transfer.onewayVariantId
+          : transfer.returnVariantId;
+      lines.push({merchandiseId: transferVariantId, quantity: 1});
+    }
+
+    setValidationError(null);
+    fetcher.submit(
+      {intent: 'create-cart', lines: JSON.stringify(lines)},
+      {method: 'post'},
+    );
+  };
+
+  const reserveError = validationError ?? fetcher.data?.error ?? null;
+
   return (
-    <section aria-label="Booking form" className="bg-sand pt-5 pb-section">
+    <section aria-label={t('booking.aria_form', 'Booking form')} className="bg-sand pt-5 pb-section">
       <div className="container max-w-content">
         <div className="grid grid-cols-12 items-start gap-x-4 gap-y-12 lg:gap-x-6">
           {/* ── Steps column ── */}
@@ -334,8 +475,11 @@ export function BookingBody({
             <Step
               number={1}
               first
-              title="Choose your route."
-              description="Where do you start, where do you end?"
+              title={t('booking.step1_title', 'Choose your route.')}
+              description={t(
+                'booking.step1_desc',
+                'Where do you start, where do you end?',
+              )}
             >
               <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
                 {routes.map((r) => {
@@ -356,7 +500,7 @@ export function BookingBody({
                         <p
                           className={`text-label-2xs uppercase -mb-1.5 font-bold ${selected ? 'text-white' : 'text-forest'}`}
                         >
-                          Per Person
+                          {t('booking.per_person', 'Per Person')}
                         </p>
                         <p
                           className={`font-display text-price ${selected ? 'text-white' : 'text-forest'}`}
@@ -396,8 +540,11 @@ export function BookingBody({
             {/* Step 2 — Camp */}
             <Step
               number={2}
-              title="Choose your camp."
-              description="Same stars. Same fire. Different pillow."
+              title={t('booking.step2_title', 'Choose your camp.')}
+              description={t(
+                'booking.step2_desc',
+                'Same stars. Same fire. Different pillow.',
+              )}
             >
               <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
                 {camps.map((c) => {
@@ -443,8 +590,8 @@ export function BookingBody({
             {/* Step 3 — Date */}
             <Step
               number={3}
-              title="Pick your date."
-              description="When do you want to leave?"
+              title={t('booking.step3_title', 'Pick your date.')}
+              description={t('booking.step3_desc', 'When do you want to leave?')}
             >
               <div className="rounded-card bg-white p-4.5 sm:p-7 shadow-card">
                 <div className="grid grid-cols-1 gap-7 sm:grid-cols-2">
@@ -453,7 +600,7 @@ export function BookingBody({
                       <div className="mb-3.5 flex items-center justify-between">
                         <button
                           type="button"
-                          aria-label="Previous month"
+                          aria-label={t('booking.aria_prev_month', 'Previous month')}
                           onClick={() => setMonthOffset((o) => o - 1)}
                           className="flex size-8 items-center justify-center rounded-full border border-dark/15 bg-dark text-white"
                         >
@@ -464,7 +611,7 @@ export function BookingBody({
                         </p>
                         <button
                           type="button"
-                          aria-label="Next month"
+                          aria-label={t('booking.aria_next_month', 'Next month')}
                           onClick={() => setMonthOffset((o) => o + 1)}
                           className="flex size-8 items-center justify-center rounded-full border border-dark/15 bg-dark text-white"
                         >
@@ -472,7 +619,7 @@ export function BookingBody({
                         </button>
                       </div>
                       <div className="mb-1.5 grid grid-cols-7 gap-0.5 border-b-2 border-dark/5">
-                        {WEEKDAYS.map((wd) => (
+                        {weekdays.map((wd) => (
                           <span
                             key={wd}
                             className="py-1 text-center text-xs font-semibold text-dark/40"
@@ -511,13 +658,16 @@ export function BookingBody({
             {/* Step 4 — Travelers */}
             <Step
               number={4}
-              title="How many travelers?"
-              description="Solo? Couple? Whole crew? Up to 17."
+              title={t('booking.step4_title', 'How many travelers?')}
+              description={t(
+                'booking.step4_desc',
+                'Solo? Couple? Whole crew? Up to 17.',
+              )}
             >
               <div className="flex items-center gap-5">
                 <button
                   type="button"
-                  aria-label="Decrease travelers"
+                  aria-label={t('booking.aria_decrease_travelers', 'Decrease travelers')}
                   onClick={() => setTravelers((t) => Math.max(1, t - 1))}
                   className="flex h-14 w-14 items-center justify-center rounded-full bg-white hover:bg-primary text-4xl text-primary hover:text-white shadow-card"
                 >
@@ -528,7 +678,7 @@ export function BookingBody({
                 </span>
                 <button
                   type="button"
-                  aria-label="Increase travelers"
+                  aria-label={t('booking.aria_increase_travelers', 'Increase travelers')}
                   onClick={() => setTravelers((t) => Math.min(17, t + 1))}
                   className="flex h-14 w-14 items-center justify-center rounded-full bg-white hover:bg-primary text-4xl text-primary hover:text-white shadow-card"
                 >
@@ -540,20 +690,25 @@ export function BookingBody({
             {/* Step 5 — Extras */}
             <Step
               number={5}
-              title="Make your adventure more fun."
-              description="Optional activities to make your journey more enjoyable."
+              title={t('booking.step5_title', 'Make your adventure more fun.')}
+              description={t(
+                'booking.step5_desc',
+                'Optional activities to make your journey more enjoyable.',
+              )}
               last
             >
               {extras.map((extra, idx) => (
                 <div key={extra.id}>
                   <p className="mb-4 text-h3 font-bold text-dark">
-                    How many {extra.label.toLowerCase()} do you need?
+                    {t('booking.extra_qty_prefix', 'How many')}{' '}
+                    {extra.label.toLowerCase()}{' '}
+                    {t('booking.extra_qty_suffix', 'do you need?')}
                   </p>
                   <div
                     className={`flex flex-wrap items-center justify-between gap-5 ${idx < extras.length - 1 ? 'mb-6' : 'mb-12'}`}
                   >
                     <TicketCard
-                      eyebrow={extra.eyebrow}
+                      eyebrow={t('booking.per_quad', extra.eyebrow)}
                       price={extra.priceDisplay}
                       label={extra.label}
                       image={extra.image}
@@ -567,25 +722,25 @@ export function BookingBody({
                       onInc={() =>
                         changeExtraQty(extra.id, +1, extra.max ?? 10)
                       }
-                      decLabel={`Decrease ${extra.label.toLowerCase()}`}
-                      incLabel={`Increase ${extra.label.toLowerCase()}`}
+                      decLabel={`${t('booking.aria_decrease', 'Decrease')} ${extra.label.toLowerCase()}`}
+                      incLabel={`${t('booking.aria_increase', 'Increase')} ${extra.label.toLowerCase()}`}
                     />
                   </div>
                 </div>
               ))}
 
               <h3 className="mb-8 font-display text-h2 text-dark">
-                We care about your comfort!
+                {t('booking.comfort_heading', 'We care about your comfort!')}
               </h3>
 
               <div className="mb-8 flex flex-wrap items-center justify-between gap-3">
                 <p className="text-h3 font-bold text-dark">
-                  Would you like airport transfer?
+                  {t('booking.transfer_question', 'Would you like airport transfer?')}
                 </p>
                 <SegmentedControl
                   options={[
-                    {value: 'no', label: 'No'},
-                    {value: 'yes', label: 'Yes'},
+                    {value: 'no', label: t('booking.no', 'No')},
+                    {value: 'yes', label: t('booking.yes', 'Yes')},
                   ]}
                   value={transferEnabled ? 'yes' : 'no'}
                   onChange={(v) => setTransferEnabled(v === 'yes')}
@@ -598,7 +753,7 @@ export function BookingBody({
                     <div className="flex flex-1 justify-center text-center py-5 rounded-card bg-white -mr-5 z-10">
                       <div className="flex flex-1 flex-col justify-center px-4">
                         <p className="text-label-2xs uppercase text-forest font-bold -mb-1">
-                          Total transfer
+                          {t('booking.total_transfer', 'Total transfer')}
                         </p>
                         <p className="font-display text-price text-forest">
                           +€{transferPrice}
@@ -607,9 +762,11 @@ export function BookingBody({
                       <div className="shrink-0 self-stretch border-l-1 border-dashed border-primary" />
                       <div className="flex shrink-0 flex-col justify-center gap-px px-4 font-bold text-left">
                         <span className="text-xs text-dark">
-                          {travelers} Travelers
+                          {travelers} {t('booking.travelers_word', 'Travelers')}
                         </span>
-                        <span className="text-xs text-dark">1 Vehicle</span>
+                        <span className="text-xs text-dark">
+                          {t('booking.vehicle_one', '1 Vehicle')}
+                        </span>
                         <span className="text-xs text-dark">
                           {transferTypeLabel}
                         </span>
@@ -624,8 +781,14 @@ export function BookingBody({
                   </div>
                   <SegmentedControl
                     options={[
-                      {value: 'oneway', label: 'One way'},
-                      {value: 'return', label: 'Return'},
+                      {
+                        value: 'oneway',
+                        label: t('booking.transfer_oneway', 'One way'),
+                      },
+                      {
+                        value: 'return',
+                        label: t('booking.transfer_return', 'Return'),
+                      },
                     ]}
                     value={transferType}
                     onChange={(v) => setTransferType(v as TransferType)}
@@ -637,17 +800,19 @@ export function BookingBody({
 
           {/* ── Trip Summary ── */}
           <aside
-            aria-label="Your trip summary"
+            aria-label={t('booking.aria_summary', 'Your trip summary')}
             className="bg-forest rounded-card col-span-12 lg:col-span-4 lg:col-start-9 lg:row-start-1 lg:row-span-2 lg:sticky lg:top-6 lg:-mt-15"
           >
             <div className="rounded-card bg-white px-4 py-6 lg:py-8 lg:px-5 shadow-card">
               <h2 className="mb-5.5 font-display text-h2 text-dark">
-                Your Trip Summary
+                {t('booking.summary_title', 'Your Trip Summary')}
               </h2>
 
               {/* Route */}
               <div className="mb-4 flex items-baseline justify-between">
-                <p className="text-h3 font-bold text-dark">The Route</p>
+                <p className="text-h3 font-bold text-dark">
+                  {t('booking.summary_route', 'The Route')}
+                </p>
                 <p className="text-price font-display text-forest">
                   {travelers} x €{selectedRoute.price}
                 </p>
@@ -676,18 +841,22 @@ export function BookingBody({
               {/* Camp */}
               <div className="mb-4 flex items-baseline justify-between">
                 <p className="text-h3 font-bold text-dark">
-                  Where You&rsquo;ll Sleep
+                  {t('booking.summary_camp', 'Where You\u2019ll Sleep')}
                 </p>
                 <p className="text-price font-display text-forest">
                   {selectedCamp.delta === 0
-                    ? 'Included'
+                    ? t('booking.included', 'Included')
                     : `${travelers} x €${selectedCamp.delta}`}
                 </p>
               </div>
               <SummaryTicket
                 image={selectedCamp.image}
                 imageAlt={selectedCamp.imageAlt}
-                eyebrow={selectedCamp.delta === 0 ? 'In price' : 'Per person'}
+                eyebrow={
+                  selectedCamp.delta === 0
+                    ? t('booking.in_price', 'In price')
+                    : t('booking.per_person_short', 'Per person')
+                }
                 price={selectedCamp.priceValue}
                 label={selectedCamp.name}
               />
@@ -709,7 +878,7 @@ export function BookingBody({
                     <SummaryTicket
                       image={extra.image}
                       imageAlt={extra.imageAlt}
-                      eyebrow={extra.eyebrow}
+                      eyebrow={t('booking.per_quad', extra.eyebrow)}
                       price={extra.priceDisplay}
                       label={extra.label}
                     />
@@ -722,7 +891,7 @@ export function BookingBody({
                 <>
                   <div className="mb-4 flex items-baseline justify-between">
                     <p className="text-h3 font-bold text-dark">
-                      Airport transfer
+                      {t('booking.summary_transfer', 'Airport transfer')}
                     </p>
                     <p className="text-price font-display text-forest">
                       1 x €{transferPrice}
@@ -732,7 +901,7 @@ export function BookingBody({
                     <div className="flex flex-1 justify-center text-center py-5 rounded-card bg-white -mr-5 z-10">
                       <div className="flex flex-1 flex-col justify-center">
                         <p className="text-label-2xs uppercase text-forest font-bold -mb-1">
-                          Total transfer
+                          {t('booking.total_transfer', 'Total transfer')}
                         </p>
                         <p className="font-display text-price text-forest">
                           +€{transferPrice}
@@ -741,9 +910,11 @@ export function BookingBody({
                       <div className="shrink-0 self-stretch border-l-1 border-dashed border-primary" />
                       <div className="flex shrink-0 flex-col justify-center gap-px px-4 font-bold text-left">
                         <span className="text-xs text-dark">
-                          {travelers} Travelers
+                          {travelers} {t('booking.travelers_word', 'Travelers')}
                         </span>
-                        <span className="text-xs text-dark">1 Vehicle</span>
+                        <span className="text-xs text-dark">
+                          {t('booking.vehicle_one', '1 Vehicle')}
+                        </span>
                         <span className="text-xs text-dark">
                           {transferTypeLabel}
                         </span>
@@ -762,20 +933,25 @@ export function BookingBody({
               {/* When / travelers */}
               <div className="flex items-center justify-between py-2">
                 <p className="text-h3 font-bold text-dark">
-                  When You&rsquo;ll Leave
+                  {t('booking.summary_when', 'When You\u2019ll Leave')}
                 </p>
                 <p className="flex items-center gap-1.5 text-base text-dark">
                   {whenLeaveText}{' '}
-                  <span role="img" aria-label="Calendar">
+                  <span role="img" aria-label={t('booking.aria_calendar', 'Calendar')}>
                     &#128197;
                   </span>
                 </p>
               </div>
               <div className="mb-5 flex items-center justify-between py-2">
-                <p className="text-h3 font-bold text-dark">Nbr of Travelers</p>
+                <p className="text-h3 font-bold text-dark">
+                  {t('booking.summary_travelers', 'Nbr of Travelers')}
+                </p>
                 <p className="flex items-center gap-1.5 text-base text-dark">
-                  {travelers} traveler{travelers === 1 ? '' : 's'}{' '}
-                  <span role="img" aria-label="Travelers">
+                  {travelers}{' '}
+                  {travelers === 1
+                    ? t('booking.traveler_one', 'traveler')
+                    : t('booking.traveler_many', 'travelers')}{' '}
+                  <span role="img" aria-label={t('booking.aria_travelers_emoji', 'Travelers')}>
                     &#128694;
                   </span>
                 </p>
@@ -784,28 +960,45 @@ export function BookingBody({
               {/* Reserve */}
               <button
                 type="button"
-                className="flex w-full items-center rounded-full bg-white p-1 text-btn text-forest shadow-card-m"
+                onClick={handleReserve}
+                disabled={isReserving}
+                className="flex w-full items-center rounded-full bg-white p-1 text-btn text-forest shadow-card-m disabled:opacity-70"
               >
                 <span className="py-3 px-6 bg-amber-500 rounded-full text-white font-display">
-                  Reserve your spot <span aria-hidden="true">&rarr;</span>
+                  {isReserving ? (
+                    t('booking.reserving', 'Reserving\u2026')
+                  ) : (
+                    <>
+                      {t('booking.reserve_cta', 'Reserve your spot')}{' '}
+                      <span aria-hidden="true">&rarr;</span>
+                    </>
+                  )}
                 </span>
                 <span className="flex flex-col justify-center text-center pl-7">
-                  <span className="text-label-2xs uppercase text-forest font-bold -mb-1">Total price</span>
+                  <span className="text-label-2xs uppercase text-forest font-bold -mb-1">
+                    {t('booking.total_price', 'Total price')}
+                  </span>
                   <span className="text-price font-display">€{total}</span>
                 </span>
               </button>
+              {reserveError && (
+                <p role="alert" className="mt-3 text-center text-sm text-red-600">
+                  {reserveError}
+                </p>
+              )}
 
               <ul role="list" className="mt-8 flex flex-col gap-2.5">
                 <li className="flex items-center gap-2.5 text-label text-dark">
-                  <CheckIcon className="text-primary" /> Free cancellation up to
-                  48h before
+                  <CheckIcon className="text-primary" />{' '}
+                  {t('booking.trust_1', 'Free cancellation up to 48h before')}
                 </li>
                 <li className="flex items-center gap-2.5 text-label text-dark">
-                  <StarIcon className="text-primary" /> Book your spot with 20%
+                  <StarIcon className="text-primary" />{' '}
+                  {t('booking.trust_2', 'Book your spot with 20%')}
                 </li>
                 <li className="flex items-center gap-2.5 text-label text-dark">
-                  <HeartIcon className="text-primary" /> Clear pricing, no
-                  surprise surcharges
+                  <HeartIcon className="text-primary" />{' '}
+                  {t('booking.trust_3', 'Clear pricing, no surprise surcharges')}
                 </li>
               </ul>
             </div>
@@ -813,23 +1006,26 @@ export function BookingBody({
             {/* WhatsApp */}
             <div className="rounded-card px-6 py-6.5 text-center">
               <p className="mb-3.5 text-base font-display text-white">
-                <span role="img" aria-label="Thinking">
+                <span role="img" aria-label={t('booking.aria_thinking', 'Thinking')}>
                   &#129300;
                 </span>{' '}
-                Questions before you book?
+                {t('booking.whatsapp_question', 'Questions before you book?')}
               </p>
               <a
                 href={whatsappHref}
-                aria-label="Chat with us on WhatsApp"
+                aria-label={t('booking.aria_whatsapp', 'Chat with us on WhatsApp')}
                 className="flex items-center justify-center gap-2.5 rounded-full bg-green-600 px-5 py-3.25 text-btn font-display text-white"
               >
                 <WhatsAppIcon />
-                Chat on WhatsApp
+                {t('booking.whatsapp_cta', 'Chat on WhatsApp')}
               </a>
               <p className="mt-3 text-xs text-white/75">
-                WhatsApp us
+                {t('booking.whatsapp_note_1', 'WhatsApp us')}
                 <br />
-                We usually answer within an hour.
+                {t(
+                  'booking.whatsapp_note_2',
+                  'We usually answer within an hour.',
+                )}
               </p>
             </div>
           </aside>
@@ -839,10 +1035,10 @@ export function BookingBody({
             {/* What's in the price */}
             <div className="rounded-card bg-white px-16 py-6 lg:py-12 shadow-card">
               <h2 className="mb-2 font-display text-h2 text-dark">
-                What&rsquo;s in the price
+                {t('booking.price_heading', 'What\u2019s in the price')}
               </h2>
               <p className="mb-6 text-base text-dark">
-                Everything you need for an unforgettable adventure:
+                {t('booking.price_sub', 'Everything you need for an unforgettable adventure:')}
               </p>
               <div className="grid grid-cols-1 gap-x-3 gap-y-6 sm:grid-cols-3">
                 {priceIncludes.map((item, i) => (
@@ -868,7 +1064,7 @@ export function BookingBody({
             {/* Questions about booking */}
             <div className="pt-12 lg:pt-16">
               <h2 className="mb-6 font-display text-h2 text-dark">
-                Questions about booking?
+                {t('booking.faq_heading', 'Questions about booking?')}
               </h2>
               <ul role="list" className="flex flex-col gap-3.5">
                 {faqs.map((faq, i) => {

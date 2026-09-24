@@ -1,3 +1,5 @@
+import {useT} from '~/lib/ui-strings';
+
 type ValueIcon = 'minibus' | 'landscape' | 'card' | 'heart';
 
 interface ValueItem {
@@ -49,25 +51,26 @@ const DEFAULT_STATS: Stat[] = [
 ];
 
 export function AboutValues({
-  eyebrow = 'Our Values',
-  title = 'Four things we believe in.',
+  eyebrow,
+  title,
   values = DEFAULT_VALUES,
   stats = DEFAULT_STATS,
 }: AboutValuesProps) {
+  const t = useT();
   return (
-    <section aria-label="Our values" className="relative overflow-hidden bg-linear-to-b from-white to-sand py-section font-body">
+    <section aria-label={t('aria.about.values', 'Our values')} className="relative overflow-hidden bg-linear-to-b from-white to-sand py-section font-body">
       <div className="container mx-auto max-w-content px-8 pb-section">
 
         {/* Heading */}
         <div className="mb-13 text-center">
           <div className="mb-4 inline-flex flex-col items-center gap-1.5">
             <span className="text-label font-bold uppercase tracking-[0.22em] text-primary">
-              {eyebrow}
+              {eyebrow || t('about.values_eyebrow', 'Our Values')}
             </span>
             <Squiggle />
           </div>
           <h2 className="font-display text-[clamp(1.375rem,3.4vw,2.375rem)] text-dark">
-            {title}
+            {title || t('about.values_heading', 'Four things we believe in.')}
           </h2>
         </div>
 

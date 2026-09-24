@@ -1,4 +1,5 @@
 import {useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import {useT} from '~/lib/ui-strings';
 
 interface RouteStop {
   label: string;
@@ -139,9 +140,10 @@ export function Journey({
   quote = '“I didn’t expect the journey itself to matter so much.”',
   days = DAYS,
 }: JourneyProps) {
+  const t = useT();
   return (
     <section
-      aria-label="The journey, day by day"
+      aria-label={t('aria.journey.section', 'The journey, day by day')}
       className="relative bg-gradient-to-b from-white from-10% to-sand px-5 py-section sm:px-10"
     >
       {/* ── Header ── */}
@@ -156,10 +158,10 @@ export function Journey({
 
         {/* "Here's why" bubble */}
         <div className="mt-2 flex justify-center lg:mt-6 pb-6 lg:pb-0">
-            <div aria-label="Here's why." className="inline-flex ml-32 items-start font-body">
+            <div aria-label={t('aria.journey.why', "Here's why.")} className="inline-flex ml-32 items-start font-body">
               {/* Emoji + ground shadow */}
               <span className="relative mt-12 shrink-0">
-                <span role="img" aria-label="Smiling face with sunglasses" className="block text-4xl leading-none">
+                <span role="img" aria-label={t('aria.journey.emoji_intro', 'Smiling face with sunglasses')} className="block text-4xl leading-none">
                   {'\u{1F60E}'}
                 </span>
                 <span
@@ -170,7 +172,7 @@ export function Journey({
 
               {/* Speech bubble */}
               <span className="relative rounded-full bg-dark px-6 py-2 text-babel text-white">
-                Here&rsquo;s why.
+                {t('journey.why_bubble', 'Here’s why.')}
                 <svg
                   aria-hidden="true"
                   width="24"
@@ -205,8 +207,8 @@ export function Journey({
           href="/booking"
           className="inline-flex items-center gap-3 rounded-full bg-primary px-8 py-4.5 font-display text-btn text-sand shadow-card-m transition-all hover:scale-[1.03] hover:shadow-[0_0.75rem_2rem_rgba(196,90,44,0.45)]"
         >
-          Start your Journey Today
-          <span role="img" aria-label="Winking face" className="leading-none">{'\u{1F609}'}</span>
+          {t('journey.cta', 'Start your Journey Today')}
+          <span role="img" aria-label={t('aria.journey.emoji_quote', 'Winking face')} className="leading-none">{'\u{1F609}'}</span>
         </a>
       </div>
     </section>
@@ -216,6 +218,7 @@ export function Journey({
 // ── Sub-components ──────────────────────────────────────────────
 
 function DayRow({day, flip, isFirst, isLast}: {day: JourneyDay; flip: boolean; isFirst: boolean; isLast: boolean}) {
+  const t = useT();
   const [open, setOpen] = useState(isFirst);
 
   return (
@@ -229,7 +232,11 @@ function DayRow({day, flip, isFirst, isLast}: {day: JourneyDay; flip: boolean; i
           type="button"
           onClick={() => setOpen((o) => !o)}
           aria-expanded={open ? 'true' : 'false'}
-          aria-label={open ? 'Collapse day details' : 'Expand day details'}
+          aria-label={
+            open
+              ? t('aria.journey.collapse_day', 'Collapse day details')
+              : t('aria.journey.expand_day', 'Expand day details')
+          }
           className="mb-6 flex w-full justify-center lg:hidden"
         >
           <span
@@ -270,10 +277,12 @@ function DayRow({day, flip, isFirst, isLast}: {day: JourneyDay; flip: boolean; i
 
           <div className="mt-7.5 flex flex-col items-start gap-3 sm:flex-row sm:gap-4">
             <div className="flex w-full lg:w-32 flex-none items-start gap-2">
-              <span role="img" aria-label="Cool face" className="text-[1.375rem]">
+              <span role="img" aria-label={t('aria.journey.emoji_day', 'Cool face')} className="text-[1.375rem]">
                 {'\u{1F60E}'}
               </span>
-              <span className="text-base font-display text-dark">What you&rsquo;ll see today</span>
+              <span className="text-base font-display text-dark">
+                {t('journey.highlights_title', 'What you’ll see today')}
+              </span>
             </div>
             <ul role="list" className="flex w-full flex-col items-start gap-3.5">
               {day.highlights.map((h) => (
@@ -365,6 +374,7 @@ function RouteTimeline({stops, isFirstDay, isLastDay}: {stops: RouteStop[]; isFi
 const DRAG_THRESHOLD = 72;
 
 function ImageCarousel({images}: {images: {src: string; alt: string}[]}) {
+  const t = useT();
   const n = images.length;
   const [idx, setIdx] = useState(0);
   const [phase, setPhase] = useState<'idle' | 'drag' | 'exit-l' | 'exit-r' | 'reset'>('idle');
@@ -434,6 +444,11 @@ function ImageCarousel({images}: {images: {src: string; alt: string}[]}) {
     return () => cancelAnimationFrame(id);
   }, [phase]);
 
+  // Days sourced from Shopify have no images until files are uploaded, and the
+  // card stack below indexes images[...] directly. Render nothing rather than
+  // throwing — the day's text, rating and review still show.
+  if (n === 0) return null;
+
   return (
     <div className="relative select-none touch-none">
       {/* ── Card stack — overflow-hidden clips the card during drag/exit ── */}
@@ -475,7 +490,7 @@ function ImageCarousel({images}: {images: {src: string; alt: string}[]}) {
       <div className="pointer-events-none absolute inset-x-0 bottom-4 z-20 flex justify-center gap-2">
         <button
           type="button"
-          aria-label="Previous photo"
+          aria-label={t('aria.journey.prev_photo', 'Previous photo')}
           onClick={() => advance(-1)}
           className="pointer-events-auto flex h-8.5 w-8.5 items-center justify-center rounded-full bg-white text-dark shadow-[0_0.25rem_0.75rem_rgba(0,0,0,0.22)] transition-transform hover:scale-105"
         >
@@ -485,7 +500,7 @@ function ImageCarousel({images}: {images: {src: string; alt: string}[]}) {
         </button>
         <button
           type="button"
-          aria-label="Next photo"
+          aria-label={t('aria.journey.next_photo', 'Next photo')}
           onClick={() => advance(1)}
           className="pointer-events-auto flex h-8.5 w-8.5 items-center justify-center rounded-full bg-white text-dark shadow-[0_0.25rem_0.75rem_rgba(0,0,0,0.22)] transition-transform hover:scale-105"
         >
@@ -499,6 +514,7 @@ function ImageCarousel({images}: {images: {src: string; alt: string}[]}) {
 }
 
 function StarRating({rating, dayNumber}: {rating: number; dayNumber: number}) {
+  const t = useT();
   const stars = useMemo(() => {
     const full = Math.floor(rating);
     const half = rating - full >= 0.5;
@@ -508,7 +524,7 @@ function StarRating({rating, dayNumber}: {rating: number; dayNumber: number}) {
   return (
     <div
       role="img"
-      aria-label={`Rated ${rating} out of 5`}
+      aria-label={t('aria.rating', 'Rated {rating} out of 5', {rating})}
       className="mt-6 flex justify-center gap-0.75 text-[#F5B72B]"
     >
       {stars.map((kind, i) => (

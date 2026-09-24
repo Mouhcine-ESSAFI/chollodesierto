@@ -1,11 +1,13 @@
+import {useT} from '~/lib/ui-strings';
+
 interface Stat {
   rating: string;
   label: string;
 }
 
 export interface AboutHeroProps {
-  /** Full-bleed background image of the dunes. */
-  heroImage: string;
+  /** Full-bleed background image of the dunes. Falls back to a default. */
+  heroImage?: string;
   /** Alt text for the background image. */
   heroImageAlt?: string;
   /** Two-line headline (use \n / <br/> handled internally). */
@@ -25,13 +27,14 @@ export function AboutHero({
   heroImageAlt = 'Lone traveler walking a golden Sahara dune ridge',
   titleLines = ['We\u2019re a few people from', 'the Sahara, sharing it with you.'],
   body = 'Born in the south. Raised on the dunes. Tired of watching tourists pay \u20ac300 for a piece of the place we call home.',
-  ctaLabel = 'Book Your Adventure',
-  ctaHref = '#book',
+  ctaLabel,
+  ctaHref = '/booking',
   stat = {rating: '4.9', label: 'Trusted by 3k+ people.'},
 }: AboutHeroProps) {
+  const t = useT();
   return (
     <section
-      aria-label="About Joy Morocco"
+      aria-label={t('aria.about.hero', 'About us')}
       className="relative flex min-h-[clamp(600px,90vh,900px)] items-center justify-center overflow-hidden bg-sand"
     >
       <img
@@ -62,7 +65,7 @@ export function AboutHero({
             href={ctaHref}
             className="inline-flex items-center gap-2.5 rounded-full bg-primary px-9 py-4 font-display text-h3 text-white shadow-card-m transition-colors hover:bg-primary/90"
           >
-            {ctaLabel}
+            {ctaLabel ?? t('about.hero_cta', 'Book Your Adventure')}
             <span aria-hidden="true">&rarr;</span>
           </a>
         </div>

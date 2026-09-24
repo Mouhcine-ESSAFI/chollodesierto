@@ -1,3 +1,5 @@
+import {useT} from '~/lib/ui-strings';
+
 interface ComparisonRow {
   /** The commodity/tourist-trap version (muted column). */
   usual: string;
@@ -31,8 +33,9 @@ export function BookingCTA({
   oursLabel = 'What you get with us',
   rows = ROWS,
 }: BookingCTAProps) {
+  const t = useT();
   return (
-    <section aria-label="Honest comparison" className="bg-forest py-section">
+    <section aria-label={t('aria.comparison.section', 'Honest comparison')} className="bg-forest py-section">
       <div className="container max-w-content">
 
         {/* Header */}
@@ -55,11 +58,11 @@ export function BookingCTA({
           {/* Column headers — hidden on mobile (rows carry their own marks) */}
           <div className="flex-col grid-cols-2 items-center gap-5 md:px-5.5 md:grid">
             <div className="flex items-center pb-6 gap-2.5">
-              <span role="img" aria-label="Unamused face" className="text-[22px] leading-none">😒</span>
+              <span role="img" aria-label={t('aria.comparison.emoji_them', 'Unamused face')} className="text-[22px] leading-none">😒</span>
               <span className="text-h3 font-medium text-sand/55">{usualLabel}</span>
             </div>
             <div className="flex items-center pb-8 md:pb-6 gap-2.5">
-              <span role="img" aria-label="Smiling face with heart-eyes" className="text-[22px] leading-none">🤩</span>
+              <span role="img" aria-label={t('aria.comparison.emoji_us', 'Smiling face with heart-eyes')} className="text-[22px] leading-none">🤩</span>
               <span className="text-h3 font-bold text-sand">{oursLabel}</span>
             </div>
           </div>

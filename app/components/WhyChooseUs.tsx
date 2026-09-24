@@ -1,4 +1,5 @@
 import {useMemo} from 'react';
+import {useT} from '~/lib/ui-strings';
 
 interface Reason {
   emoji: string;
@@ -47,8 +48,9 @@ export function WhyChooseUs({
   reasons = REASONS,
   review = REVIEW,
 }: WhyChooseUsProps) {
+  const t = useT();
   return (
-    <section aria-label="Why travelers keep choosing us" className="bg-sand py-section">
+    <section aria-label={t('aria.why_us.section', 'Why travelers keep choosing us')} className="bg-sand py-section">
       <div className="container max-w-content">
         <h2 className="text-center font-display text-dark tracking-tight text-h2">
           {heading}
@@ -108,6 +110,7 @@ export function WhyChooseUs({
 // ── Sub-components ──────────────────────────────────────────────
 
 function StarRating({rating}: {rating: number}) {
+  const t = useT();
   const stars = useMemo(() => {
     const full = Math.floor(rating);
     const half = rating - full >= 0.5;
@@ -117,7 +120,7 @@ function StarRating({rating}: {rating: number}) {
   return (
     <div
       role="img"
-      aria-label={`Rated ${rating} out of 5`}
+      aria-label={t('aria.rating', 'Rated {rating} out of 5', {rating})}
       className="flex justify-center gap-1 text-amber-300"
     >
       {stars.map((kind, i) => (

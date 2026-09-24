@@ -13,6 +13,14 @@ import {
 } from 'react-router';
 import favicon from '~/assets/favicon.svg';
 import tailwindCss from '~/styles/tailwind.css?url';
+import {
+  SF_SITE_SETTINGS_QUERY,
+  SF_MENUS_QUERY,
+  mapSiteSettings,
+  mapMenu,
+  primaryDomainHost,
+} from '~/lib/admin-queries';
+import {UI_STRINGS_QUERY, mapUiStrings} from '~/lib/ui-strings';
 
 export type RootLoader = typeof loader;
 
@@ -40,7 +48,28 @@ export function links() {
 
 export async function loader({context}: LoaderFunctionArgs) {
   const {storefront, customerAccount, cart, env} = context;
+
+  // Loaded here rather than per-route because SiteNavbar/SiteFooter render on
+  // every page.
+  const [settingsRes, menuRes, footerMenuRes, uiStringsRes] = await Promise.all([
+    storefront.query(SF_SITE_SETTINGS_QUERY).catch(() => null),
+    storefront
+      .query(SF_MENUS_QUERY, {variables: {handle: 'main-menu'}})
+      .catch(() => null),
+    storefront
+      .query(SF_MENUS_QUERY, {variables: {handle: 'footer'}})
+      .catch(() => null),
+    storefront.query(UI_STRINGS_QUERY).catch(() => null),
+  ]);
+
+  // Both the myshopify domain and the primary domain count as "this site".
+  const internalHosts = [env.PUBLIC_STORE_DOMAIN, primaryDomainHost(settingsRes)];
+
   return {
+    siteSettings: mapSiteSettings(settingsRes),
+    uiStrings: mapUiStrings(uiStringsRes),
+    mainMenu: mapMenu(menuRes, internalHosts),
+    footerMenu: mapMenu(footerMenuRes, internalHosts),
     cart: cart.get(),
     isLoggedIn: customerAccount.isLoggedIn(),
     publicStoreDomain: env.PUBLIC_STORE_DOMAIN,

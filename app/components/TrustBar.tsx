@@ -1,4 +1,5 @@
 import {useState, useCallback, useRef} from 'react';
+import {useT} from '~/lib/ui-strings';
 
 type IconName = 'check' | 'star' | 'heart';
 
@@ -16,14 +17,22 @@ const FEATURES: Feature[] = [
 
 export interface TrustBarProps {
   /** Poster image shown on the video card and as the modal backdrop. */
-  poster: string;
+  poster?: string;
   /** If set, the modal plays the video inline; otherwise shows the poster. */
   videoUrl?: string;
   /** Alt text for the poster image. */
   posterAlt?: string;
+  /** Override the default trust features. */
+  features?: Feature[];
 }
 
-export function TrustBar({poster, videoUrl, posterAlt = 'Excursion preview'}: TrustBarProps) {
+export function TrustBar({
+  poster = 'https://images.unsplash.com/photo-1542401886-65d6c61db217?w=1600&q=80',
+  videoUrl,
+  posterAlt = 'Excursion preview',
+  features = FEATURES,
+}: TrustBarProps) {
+  const t = useT();
   const [open, setOpen] = useState(false);
   const [playingInline, setPlayingInline] = useState(false);
   const close = useCallback(() => setOpen(false), []);
@@ -44,7 +53,7 @@ export function TrustBar({poster, videoUrl, posterAlt = 'Excursion preview'}: Tr
 
   return (
     <section
-      aria-label="Book your desert adventure"
+      aria-label={t('aria.trust.section', 'Book your desert adventure')}
       id="book"
       className="relative overflow-hidden bg-white"
     >
@@ -66,7 +75,7 @@ export function TrustBar({poster, videoUrl, posterAlt = 'Excursion preview'}: Tr
           {!playingInline && (
             <button
               type="button"
-              aria-label="Play excursion video"
+              aria-label={t('aria.trust.play', 'Play excursion video')}
               onClick={handlePlayClick}
               className="group absolute inset-0 block h-full w-full cursor-pointer"
             >
@@ -102,7 +111,7 @@ export function TrustBar({poster, videoUrl, posterAlt = 'Excursion preview'}: Tr
           role="list"
           className="mt-14 grid grid-cols-1 gap-10 text-center sm:grid-cols-3"
         >
-          {FEATURES.map((f) => (
+          {features.map((f) => (
             <li key={f.title} className="flex flex-col items-center px-3">
               <span className="mb-3 flex text-primary">
                 <FeatureIcon name={f.icon} />
@@ -133,6 +142,7 @@ interface VideoModalProps {
 }
 
 function VideoModal({poster, videoUrl, onClose}: VideoModalProps) {
+  const t = useT();
   // A ref callback fires during the commit right after the click that set
   // `open`, so calling play() here (rather than a declarative `autoPlay`)
   // keeps it tied to the user gesture for browsers that block autoplay otherwise.
@@ -144,7 +154,7 @@ function VideoModal({poster, videoUrl, onClose}: VideoModalProps) {
     <div
       role="dialog"
       aria-modal="true"
-      aria-label="Excursion video"
+      aria-label={t('aria.trust.video', 'Excursion video')}
       onClick={onClose}
       className="fixed inset-0 z-50 flex items-center justify-center bg-dark/85 p-8"
     >
@@ -158,13 +168,13 @@ function VideoModal({poster, videoUrl, onClose}: VideoModalProps) {
           <>
             <img src={poster} alt="" className="absolute inset-0 h-full w-full object-cover" />
             <div className="absolute inset-0 flex items-center justify-center bg-dark/35">
-              <p className="font-body text-label text-sand/60 uppercase tracking-widest">Video preview</p>
+              <p className="font-body text-label text-sand/60 uppercase tracking-widest">{t('media.video_preview', 'Video preview')}</p>
             </div>
           </>
         )}
         <button
           type="button"
-          aria-label="Close video"
+          aria-label={t('aria.trust.close_video', 'Close video')}
           onClick={onClose}
           className="absolute right-3.5 top-3.5 flex h-10 w-10 items-center justify-center
                      rounded-full bg-sand/15 text-sand text-xl hover:bg-sand/25 transition-colors">

@@ -1,3 +1,5 @@
+import {useT} from '~/lib/ui-strings';
+
 interface StoryImage {
   src: string;
   alt: string;
@@ -51,9 +53,10 @@ export function AboutStory({
   author = 'Fatima',
   role = 'Founder',
 }: AboutStoryProps) {
+  const t = useT();
   return (
     <section
-      aria-label="Our story"
+      aria-label={t('aria.about.story', 'Our story')}
       className="relative overflow-hidden bg-sand py-section font-body"
     >
       <div className="container relative z-10 mx-auto max-w-content px-8">

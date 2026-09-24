@@ -1,4 +1,5 @@
 import {useState} from 'react';
+import {useT} from '~/lib/ui-strings';
 
 interface Faq {
   q: string;
@@ -32,13 +33,14 @@ export function Faq({
   faqs = FAQS,
   defaultOpen = 0,
   whatsappUrl = '#',
-  whatsappNote = 'WhatsApp us — we usually answer within an hour.',
+  whatsappNote,
 }: FaqProps) {
+  const t = useT();
   const [open, setOpen] = useState(defaultOpen);
 
   return (
     <section
-      aria-label="Frequently asked questions"
+      aria-label={t('aria.faq.section', 'Frequently asked questions')}
       className="bg-gradient-to-b from-white from-20% to-sand py-section"
     >
       <div className="container max-w-content">
@@ -82,17 +84,20 @@ export function Faq({
         {/* Footer / WhatsApp */}
         <div className="mt-[clamp(48px,6vw,80px)] text-center">
           <p className="mb-2 flex items-center justify-center gap-2 text-base font-semibold text-dark">
-            <span role="img" aria-label="Thinking face" className="text-xl">🤔</span>
-            Still have questions?
+            <span role="img" aria-label={t('aria.faq.emoji', 'Thinking face')} className="text-xl">🤔</span>
+            {t('faq.still_questions', 'Still have questions?')}
           </p>
-          <p className="mb-5.5 text-base text-dark/80">{whatsappNote}</p>
+          <p className="mb-5.5 text-base text-dark/80">
+            {whatsappNote ||
+              t('faq.whatsapp_note', 'WhatsApp us \u2014 we usually answer within an hour.')}
+          </p>
           <a
             href={whatsappUrl}
             className="inline-flex items-center gap-2.5 rounded-full bg-[#25A65B] px-8.5 py-3.75 font-display text-btn text-white
                        shadow-card transition-[background-color,transform] hover:-translate-y-0.5 hover:bg-[#1f8f4c]"
           >
             <WhatsAppIcon />
-            Chat on WhatsApp
+            {t('faq.chat_whatsapp', 'Chat on WhatsApp')}
           </a>
         </div>
 

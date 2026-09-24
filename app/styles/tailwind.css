@@ -314,3 +314,28 @@ a { text-decoration: none; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition: none !important; animation: none !important; }
 }
+
+/* ── Blog article body ──────────────────────────────────────────────
+   Shopify article HTML is authored in Admin, so it arrives as plain
+   tags. Tailwind's reset strips their defaults; restore readable
+   rhythm without pulling in a typography plugin. */
+.article-body > * + * { margin-top: 1.15em; }
+.article-body h2 { font-family: var(--font-display, inherit); font-size: 1.45em; line-height: 1.25; margin-top: 2em; color: #1A1F2E; }
+.article-body h3 { font-family: var(--font-display, inherit); font-size: 1.2em; line-height: 1.3; margin-top: 1.6em; color: #1A1F2E; }
+.article-body p { text-wrap: pretty; }
+.article-body a { color: #C45A2C; text-decoration: underline; text-underline-offset: 2px; }
+.article-body a:hover { opacity: .85; }
+.article-body strong { color: #1A1F2E; font-weight: 700; }
+.article-body ul,
+.article-body ol { padding-left: 1.3em; }
+.article-body ul { list-style: disc; }
+.article-body ol { list-style: decimal; }
+.article-body li + li { margin-top: .4em; }
+.article-body img { border-radius: 1rem; }
+.article-body blockquote {
+  border-left: 3px solid #C45A2C;
+  padding-left: 1.1em;
+  font-style: italic;
+  color: #1A1F2E;
+}
+.article-body hr { border: 0; border-top: 1px solid rgba(26,31,46,.12); margin: 2.2em 0; }

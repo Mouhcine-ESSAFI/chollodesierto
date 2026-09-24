@@ -1,3 +1,4 @@
+import {useT} from '~/lib/ui-strings';
 const DEFAULT_PARTNERS = [
   {
     name: 'Erg Chebbi Camps',
@@ -46,21 +47,30 @@ export interface PartnersProps {
 }
 
 export function Partners({
-  eyebrow = 'Who we work with',
-  headline = 'A network built on trust.',
-  subtext = 'Every partner we work with was chosen for quality, authenticity, and their deep roots in Moroccan culture.',
+  eyebrow,
+  headline,
+  subtext,
   partners = DEFAULT_PARTNERS,
 }: PartnersProps) {
+  const t = useT();
   return (
     <section className="py-section bg-white">
       <div className="container max-w-content">
         {/* Header */}
         <div className="mx-auto max-w-xl text-center">
           <p className="mb-3 font-body text-label uppercase tracking-[0.18em] text-primary">
-            {eyebrow}
+            {eyebrow || t('about.network_eyebrow', 'Who we work with')}
           </p>
-          <h2 className="font-display text-h2 text-dark">{headline}</h2>
-          <p className="mt-4 text-base text-dark/70">{subtext}</p>
+          <h2 className="font-display text-h2 text-dark">
+            {headline || t('about.network_heading', 'A network built on trust.')}
+          </h2>
+          <p className="mt-4 text-base text-dark/70">
+            {subtext ||
+              t(
+                'about.network_subtext',
+                'Every partner we work with was chosen for quality, authenticity, and their deep roots in Moroccan culture.',
+              )}
+          </p>
         </div>
 
         {/* Partner grid */}

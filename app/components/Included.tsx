@@ -1,4 +1,5 @@
 import {useMemo} from 'react';
+import {useT} from '~/lib/ui-strings';
 
 interface ChecklistItem {
   /** Emoji glyph. */
@@ -107,9 +108,10 @@ export function Included({
   review = REVIEW,
   showReview = true,
 }: IncludedProps) {
+  const t = useT();
   return (
     <section
-      aria-label="What's in the price and what to bring"
+      aria-label={t('aria.included.section', "What's in the price and what to bring")}
       className="bg-gradient-to-b from-white from-30% to-sand py-section"
     >
       <div className="container max-w-content">
@@ -142,7 +144,7 @@ export function Included({
             <div className="mb-7.5 flex items-center gap-3.5">
               <span
                 role="img"
-                aria-label="Backpack"
+                aria-label={t('aria.included.emoji', 'Backpack')}
                 className="text-3xl leading-none"
               >
                 🎒
@@ -241,6 +243,7 @@ function CheckIcon({className = ''}: {className?: string}) {
 }
 
 function StarRating({rating}: {rating: number}) {
+  const t = useT();
   const stars = useMemo(() => {
     const full = Math.floor(rating);
     const half = rating - full >= 0.5;
@@ -252,7 +255,7 @@ function StarRating({rating}: {rating: number}) {
   return (
     <div
       role="img"
-      aria-label={`Rated ${rating} out of 5`}
+      aria-label={t('aria.rating', 'Rated {rating} out of 5', {rating})}
       className="mb-5 flex justify-center gap-1 text-[#F4B41E]"
     >
       {stars.map((kind, i) => (

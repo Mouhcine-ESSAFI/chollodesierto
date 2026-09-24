@@ -1,4 +1,5 @@
 import {useEffect, useRef} from 'react';
+import {useT} from '~/lib/ui-strings';
 
 interface PartnerImage {
   src: string;
@@ -53,6 +54,7 @@ export function AboutPartners({
   rightParagraphs = DEFAULT_RIGHT,
   statement = DEFAULT_STATEMENT,
 }: AboutPartnersProps) {
+  const t = useT();
   const trackRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -152,7 +154,7 @@ export function AboutPartners({
   }, []);
 
   return (
-    <section aria-label="Our partners" className="relative overflow-hidden bg-linear-to-b from-white from-30% to-sand py-section font-body">
+    <section aria-label={t('aria.about.partners', 'Our partners')} className="relative overflow-hidden bg-linear-to-b from-white from-30% to-sand py-section font-body">
       {/* Heading */}
       <div className="container mx-auto mb-11 max-w-content px-8 text-center">
         <div className="mb-4 inline-flex flex-col items-center gap-1.5">

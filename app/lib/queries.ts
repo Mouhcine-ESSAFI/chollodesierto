@@ -116,6 +116,116 @@ export const REVIEWS_QUERY = `#graphql
   }
 ` as const;
 
+// ── Blog ─────────────────────────────────────────────────────────────────────
+// Native Shopify blog + articles, authored in Admin > Content > Blog posts.
+
+/**
+ * Last-resort blog handle, used only if the store has no blog the storefront
+ * can list. The real handle comes from `site_settings.blog_handle`, falling back
+ * to the first blog — hardcoding it here meant the journal silently showed its
+ * empty state in a store whose blog was named anything else.
+ */
+export const BLOG_HANDLE_FALLBACK = 'news';
+
+/** Lists the blogs the storefront can see, so the journal can find its own. */
+export const BLOGS_QUERY = `#graphql
+  query Blogs {
+    blogs(first: 20) {
+      nodes {
+        handle
+        articles(first: 1) { nodes { id } }
+      }
+    }
+  }
+` as const;
+
+/**
+ * Picks which blog feeds the journal: the one named in site_settings if it
+ * exists, else the first blog that actually has posts, else the first blog.
+ */
+export function resolveBlogHandle(
+  blogsData: unknown,
+  configured?: string,
+): string {
+  const nodes: any[] = (blogsData as any)?.blogs?.nodes ?? [];
+  const handles: string[] = nodes.map((b) => b.handle as string).filter(Boolean);
+  if (configured && handles.includes(configured)) return configured;
+  const withPosts = nodes.find((b) => (b.articles?.nodes?.length ?? 0) > 0);
+  return (withPosts?.handle as string) ?? handles[0] ?? BLOG_HANDLE_FALLBACK;
+}
+
+export const BLOG_ARTICLES_QUERY = `#graphql
+  query BlogArticles($blogHandle: String!, $first: Int!) {
+    blog(handle: $blogHandle) {
+      title
+      handle
+      articles(first: $first, sortKey: PUBLISHED_AT, reverse: true) {
+        nodes {
+          id
+          handle
+          title
+          excerpt
+          publishedAt
+          image { url altText }
+          authorV2 { name }
+        }
+      }
+    }
+  }
+` as const;
+
+export const BLOG_ARTICLE_QUERY = `#graphql
+  query BlogArticle($blogHandle: String!, $articleHandle: String!) {
+    blog(handle: $blogHandle) {
+      handle
+      articleByHandle(handle: $articleHandle) {
+        id
+        handle
+        title
+        contentHtml
+        excerpt
+        publishedAt
+        image { url altText }
+        authorV2 { name }
+        seo { title description }
+      }
+    }
+  }
+` as const;
+
+/**
+ * Splits a published date into its parts, in UTC.
+ *
+ * Deliberately not `Intl.DateTimeFormat`: that would hardcode a language, so a
+ * Spanish store still printed "11 September 2026". The month name and the
+ * arrangement are ui_strings instead — see `useArticleDate` — which keeps the
+ * output identical on server and client, so there's no hydration mismatch.
+ */
+export function articleDateParts(
+  publishedAt?: string | null,
+): {day: number; monthIndex: number; year: number} | null {
+  if (!publishedAt) return null;
+  const d = new Date(publishedAt);
+  if (Number.isNaN(d.getTime())) return null;
+  return {day: d.getUTCDate(), monthIndex: d.getUTCMonth(), year: d.getUTCFullYear()};
+}
+
+export function mapBlogArticles(data: unknown) {
+  const nodes: any[] = (data as any)?.blog?.articles?.nodes ?? [];
+  return nodes.map((a) => ({
+    id: a.id as string,
+    handle: a.handle as string,
+    title: a.title as string,
+    excerpt: (a.excerpt as string) ?? '',
+    // The parts, not a formatted string — the page assembles them from
+    // ui_strings so the month name follows the store's language.
+    dateParts: articleDateParts(a.publishedAt),
+    author: (a.authorV2?.name as string) ?? '',
+    image: (a.image?.url as string) ?? '',
+    imageAlt: (a.image?.altText as string) ?? '',
+  }));
+}
+
 // ── Field helpers ────────────────────────────────────────────────────────────
 
 type MetaField = {key: string; value: string | null; reference?: any};
@@ -148,12 +258,21 @@ function fList(fields: MetaField[], key: string): string[] {
 
 // ── Mappers — TourRoutes component ──────────────────────────────────────────
 
-export function mapToTourRoutes(data: unknown) {
+/**
+ * @param priceByHandle cheapest variant price per tour_route handle. The
+ * metaobject has no `price` field — pricing lives on the product variants — so
+ * without this the mapper can only fall back to 0.
+ */
+export function mapToTourRoutes(
+  data: unknown,
+  priceByHandle?: Record<string, number>,
+) {
   const nodes: any[] = (data as any)?.metaobjects?.nodes ?? [];
   return nodes
     .map((node) => {
       const fields: MetaField[] = node.fields;
       const img = fImg(fields, 'image');
+      const price = priceByHandle?.[node.handle as string] ?? fInt(fields, 'price');
       return {
         id: node.handle as string,
         label: f(fields, 'label'),
@@ -161,7 +280,9 @@ export function mapToTourRoutes(data: unknown) {
         badge: f(fields, 'badge') || undefined,
         image: img?.url ?? '',
         imageAlt: img?.altText ?? '',
-        days: `${fInt(fields, 'days') || 3} Days`,
+        // The unit is a ui_string applied in the component, so a Spanish
+        // store reads "3 Días" without touching this mapper.
+        days: fInt(fields, 'days') || 3,
         title: f(fields, 'title'),
         stops: [
           {label: f(fields, 'stop_start')},
@@ -169,8 +290,10 @@ export function mapToTourRoutes(data: unknown) {
           {label: f(fields, 'stop_end')},
         ] as [{label: string}, {label: string}, {label: string}],
         description: f(fields, 'description_lines').split('\n').filter(Boolean),
-        price: `€${fInt(fields, 'price')}`,
-        href: `/tours/${node.handle as string}`,
+        // NOTE: the € symbol is hardcoded here (and across the UI) while the
+        // store's currency is USD — see the open currency mismatch.
+        price: `€${price}`,
+        href: `/booking?route=${node.handle as string}`,
         _sort: fInt(fields, 'sort_order'),
       };
     })
@@ -180,7 +303,11 @@ export function mapToTourRoutes(data: unknown) {
 
 // ── Mappers — BookingBody routes (RouteOption) ───────────────────────────────
 
-export function mapToBookingRoutes(data: unknown) {
+/** @param priceByHandle see mapToTourRoutes — same reason. */
+export function mapToBookingRoutes(
+  data: unknown,
+  priceByHandle?: Record<string, number>,
+) {
   const nodes: any[] = (data as any)?.metaobjects?.nodes ?? [];
   return nodes
     .map((node) => {
@@ -192,7 +319,7 @@ export function mapToBookingRoutes(data: unknown) {
           f(fields, 'stop_mid'),
           f(fields, 'stop_end'),
         ] as [string, string, string],
-        price: fInt(fields, 'price'),
+        price: priceByHandle?.[node.handle as string] ?? fInt(fields, 'price'),
         _sort: fInt(fields, 'sort_order'),
       };
     })
@@ -215,6 +342,9 @@ export function mapToCampTiers(data: unknown) {
         badge: f(fields, 'badge'),
         priceLabel: f(fields, 'price_label'),
         priceValue: f(fields, 'price_value'),
+        // The tier's € surcharge over the base route price (0 / 15 / 45), so the
+        // homepage cards can compute money — previously only mapToBookingCamps read it.
+        delta: fInt(fields, 'price_delta'),
         features: fList(fields, 'features'),
         bestForEmoji: f(fields, 'best_for_emoji'),
         bestForEmojiLabel: f(fields, 'best_for_emoji_label'),

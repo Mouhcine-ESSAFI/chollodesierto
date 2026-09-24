@@ -1,3 +1,6 @@
+import {useRouteLoaderData} from 'react-router';
+import {useT} from '~/lib/ui-strings';
+import type {RootLoader} from '~/root';
 import dunesSvg from '~/assets/dunes.svg?url';
 import sunSvg from '~/assets/sun.svg?url';
 import sunlightSvg from '~/assets/sunlight.svg?url';
@@ -15,13 +18,18 @@ interface SocialLink {
 
 const CHECKS: string[] = ['Secure payment', 'Free cancellation', 'Verified local agency'];
 
-const NAV_LINKS: NavLink[] = [
+/**
+ * Fallback for when the Shopify `footer` menu is empty or unreachable.
+ * Note the anchors here are historical dead links (#reviews / #faq / #about
+ * are not anchors that exist); the Shopify menu supplies real paths.
+ */
+const FALLBACK_NAV_LINKS: NavLink[] = [
   {label: 'Book', href: '/booking'},
-  {label: 'Routes', href: '#routes'},
-  {label: 'Reviews', href: '#reviews'},
-  {label: 'FAQ', href: '#faq'},
-  {label: 'About', href: '#about'},
-  {label: 'Contact', href: '#contact'},
+  {label: 'Routes', href: '/#routes'},
+  {label: 'Reviews', href: '/reviews'},
+  {label: 'FAQ', href: '/faq'},
+  {label: 'About', href: '/about'},
+  {label: 'Contact', href: '/contact'},
 ];
 
 const LEGAL_LINKS: NavLink[] = [
@@ -47,11 +55,42 @@ export interface SiteFooterProps {
 }
 
 export function SiteFooter({
-  headline = 'Your story starts at sunset.',
+  headline,
   ctaHref = '/booking',
   whatsappHref = '#whatsapp',
   showCamels = true,
 }: SiteFooterProps) {
+  // site_settings comes from the root loader (rendered on every page).
+  const root = useRouteLoaderData<RootLoader>('root');
+  const brandName = root?.siteSettings?.brandName || 'Budget Desert Tour';
+  const tagline =
+    root?.siteSettings?.tagline || "Real Sahara.\nFair price.\nStories you'll tell forever.";
+
+  // Shopify `footer` menu, falling back to the hardcoded list.
+  const navLinks = root?.footerMenu?.length ? root.footerMenu : FALLBACK_NAV_LINKS;
+  const t = useT();
+  const checks = [
+    t('footer.check_1', 'Secure payment'),
+    t('footer.check_2', 'Free cancellation'),
+    t('footer.check_3', 'Verified local agency'),
+  ];
+  const legalLinks = [
+    {label: t('footer.legal_terms', 'Terms'), href: '#terms'},
+    {label: t('footer.legal_privacy', 'Privacy'), href: '#privacy'},
+    {label: t('footer.legal_refund', 'Refund Policy'), href: '#refund'},
+  ];
+
+  // Contact links come from site_settings. Anything still blank in Admin is
+  // omitted rather than rendered as a dead "#" link.
+  const whatsapp = root?.siteSettings?.whatsappUrl || whatsappHref;
+  const socials = SOCIAL_LINKS.map((s) => ({
+    ...s,
+    href:
+      (s.icon === 'instagram'
+        ? root?.siteSettings?.instagramUrl
+        : root?.siteSettings?.tiktokUrl) || '',
+  })).filter((s) => s.href);
+
   return (
     <section
       aria-label="Book your desert adventure"
@@ -79,20 +118,20 @@ export function SiteFooter({
         {/* Content — above all layers */}
         <div className="relative z-20 mx-auto max-w-170 w-full">
           <h2 className="sf-headline font-display text-sand text-h3 md:text-h2">
-            {headline}
+            {headline || t('footer.headline', 'Your story starts at sunset.')}
           </h2>
 
           <p className="mt-4 md:mt-5 text-sand text-base">
-            Book your spot with 20%.
+            {t('footer.deposit_line', 'Book your spot with 20%.')}
             <br />
-            Pay the rest on the day of the excursion.
+            {t('footer.deposit_line_2', 'Pay the rest on the day of the excursion.')}
           </p>
 
           <ul
             role="list"
             className="sf-checks mt-7 md:mt-18 flex flex-wrap items-center justify-center gap-y-3.5"
           >
-            {CHECKS.map((label) => (
+            {checks.map((label) => (
               <li
                 key={label}
                 className="flex items-center gap-2.5 whitespace-nowrap text-sand font-medium text-label md:text-base"
@@ -111,7 +150,7 @@ export function SiteFooter({
                        shadow-card-m
                        transition-transform duration-200 hover:-translate-y-0.5"
           >
-            Book Your Adventure Today
+            {t('footer.cta', 'Book Your Adventure Today')}
             <svg
               width="20"
               height="20"
@@ -129,8 +168,8 @@ export function SiteFooter({
           </a>
 
           <p className="mt-6 md:mt-20 flex items-center justify-center gap-1.5 text-sand text-label">
-            Or WhatsApp us if you&rsquo;d rather talk first
-            <a href={whatsappHref} aria-label="Chat with us on WhatsApp" className="text-[1.05em]">
+            {t('footer.whatsapp_prompt', 'Or WhatsApp us if you’d rather talk first')}
+            <a href={whatsapp} aria-label="Chat with us on WhatsApp" className="text-[1.05em]">
               <span role="img" aria-hidden="true">&#128522;</span>
             </a>
           </p>
@@ -143,7 +182,7 @@ export function SiteFooter({
           aria-label="Footer"
           className="mb-10 md:mb-16 flex flex-wrap items-center justify-center gap-x-3.5 gap-y-2"
         >
-          {NAV_LINKS.map((link, i) => (
+          {navLinks.map((link, i) => (
             <span key={link.label} className="flex items-center gap-x-3.5">
               <a
                 href={link.href}
@@ -151,7 +190,7 @@ export function SiteFooter({
               >
                 {link.label}
               </a>
-              {i < NAV_LINKS.length - 1 && (
+              {i < navLinks.length - 1 && (
                 <span aria-hidden="true" className="select-none text-sand text-[0.4rem]">
                   &bull;
                 </span>
@@ -161,7 +200,7 @@ export function SiteFooter({
         </nav>
 
         <div className="mb-6 md:mb-8 flex items-center justify-center gap-2">
-          {SOCIAL_LINKS.map((s) => (
+          {socials.map((s) => (
             <a
               key={s.label}
               href={s.href}
@@ -174,13 +213,13 @@ export function SiteFooter({
           ))}
         </div>
 
-        <nav aria-label="Legal" className="mb-10 md:mb-16 flex flex-wrap items-center justify-center gap-3">
-          {LEGAL_LINKS.map((link, i) => (
+        <nav aria-label={t('aria.footer.legal', 'Legal')} className="mb-10 md:mb-16 flex flex-wrap items-center justify-center gap-3">
+          {legalLinks.map((link, i) => (
             <span key={link.label} className="flex items-center gap-3">
               <a href={link.href} className="text-sand text-[0.85rem] transition-colors hover:text-[#e5d6c2]">
                 {link.label}
               </a>
-              {i < LEGAL_LINKS.length - 1 && (
+              {i < legalLinks.length - 1 && (
                 <span aria-hidden="true" className="text-sand text-[0.7rem]">
                   &bull;
                 </span>
@@ -191,24 +230,21 @@ export function SiteFooter({
 
         <div className="mb-7 md:mb-8 inline-flex flex-col items-center gap-3 text-center sm:flex-row sm:gap-[18px] sm:text-left">
           <CompassMark />
-          <span className="font-display font-bold text-sand text-base">
-            Budget
-            <br />
-            Desert
-            <br />
-            Tour
+          <span className="font-display font-bold text-sand text-base whitespace-pre-line">
+            {brandName.split(' ').join('\n')}
           </span>
           <span aria-hidden="true" className="hidden w-px self-stretch bg-[#e5d6c2]/25 sm:block" />
-          <span className="text-sand text-[0.76rem]">
-            Real Sahara.
-            <br />
-            Fair price.
-            <br />
-            Stories you&rsquo;ll tell forever.
+          <span className="text-sand text-[0.76rem] whitespace-pre-line">
+            {tagline}
           </span>
         </div>
 
-        <p className="text-sand text-[0.8rem]">&copy; 2026 Budget Desert Tour &trade;. All rights reserved.</p>
+        <p className="text-sand text-[0.8rem]">
+          {t('footer.copyright', '\u00A9 {year} {brand} \u2122. All rights reserved.', {
+            year: new Date().getFullYear(),
+            brand: brandName,
+          })}
+        </p>
       </footer>
     </section>
   );
